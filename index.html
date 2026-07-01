@@ -272,145 +272,196 @@
   </div>
 
   <script>
+    const GH = 'https://github.com/bganguly';
+
     const projects = {
       dashboard: {
         title: 'Orders Dashboard',
         subtitle: 'millions of orders · sub-second search · serverless autoscaling',
         description: 'Two independent GCP Cloud Run services — a Vite/React 19 SPA proxying /api/* to a Spring Boot 4 REST API via Nginx BFF. Schema migrations in Flyway, secrets in GCP Secret Manager, all infra declared in Pulumi TypeScript.',
         accentClass: 'text-violet-400',
-        frontend: {
-          label: 'Frontend',
-          color: 'blue',
-          title: 'React 19 + Vite',
-          chips: ['React 19', 'TypeScript', 'Vite', 'Tailwind CSS', 'Recharts', 'GCP Cloud Run', 'Nginx BFF'],
-          liveUrl: '#',        // replace with actual Cloud Run URL
-          liveLabel: 'Open App',
-          githubUrl: 'https://github.com/bganguly/dashboard-frontend',
+        cloud: {
+          label: 'Cloud Provider',
+          color: 'gcp',
+          title: 'GCP Cloud Run',
+          chips: ['Cloud Run', 'Cloud SQL PG 16', 'Secret Manager', 'Artifact Registry', 'Pulumi IaC'],
+          liveUrl: '#',
+          liveLabel: 'Open Live App',
         },
         backend: {
           label: 'Backend',
           color: 'emerald',
           title: 'Spring Boot 4 · Java 21',
-          chips: ['Spring Boot 4', 'Java 21', 'Cloud SQL PG 16', 'Flyway', 'GCP Cloud Run', 'Pulumi IaC', 'Secret Manager'],
-          liveUrl: '#',        // replace with actual Cloud Run API URL
+          chips: ['Spring Boot 4', 'Java 21', 'Flyway', 'REST API'],
+          liveUrl: '#',
           liveLabel: 'View API',
-          githubUrl: 'https://github.com/bganguly/springboot-gcp-dashboard-backend',
+          githubUrl: GH + '/springboot-gcp-dashboard-backend',
         },
+        frontend: {
+          label: 'Frontend',
+          color: 'blue',
+          title: 'React 19 + Vite',
+          chips: ['React 19', 'TypeScript', 'Vite', 'Recharts'],
+          liveUrl: '#',
+          liveLabel: 'Open App',
+          githubUrl: GH + '/dashboard-frontend',
+        },
+        githubUrl: GH,
       },
       nextjs: {
         title: 'Next.js Dashboard',
         subtitle: 'Full-stack · API Routes · realtime · Postgres',
         description: 'Explores Next.js as a unified full-stack platform: UI, API routes, realtime updates, and database-backed search all in one service. Acts as an architectural comparison to the split-service GCP approach.',
         accentClass: 'text-indigo-400',
-        frontend: {
-          label: 'App',
-          color: 'indigo',
-          title: 'Next.js 15 · TypeScript',
-          chips: ['Next.js 15', 'TypeScript', 'Tailwind CSS', 'React Server Components'],
-          liveUrl: '#',        // replace with live URL
-          liveLabel: 'Open App',
-          githubUrl: 'https://github.com/bganguly/nextjs-labs',
+        cloud: {
+          label: 'Cloud Provider',
+          color: 'vercel',
+          title: 'Vercel',
+          chips: ['Vercel', 'Edge Network', 'Serverless Functions'],
+          liveUrl: '#',
+          liveLabel: 'Open Live App',
         },
         backend: {
-          label: 'API Layer',
+          label: 'Backend',
           color: 'slate',
           title: 'API Routes · PostgreSQL',
-          chips: ['Next.js API Routes', 'PostgreSQL', 'Prisma', 'Server Actions'],
-          liveUrl: '#',        // replace with API base URL
+          chips: ['Next.js API Routes', 'PostgreSQL', 'Server Actions'],
+          liveUrl: '#',
           liveLabel: 'View API',
-          githubUrl: 'https://github.com/bganguly/nextjs-labs',
+          githubUrl: GH + '/nextjs-labs',
         },
+        frontend: {
+          label: 'Frontend',
+          color: 'indigo',
+          title: 'Next.js 15 · TypeScript',
+          chips: ['Next.js 15', 'TypeScript', 'Tailwind CSS', 'RSC'],
+          liveUrl: '#',
+          liveLabel: 'Open App',
+          githubUrl: GH + '/nextjs-labs',
+        },
+        githubUrl: GH + '/nextjs-labs',
       },
       fargate: {
         title: 'AWS Fargate Fullstack',
         subtitle: 'React · Spring Boot · CloudFront · CodeBuild',
         description: 'AWS-native architecture: React SPA served via CloudFront, Spring Boot containerised on ECS Fargate, async job processing with DynamoDB + SQS, all deployed via CodeBuild CI/CD.',
         accentClass: 'text-amber-400',
-        frontend: {
-          label: 'Frontend',
-          color: 'blue',
-          title: 'React · CloudFront',
-          chips: ['React', 'TypeScript', 'AWS CloudFront', 'S3'],
-          liveUrl: '#',        // replace with CloudFront URL
-          liveLabel: 'Open App',
-          githubUrl: 'https://github.com/bganguly/react-springboot-aws-fargate',
+        cloud: {
+          label: 'Cloud Provider',
+          color: 'aws',
+          title: 'AWS',
+          chips: ['ECS Fargate', 'CloudFront', 'CodeBuild', 'DynamoDB', 'SQS'],
+          liveUrl: '#',
+          liveLabel: 'Open Live App',
         },
         backend: {
           label: 'Backend',
           color: 'amber',
           title: 'Spring Boot · ECS Fargate',
-          chips: ['Spring Boot', 'Java', 'ECS Fargate', 'DynamoDB', 'SQS', 'CodeBuild'],
-          liveUrl: '#',        // replace with API URL
+          chips: ['Spring Boot', 'Java', 'ECS Fargate'],
+          liveUrl: '#',
           liveLabel: 'View API',
-          githubUrl: 'https://github.com/bganguly/react-springboot-aws-fargate',
+          githubUrl: GH + '/react-springboot-aws-fargate',
         },
+        frontend: {
+          label: 'Frontend',
+          color: 'blue',
+          title: 'React · CloudFront',
+          chips: ['React', 'TypeScript', 'S3', 'CloudFront'],
+          liveUrl: '#',
+          liveLabel: 'Open App',
+          githubUrl: GH + '/react-springboot-aws-fargate',
+        },
+        githubUrl: GH + '/react-springboot-aws-fargate',
       },
       serverless: {
         title: 'Serverless AWS',
         subtitle: 'Lambda · SNS → SQS · DynamoDB · polling UI',
         description: 'Event-driven async pipeline deployed with Serverless Framework. React polls a job status endpoint while Lambda functions process jobs through SNS fan-out → SQS consumption, with DynamoDB tracking state transitions.',
         accentClass: 'text-teal-400',
-        frontend: {
-          label: 'Frontend',
-          color: 'blue',
-          title: 'React · API Gateway',
-          chips: ['React', 'API Gateway', 'Long polling', 'Job status UI'],
-          liveUrl: '#',        // replace with live URL
-          liveLabel: 'Open App',
-          githubUrl: 'https://github.com/bganguly/react-typescript-serverless-aws',
+        cloud: {
+          label: 'Cloud Provider',
+          color: 'aws',
+          title: 'AWS Serverless',
+          chips: ['Lambda', 'API Gateway', 'SNS', 'SQS', 'DynamoDB'],
+          liveUrl: '#',
+          liveLabel: 'Open Live App',
         },
         backend: {
           label: 'Backend',
           color: 'teal',
           title: 'Lambda · SNS/SQS',
-          chips: ['AWS Lambda', 'SNS', 'SQS', 'DynamoDB', 'Serverless Framework'],
-          liveUrl: '#',        // replace with API URL
+          chips: ['AWS Lambda', 'SNS → SQS', 'Serverless FW'],
+          liveUrl: '#',
           liveLabel: 'View API',
-          githubUrl: 'https://github.com/bganguly/react-typescript-serverless-aws',
+          githubUrl: GH + '/react-typescript-serverless-aws',
         },
+        frontend: {
+          label: 'Frontend',
+          color: 'blue',
+          title: 'React · API Gateway',
+          chips: ['React', 'API Gateway', 'Job polling UI'],
+          liveUrl: '#',
+          liveLabel: 'Open App',
+          githubUrl: GH + '/react-typescript-serverless-aws',
+        },
+        githubUrl: GH + '/react-typescript-serverless-aws',
       },
     };
 
     const colorMap = {
-      blue:    { bg: 'rgba(59,130,246,0.08)',  border: 'rgba(59,130,246,0.2)',  chip: 'bg-blue-500/10 text-blue-300 border-blue-500/20',    btn: 'rgba(59,130,246,0.15)',  btnBorder: 'rgba(59,130,246,0.35)',  btnText: '#93c5fd', label: 'text-blue-400' },
-      emerald: { bg: 'rgba(16,185,129,0.08)',  border: 'rgba(16,185,129,0.2)',  chip: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20', btn: 'rgba(16,185,129,0.15)', btnBorder: 'rgba(16,185,129,0.35)', btnText: '#6ee7b7', label: 'text-emerald-400' },
-      indigo:  { bg: 'rgba(99,102,241,0.08)',  border: 'rgba(99,102,241,0.2)',  chip: 'bg-indigo-500/10 text-indigo-300 border-indigo-500/20',  btn: 'rgba(99,102,241,0.15)',  btnBorder: 'rgba(99,102,241,0.35)',  btnText: '#a5b4fc', label: 'text-indigo-400' },
-      amber:   { bg: 'rgba(245,158,11,0.08)',  border: 'rgba(245,158,11,0.2)',  chip: 'bg-amber-500/10 text-amber-300 border-amber-500/20',    btn: 'rgba(245,158,11,0.15)',  btnBorder: 'rgba(245,158,11,0.35)',  btnText: '#fcd34d', label: 'text-amber-400' },
-      teal:    { bg: 'rgba(20,184,166,0.08)',  border: 'rgba(20,184,166,0.2)',  chip: 'bg-teal-500/10 text-teal-300 border-teal-500/20',      btn: 'rgba(20,184,166,0.15)',  btnBorder: 'rgba(20,184,166,0.35)',  btnText: '#5eead4', label: 'text-teal-400' },
-      slate:   { bg: 'rgba(100,116,139,0.08)', border: 'rgba(100,116,139,0.2)', chip: 'bg-slate-500/10 text-slate-300 border-slate-500/20',   btn: 'rgba(100,116,139,0.15)', btnBorder: 'rgba(100,116,139,0.35)', btnText: '#cbd5e1', label: 'text-slate-400' },
+      gcp:     { bg: 'rgba(251,146,60,0.08)',  border: 'rgba(251,146,60,0.25)',  chip: 'bg-orange-500/10 text-orange-300 border-orange-500/20',  btn: 'rgba(251,146,60,0.18)',  btnBorder: 'rgba(251,146,60,0.45)',  btnText: '#fdba74', label: 'text-orange-400' },
+      aws:     { bg: 'rgba(245,158,11,0.08)',  border: 'rgba(245,158,11,0.25)',  chip: 'bg-amber-500/10 text-amber-300 border-amber-500/20',    btn: 'rgba(245,158,11,0.18)',  btnBorder: 'rgba(245,158,11,0.45)',  btnText: '#fcd34d', label: 'text-amber-400' },
+      vercel:  { bg: 'rgba(255,255,255,0.04)', border: 'rgba(255,255,255,0.15)', chip: 'bg-zinc-500/10 text-zinc-300 border-zinc-500/20',       btn: 'rgba(255,255,255,0.08)', btnBorder: 'rgba(255,255,255,0.2)',  btnText: '#e4e4e7', label: 'text-zinc-300' },
+      blue:    { bg: 'rgba(59,130,246,0.08)',  border: 'rgba(59,130,246,0.2)',   chip: 'bg-blue-500/10 text-blue-300 border-blue-500/20',        btn: 'rgba(59,130,246,0.15)',  btnBorder: 'rgba(59,130,246,0.35)',  btnText: '#93c5fd', label: 'text-blue-400' },
+      emerald: { bg: 'rgba(16,185,129,0.08)',  border: 'rgba(16,185,129,0.2)',   chip: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20',btn: 'rgba(16,185,129,0.15)', btnBorder: 'rgba(16,185,129,0.35)', btnText: '#6ee7b7', label: 'text-emerald-400' },
+      indigo:  { bg: 'rgba(99,102,241,0.08)',  border: 'rgba(99,102,241,0.2)',   chip: 'bg-indigo-500/10 text-indigo-300 border-indigo-500/20',   btn: 'rgba(99,102,241,0.15)',  btnBorder: 'rgba(99,102,241,0.35)',  btnText: '#a5b4fc', label: 'text-indigo-400' },
+      amber:   { bg: 'rgba(245,158,11,0.08)',  border: 'rgba(245,158,11,0.2)',   chip: 'bg-amber-500/10 text-amber-300 border-amber-500/20',     btn: 'rgba(245,158,11,0.15)',  btnBorder: 'rgba(245,158,11,0.35)',  btnText: '#fcd34d', label: 'text-amber-400' },
+      teal:    { bg: 'rgba(20,184,166,0.08)',  border: 'rgba(20,184,166,0.2)',   chip: 'bg-teal-500/10 text-teal-300 border-teal-500/20',        btn: 'rgba(20,184,166,0.15)',  btnBorder: 'rgba(20,184,166,0.35)',  btnText: '#5eead4', label: 'text-teal-400' },
+      slate:   { bg: 'rgba(100,116,139,0.08)', border: 'rgba(100,116,139,0.2)',  chip: 'bg-slate-500/10 text-slate-300 border-slate-500/20',    btn: 'rgba(100,116,139,0.15)', btnBorder: 'rgba(100,116,139,0.35)', btnText: '#cbd5e1', label: 'text-slate-400' },
     };
 
-    function panelHtml(side, c) {
-      const col = colorMap[c.color];
-      const chips = c.chips.map(t =>
-        `<span class="chip border ${col.chip} mb-1">${t}</span>`
-      ).join(' ');
+    const githubIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>`;
+    const arrowIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>`;
+
+    function liveBtn(c, col, large) {
       const hasLive = c.liveUrl && c.liveUrl !== '#';
-      const liveBtn = hasLive
-        ? `<a href="${c.liveUrl}" target="_blank" rel="noopener"
-              class="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90"
-              style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">
-             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-             ${c.liveLabel}
-           </a>`
-        : `<span class="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg text-xs font-medium opacity-30 cursor-not-allowed select-none"
-                style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">
-             ${c.liveLabel} — coming soon
-           </span>`;
+      const cls = large
+        ? 'flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 flex-shrink-0'
+        : 'flex items-center justify-center gap-1.5 w-full py-2 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90 mt-auto';
+      return hasLive
+        ? `<a href="${c.liveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`
+        : `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} — coming soon</span>`;
+    }
+
+    function cloudPanelHtml(c) {
+      const col = colorMap[c.color];
+      const chips = c.chips.map(t => `<span class="chip border ${col.chip}">${t}</span>`).join(' ');
       return `
-        <div class="flex-1 rounded-xl p-4" style="background:${col.bg};border:1px solid ${col.border}">
-          <p class="text-[10px] font-semibold tracking-widest uppercase mb-1 ${col.label}">${c.label}</p>
-          <p class="font-semibold text-sm text-zinc-100 mb-3">${c.title}</p>
-          <div class="flex flex-wrap gap-1 mb-4">${chips}</div>
-          <div class="flex flex-col gap-2">
-            ${liveBtn}
-            <a href="${c.githubUrl}" target="_blank" rel="noopener"
-               class="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg text-xs font-medium text-zinc-400 hover:text-zinc-200 transition-colors"
-               style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08)">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
-              GitHub
-            </a>
+        <div class="rounded-xl p-5 mb-3 flex items-center justify-between gap-4" style="background:${col.bg};border:1px solid ${col.border}">
+          <div class="flex-1 min-w-0">
+            <p class="text-[10px] font-semibold tracking-widest uppercase mb-1 ${col.label}">${c.label}</p>
+            <p class="font-bold text-base text-zinc-100 mb-3">${c.title}</p>
+            <div class="flex flex-wrap gap-1.5">${chips}</div>
           </div>
+          <div>${liveBtn(c, col, true)}</div>
+        </div>`;
+    }
+
+    function smallPanelHtml(c) {
+      const col = colorMap[c.color];
+      const chips = c.chips.map(t => `<span class="chip border ${col.chip}">${t}</span>`).join(' ');
+      const hasGH = c.githubUrl && c.githubUrl !== '#';
+      const ghLink = hasGH
+        ? `<a href="${c.githubUrl}" target="_blank" rel="noopener" class="flex items-center justify-center gap-1.5 w-full py-1.5 rounded-lg text-[11px] font-medium text-zinc-500 hover:text-zinc-300 transition-colors mt-2" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07)">${githubIcon} GitHub</a>`
+        : '';
+      return `
+        <div class="flex-1 rounded-xl p-4 flex flex-col" style="background:${col.bg};border:1px solid ${col.border}">
+          <p class="text-[10px] font-semibold tracking-widest uppercase mb-1 ${col.label}">${c.label}</p>
+          <p class="font-semibold text-sm text-zinc-100 mb-2">${c.title}</p>
+          <div class="flex flex-wrap gap-1 mb-3">${chips}</div>
+          ${liveBtn(c, col, false)}
+          ${ghLink}
         </div>`;
     }
 
@@ -425,11 +476,19 @@
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           </div>
-          <p class="text-xs ${p.accentClass} mb-3">${p.subtitle}</p>
-          <p class="text-sm text-zinc-400 leading-relaxed mb-6">${p.description}</p>
-          <div class="flex flex-col sm:flex-row gap-3">
-            ${panelHtml('frontend', p.frontend)}
-            ${panelHtml('backend', p.backend)}
+          <p class="text-xs ${p.accentClass} mb-2">${p.subtitle}</p>
+          <p class="text-sm text-zinc-400 leading-relaxed mb-5">${p.description}</p>
+          ${cloudPanelHtml(p.cloud)}
+          <div class="flex gap-3 mb-4">
+            ${smallPanelHtml(p.backend)}
+            ${smallPanelHtml(p.frontend)}
+          </div>
+          <div class="flex justify-center">
+            <a href="${p.githubUrl}" target="_blank" rel="noopener"
+               class="flex items-center gap-2 px-5 py-2 rounded-lg text-xs font-medium text-zinc-400 hover:text-zinc-200 transition-colors"
+               style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1)">
+              ${githubIcon} View on GitHub
+            </a>
           </div>
         </div>`;
       const modal = document.getElementById('modal');

@@ -93,7 +93,7 @@
       </h1>
       <p class="text-zinc-400 text-lg leading-relaxed mb-6">
         Full-stack engineering — React, Spring Boot, Next.js, serverless AWS &amp; GCP.
-        Production systems at scale: sub-second search on 4M+ rows, event-driven pipelines, IaC-managed cloud infra.
+        Production systems at scale: sub-second search on millions of rows, event-driven pipelines, IaC-managed cloud infra.
       </p>
       <div class="flex flex-wrap gap-2">
         <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">React 19</span>
@@ -136,7 +136,7 @@
           </svg>
         </div>
         <p class="text-sm text-zinc-400 leading-relaxed mb-5">
-          Production-grade analytics dashboard over 4M+ orders — sub-second full-text search via GIN trigram index,
+          Production-grade analytics dashboard over millions of orders — sub-second full-text search via GIN trigram index,
           millisecond chart queries from pre-aggregated Cloud SQL tables. Deployed as two independent Cloud Run services
           with Pulumi TypeScript IaC, zero-config scaling to zero.
         </p>
@@ -274,7 +274,7 @@
     const projects = {
       dashboard: {
         title: 'Orders Dashboard',
-        subtitle: '4M+ rows · sub-second search · serverless autoscaling',
+        subtitle: 'millions of orders · sub-second search · serverless autoscaling',
         description: 'Two independent GCP Cloud Run services — a Vite/React 19 SPA proxying /api/* to a Spring Boot 4 REST API via Nginx BFF. Schema migrations in Flyway, secrets in GCP Secret Manager, all infra declared in Pulumi TypeScript.',
         accentClass: 'text-violet-400',
         frontend: {

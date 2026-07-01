@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Explorer — Orders Dashboard</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23a78bfa'/><text x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='Inter,system-ui,sans-serif' font-size='14' font-weight='700'>bg</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body { background: #0f0f13; }
+    .glass { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); }
+    .chip { display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 9999px; font-size: 0.7rem; font-weight: 500; }
+    input[type="text"], input[type="date"] {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #e4e4e7;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      font-family: 'JetBrains Mono', monospace;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    input[type="text"]:focus, input[type="date"]:focus {
+      border-color: rgba(139,92,246,0.5);
+    }
+    input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.5); cursor: pointer; }
+    .run-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 16px; border-radius: 8px; font-size: 0.75rem; font-weight: 600;
+      background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.4);
+      color: #c4b5fd; cursor: pointer; transition: all 0.15s; white-space: nowrap;
+    }
+    .run-btn:hover { background: rgba(139,92,246,0.25); }
+    .run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .method-get { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); color: #34d399; }
+    .endpoint-path { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #a1a1aa; }
+    .timing-fast { background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.25); }
+    .timing-mid  { background: rgba(245,158,11,0.12); color: #fbbf24; border: 1px solid rgba(245,158,11,0.25); }
+    .timing-slow { background: rgba(239,68,68,0.12);  color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
+    .result-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+    .result-table th { color: #71717a; font-weight: 500; text-align: left; padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,0.06); white-space: nowrap; }
+    .result-table td { color: #d4d4d8; padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .result-table tr:last-child td { border-bottom: none; }
+    .status-pill { display: inline-flex; padding: 1px 8px; border-radius: 9999px; font-size: 0.65rem; font-weight: 600; }
+    .status-completed  { background: rgba(16,185,129,0.15); color: #6ee7b7; }
+    .status-pending    { background: rgba(245,158,11,0.15); color: #fcd34d; }
+    .status-cancelled  { background: rgba(239,68,68,0.15); color: #fca5a5; }
+    .status-processing { background: rgba(99,102,241,0.15); color: #a5b4fc; }
+    .raw-json { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 12px; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: #71717a; max-height: 200px; overflow-y: auto; white-space: pre; }
+    details summary { cursor: pointer; font-size: 0.7rem; color: #52525b; margin-top: 10px; user-select: none; }
+    details summary:hover { color: #a1a1aa; }
+    .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(139,92,246,0.3); border-top-color: #a78bfa; border-radius: 50%; animation: spin 0.6s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .error-msg { color: #f87171; font-size: 0.75rem; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); border-radius: 8px; padding: 10px 14px; }
+    .stat-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 12px 16px; }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+  </style>
+</head>
+<body class="text-zinc-100 font-sans antialiased min-h-screen">
+
+  <!-- Nav -->
+  <nav class="fixed top-0 inset-x-0 z-40 border-b" style="border-color:rgba(255,255,255,0.06);background:rgba(15,15,19,0.9);backdrop-filter:blur(16px)">
+    <div class="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-100 transition-colors">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M5 12l7-7M5 12l7 7"/></svg>
+        Portfolio
+      </a>
+      <div class="flex items-center gap-3">
+        <span class="text-xs text-zinc-600">Orders Dashboard</span>
+        <span class="chip method-get">Spring Boot 4 · GCP</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="pt-28 pb-10 px-6 max-w-5xl mx-auto">
+    <p class="text-xs font-medium text-violet-400 tracking-widest uppercase mb-3">API Explorer</p>
+    <h1 class="text-2xl font-bold text-zinc-100 mb-2">Live API — Orders Dashboard</h1>
+    <p class="text-sm text-zinc-500 max-w-xl">
+      Run real requests against the Spring Boot 4 backend on GCP Cloud Run. Each call hits Cloud SQL PostgreSQL 16 and returns live data.
+    </p>
+    <div class="flex items-center gap-2 mt-4">
+      <div id="base-url-badge" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono text-zinc-500" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08)">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
+        https://dash-frontend-7u2hpcwtmq-uc.a.run.app/api
+      </div>
+    </div>
+  </section>
+
+  <!-- Cards -->
+  <section class="px-6 pb-24 max-w-5xl mx-auto space-y-5">
+
+    <!-- 1. Recent Orders -->
+    <div class="glass rounded-2xl p-6">
+      <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="chip method-get text-[11px] px-2 py-0.5">GET</span>
+            <span class="endpoint-path">/api/orders</span>
+          </div>
+          <p class="text-xs text-zinc-500">Latest orders — paginated, sorted by date descending</p>
+        </div>
+        <button class="run-btn" onclick="runOrders()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg>
+          Run
+        </button>
+      </div>
+      <div class="flex flex-wrap gap-2 mb-4 font-mono text-[11px] text-zinc-600">
+        <span>pageSize=<span class="text-violet-400">10</span></span>
+        <span>sort=<span class="text-violet-400">placedAt</span></span>
+        <span>dir=<span class="text-violet-400">desc</span></span>
+      </div>
+      <div id="result-orders"></div>
+    </div>
+
+    <!-- 2. Search Orders -->
+    <div class="glass rounded-2xl p-6">
+      <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="chip method-get text-[11px] px-2 py-0.5">GET</span>
+            <span class="endpoint-path">/api/orders?q=…</span>
+          </div>
+          <p class="text-xs text-zinc-500">Full-text search via GIN trigram index — sub-second on millions of rows</p>
+        </div>
+        <button class="run-btn" onclick="runSearch()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg>
+          Run
+        </button>
+      </div>
+      <div class="flex items-center gap-3 mb-4">
+        <input type="text" id="search-q" placeholder="e.g. coffee, east, pending…" style="width:220px" />
+        <span class="font-mono text-[11px] text-zinc-600">pageSize=<span class="text-violet-400">10</span></span>
+      </div>
+      <div id="result-search"></div>
+    </div>
+
+    <!-- 3. Aggregates -->
+    <div class="glass rounded-2xl p-6">
+      <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="chip method-get text-[11px] px-2 py-0.5">GET</span>
+            <span class="endpoint-path">/api/aggregates</span>
+          </div>
+          <p class="text-xs text-zinc-500">Pre-aggregated daily totals from Cloud SQL — millisecond response</p>
+        </div>
+        <button class="run-btn" onclick="runAggregates()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg>
+          Run
+        </button>
+      </div>
+      <div class="flex flex-wrap items-center gap-3 mb-4">
+        <div class="flex items-center gap-2">
+          <span class="text-[11px] text-zinc-600">from</span>
+          <input type="date" id="agg-from" style="width:150px" />
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-[11px] text-zinc-600">to</span>
+          <input type="date" id="agg-to" style="width:150px" />
+        </div>
+        <span class="font-mono text-[11px] text-zinc-600">topCategories=<span class="text-violet-400">3</span></span>
+      </div>
+      <div id="result-aggregates"></div>
+    </div>
+
+    <!-- 4. Customers -->
+    <div class="glass rounded-2xl p-6">
+      <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="chip method-get text-[11px] px-2 py-0.5">GET</span>
+            <span class="endpoint-path">/api/customers</span>
+          </div>
+          <p class="text-xs text-zinc-500">Customer list — cursor-paginated</p>
+        </div>
+        <button class="run-btn" onclick="runCustomers()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg>
+          Run
+        </button>
+      </div>
+      <div class="flex flex-wrap gap-3 mb-4">
+        <div class="flex items-center gap-2">
+          <span class="text-[11px] text-zinc-600">search</span>
+          <input type="text" id="customer-q" placeholder="name or region…" style="width:180px" />
+        </div>
+        <span class="font-mono text-[11px] text-zinc-600">limit=<span class="text-violet-400">10</span></span>
+      </div>
+      <div id="result-customers"></div>
+    </div>
+
+  </section>
+
+  <script>
+    const BASE = 'https://dash-frontend-7u2hpcwtmq-uc.a.run.app/api';
+
+    // Default date range: seed data likely in 2024
+    const DEFAULT_FROM = '2024-01-01';
+    const DEFAULT_TO   = '2024-12-31';
+    document.getElementById('agg-from').value = DEFAULT_FROM;
+    document.getElementById('agg-to').value   = DEFAULT_TO;
+
+    function timingClass(ms) {
+      if (ms < 300) return 'timing-fast';
+      if (ms < 1000) return 'timing-mid';
+      return 'timing-slow';
+    }
+
+    function metaBar(ms, label) {
+      const cls = timingClass(ms);
+      return `<div class="flex items-center gap-3 mb-4">
+        <span class="chip ${cls} text-[11px] px-2 py-1">⚡ ${ms}ms</span>
+        <span class="text-xs text-zinc-500">${label}</span>
+      </div>`;
+    }
+
+    function statusPill(s) {
+      if (!s) return '—';
+      const k = s.toLowerCase();
+      const cls = k.includes('complet') ? 'status-completed'
+                : k.includes('pend')    ? 'status-pending'
+                : k.includes('cancel')  ? 'status-cancelled'
+                : k.includes('process') ? 'status-processing'
+                : '';
+      return `<span class="status-pill ${cls}">${s}</span>`;
+    }
+
+    function orderTable(rows) {
+      const header = `<tr><th>#</th><th>ID</th><th>Status</th><th>Total</th><th>Customer</th><th>Region</th><th>Placed</th></tr>`;
+      const body = rows.map((o, i) => `<tr>
+        <td class="text-zinc-600">${i + 1}</td>
+        <td class="font-mono text-zinc-400">${o.id}</td>
+        <td>${statusPill(o.status)}</td>
+        <td class="text-emerald-400 font-mono">${o.currency || '$'}${Number(o.total).toFixed(2)}</td>
+        <td>${o.customer ? (o.customer.name || o.customer.firstName || '—') : '—'}</td>
+        <td class="text-zinc-500">${o.region ? (o.region.name || o.region.code || '—') : '—'}</td>
+        <td class="text-zinc-500 font-mono text-[11px]">${o.placedAt ? o.placedAt.slice(0, 10) : '—'}</td>
+      </tr>`).join('');
+      return `<div class="overflow-x-auto rounded-xl" style="border:1px solid rgba(255,255,255,0.06)">
+        <table class="result-table"><thead>${header}</thead><tbody>${body}</tbody></table>
+      </div>`;
+    }
+
+    function customerTable(rows) {
+      const header = `<tr><th>#</th><th>Name</th><th>Email</th><th>Region</th></tr>`;
+      const body = rows.map((c, i) => `<tr>
+        <td class="text-zinc-600">${i + 1}</td>
+        <td>${c.name || [c.firstName, c.lastName].filter(Boolean).join(' ') || '—'}</td>
+        <td class="text-zinc-400 font-mono text-[11px]">${c.email || '—'}</td>
+        <td class="text-zinc-500">${c.region ? (c.region.name || c.region.code || '—') : (c.regionCode || '—')}</td>
+      </tr>`).join('');
+      return `<div class="overflow-x-auto rounded-xl" style="border:1px solid rgba(255,255,255,0.06)">
+        <table class="result-table"><thead>${header}</thead><tbody>${body}</tbody></table>
+      </div>`;
+    }
+
+    function aggSummary(data) {
+      let totalOrders = 0, totalRevenue = 0, totalItems = 0;
+      data.forEach(day => {
+        Object.values(day.categories || {}).forEach(cat => {
+          totalOrders  += cat.totalOrders  || 0;
+          totalRevenue += cat.totalRevenue || 0;
+          totalItems   += cat.totalItems   || 0;
+        });
+      });
+
+      const statsHtml = `<div class="grid grid-cols-3 gap-3 mb-4">
+        <div class="stat-card"><p class="text-[10px] text-zinc-600 uppercase tracking-wider mb-1">Total Orders</p><p class="text-lg font-bold text-zinc-100">${totalOrders.toLocaleString()}</p></div>
+        <div class="stat-card"><p class="text-[10px] text-zinc-600 uppercase tracking-wider mb-1">Total Revenue</p><p class="text-lg font-bold text-emerald-400">$${totalRevenue.toLocaleString(undefined,{maximumFractionDigits:0})}</p></div>
+        <div class="stat-card"><p class="text-[10px] text-zinc-600 uppercase tracking-wider mb-1">Days Returned</p><p class="text-lg font-bold text-zinc-100">${data.length}</p></div>
+      </div>`;
+
+      const rows = data.slice(0, 10).map(day => {
+        const cats = Object.values(day.categories || {});
+        const dayOrders  = cats.reduce((s, c) => s + (c.totalOrders || 0), 0);
+        const dayRevenue = cats.reduce((s, c) => s + (c.totalRevenue || 0), 0);
+        const dayAvg     = dayOrders ? (dayRevenue / dayOrders) : 0;
+        const catNames   = Object.keys(day.categories || {}).slice(0, 3).join(', ');
+        return `<tr>
+          <td class="font-mono text-zinc-400">${day.date}</td>
+          <td>${dayOrders.toLocaleString()}</td>
+          <td class="text-emerald-400 font-mono">$${dayRevenue.toLocaleString(undefined,{maximumFractionDigits:0})}</td>
+          <td class="font-mono">$${dayAvg.toFixed(2)}</td>
+          <td class="text-zinc-600 text-[11px]">${catNames}</td>
+        </tr>`;
+      }).join('');
+
+      const tableHtml = `<div class="overflow-x-auto rounded-xl" style="border:1px solid rgba(255,255,255,0.06)">
+        <table class="result-table">
+          <thead><tr><th>Date</th><th>Orders</th><th>Revenue</th><th>Avg Value</th><th>Categories</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+
+      return statsHtml + tableHtml;
+    }
+
+    function renderError(err) {
+      const isCors = err.message && (err.message.includes('fetch') || err.message.includes('Failed'));
+      return `<div class="error-msg">
+        ${isCors
+          ? '⚠️ CORS or network error — the API may need cross-origin headers for external requests, or the service is sleeping (Cloud Run scales to zero). Try again in a few seconds.'
+          : `Error: ${err.message}`}
+      </div>`;
+    }
+
+    function setLoading(id) {
+      document.getElementById(id).innerHTML = `<div class="flex items-center gap-2 text-xs text-zinc-600"><div class="spinner"></div> Sending request…</div>`;
+    }
+
+    async function fetchTimed(url) {
+      const t0 = performance.now();
+      const res = await fetch(url);
+      const ms = Math.round(performance.now() - t0);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = await res.json();
+      return { json, ms };
+    }
+
+    function rawJson(data) {
+      return `<details><summary>View raw JSON</summary><pre class="raw-json mt-2">${JSON.stringify(data, null, 2)}</pre></details>`;
+    }
+
+    async function runOrders() {
+      setLoading('result-orders');
+      try {
+        const { json, ms } = await fetchTimed(`${BASE}/orders?pageSize=10&sort=placedAt&dir=desc`);
+        const data = json.data || json;
+        const total = json.total ?? (Array.isArray(data) ? data.length : '?');
+        document.getElementById('result-orders').innerHTML =
+          metaBar(ms, `${total.toLocaleString()} total orders · showing first 10`) +
+          orderTable(Array.isArray(data) ? data : []) +
+          rawJson(json);
+      } catch (e) {
+        document.getElementById('result-orders').innerHTML = renderError(e);
+      }
+    }
+
+    async function runSearch() {
+      const q = document.getElementById('search-q').value.trim();
+      if (!q) { document.getElementById('result-search').innerHTML = `<p class="text-xs text-zinc-600">Enter a search term above.</p>`; return; }
+      setLoading('result-search');
+      try {
+        const { json, ms } = await fetchTimed(`${BASE}/orders?q=${encodeURIComponent(q)}&pageSize=10`);
+        const data = json.data || json;
+        const total = json.total ?? (Array.isArray(data) ? data.length : '?');
+        document.getElementById('result-search').innerHTML =
+          metaBar(ms, `${total.toLocaleString()} match${total !== 1 ? 'es' : ''} for "${q}"`) +
+          (Array.isArray(data) && data.length ? orderTable(data) : `<p class="text-xs text-zinc-500">No results.</p>`) +
+          rawJson(json);
+      } catch (e) {
+        document.getElementById('result-search').innerHTML = renderError(e);
+      }
+    }
+
+    async function runAggregates() {
+      const from = document.getElementById('agg-from').value;
+      const to   = document.getElementById('agg-to').value;
+      if (!from || !to) { document.getElementById('result-aggregates').innerHTML = `<p class="text-xs text-zinc-600">Select a date range.</p>`; return; }
+      setLoading('result-aggregates');
+      try {
+        const { json, ms } = await fetchTimed(`${BASE}/aggregates?from=${from}&to=${to}&topCategories=3`);
+        const data = json.data || json;
+        const rows = Array.isArray(data) ? data : [];
+        document.getElementById('result-aggregates').innerHTML =
+          metaBar(ms, `${rows.length} day${rows.length !== 1 ? 's' : ''} · ${from} → ${to}`) +
+          (rows.length ? aggSummary(rows) : `<p class="text-xs text-zinc-500">No data for this range.</p>`) +
+          rawJson(json);
+      } catch (e) {
+        document.getElementById('result-aggregates').innerHTML = renderError(e);
+      }
+    }
+
+    async function runCustomers() {
+      const q = document.getElementById('customer-q').value.trim();
+      setLoading('result-customers');
+      try {
+        const url = `${BASE}/customers?limit=10${q ? '&q=' + encodeURIComponent(q) : ''}`;
+        const { json, ms } = await fetchTimed(url);
+        const data = json.data || (Array.isArray(json) ? json : []);
+        document.getElementById('result-customers').innerHTML =
+          metaBar(ms, `${data.length} customer${data.length !== 1 ? 's' : ''} returned`) +
+          (data.length ? customerTable(data) : `<p class="text-xs text-zinc-500">No results.</p>`) +
+          rawJson(json);
+      } catch (e) {
+        document.getElementById('result-customers').innerHTML = renderError(e);
+      }
+    }
+
+    document.getElementById('search-q').addEventListener('keydown', e => { if (e.key === 'Enter') runSearch(); });
+    document.getElementById('customer-q').addEventListener('keydown', e => { if (e.key === 'Enter') runCustomers(); });
+  </script>
+</body>
+</html>

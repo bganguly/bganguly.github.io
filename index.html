@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bikram Ganguly — Engineering Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            surface: '#0f0f13',
+            card: '#16161d',
+            border: '#27272f',
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.2s ease-out',
+            'slide-up': 'slideUp 0.25s ease-out',
+          },
+          keyframes: {
+            fadeIn: { from: { opacity: 0 }, to: { opacity: 1 } },
+            slideUp: { from: { opacity: 0, transform: 'translateY(12px)' }, to: { opacity: 1, transform: 'translateY(0)' } },
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body { background: #0f0f13; }
+    .glass {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(12px);
+    }
+    .card-hover {
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+    .card-hover:hover {
+      border-color: rgba(139, 92, 246, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(139, 92, 246, 0.12);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #a78bfa, #818cf8, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 10px;
+      border-radius: 9999px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+    .modal-backdrop {
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(8px);
+    }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+  </style>
+</head>
+<body class="text-zinc-100 font-sans antialiased min-h-screen">
+
+  <!-- Nav -->
+  <nav class="fixed top-0 inset-x-0 z-40 border-b border-border" style="background:rgba(15,15,19,0.85);backdrop-filter:blur(16px)">
+    <div class="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+      <span class="font-semibold text-sm tracking-tight">
+        <span class="gradient-text">bg</span><span class="text-zinc-400">·dev</span>
+      </span>
+      <a href="https://github.com/bganguly" target="_blank" rel="noopener"
+         class="flex items-center gap-2 text-xs text-zinc-400 hover:text-zinc-100 transition-colors">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        bganguly
+      </a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="pt-32 pb-16 px-6 max-w-6xl mx-auto">
+    <div class="max-w-2xl">
+      <p class="text-xs font-medium text-violet-400 tracking-widest uppercase mb-4">Engineering Portfolio</p>
+      <h1 class="text-4xl font-bold tracking-tight mb-4">
+        <span class="gradient-text">Bikram Ganguly</span>
+      </h1>
+      <p class="text-zinc-400 text-lg leading-relaxed mb-6">
+        Full-stack engineering — React, Spring Boot, Next.js, serverless AWS &amp; GCP.
+        Production systems at scale: sub-second search on 4M+ rows, event-driven pipelines, IaC-managed cloud infra.
+      </p>
+      <div class="flex flex-wrap gap-2">
+        <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">React 19</span>
+        <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">Next.js</span>
+        <span class="chip bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Spring Boot 4</span>
+        <span class="chip bg-orange-500/10 text-orange-400 border border-orange-500/20">GCP Cloud Run</span>
+        <span class="chip bg-amber-500/10 text-amber-400 border border-amber-500/20">AWS Fargate</span>
+        <span class="chip bg-sky-500/10 text-sky-400 border border-sky-500/20">TypeScript</span>
+        <span class="chip bg-pink-500/10 text-pink-400 border border-pink-500/20">Java 21</span>
+        <span class="chip bg-teal-500/10 text-teal-400 border border-teal-500/20">Pulumi IaC</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section class="px-6 pb-24 max-w-6xl mx-auto">
+    <p class="text-xs font-medium text-zinc-500 tracking-widest uppercase mb-8">Projects</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+      <!-- Card: Orders Dashboard (Featured) -->
+      <div class="md:col-span-2 glass rounded-2xl p-6 card-hover cursor-pointer group"
+           onclick="openModal('dashboard')">
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                 style="background:linear-gradient(135deg,#7c3aed22,#2563eb22);border:1px solid rgba(124,58,237,0.3)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-violet-400"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 17.5h7M17.5 14v7"/></svg>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="font-semibold text-zinc-100">Orders Dashboard</h2>
+                <span class="chip bg-violet-500/15 text-violet-300 border border-violet-500/25 text-[10px]">Featured</span>
+              </div>
+              <p class="text-xs text-zinc-500 mt-0.5">Vite + Spring Boot + GCP</p>
+            </div>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               class="text-zinc-600 group-hover:text-violet-400 transition-colors mt-1 flex-shrink-0">
+            <path d="M7 17L17 7M17 7H7M17 7v10"/>
+          </svg>
+        </div>
+        <p class="text-sm text-zinc-400 leading-relaxed mb-5">
+          Production-grade analytics dashboard over 4M+ orders — sub-second full-text search via GIN trigram index,
+          millisecond chart queries from pre-aggregated Cloud SQL tables. Deployed as two independent Cloud Run services
+          with Pulumi TypeScript IaC, zero-config scaling to zero.
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <div class="flex items-center gap-2 px-3 py-2 rounded-lg" style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2)">
+            <div class="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
+            <span class="text-xs text-blue-300 font-medium">React 19 · Vite · Tailwind · Recharts</span>
+          </div>
+          <div class="flex items-center gap-2 px-3 py-2 rounded-lg" style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2)">
+            <div class="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>
+            <span class="text-xs text-emerald-300 font-medium">Spring Boot 4 · Java 21 · Cloud Run · PostgreSQL 16</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: Next.js Dashboard -->
+      <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
+           onclick="openModal('nextjs')">
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                 style="background:linear-gradient(135deg,#6366f122,#8b5cf622);border:1px solid rgba(99,102,241,0.3)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-indigo-400"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            </div>
+            <div>
+              <h2 class="font-semibold text-zinc-100">Next.js Dashboard</h2>
+              <p class="text-xs text-zinc-500 mt-0.5">Full-stack · API Routes · Postgres</p>
+            </div>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               class="text-zinc-600 group-hover:text-indigo-400 transition-colors mt-1 flex-shrink-0">
+            <path d="M7 17L17 7M17 7H7M17 7v10"/>
+          </svg>
+        </div>
+        <p class="text-sm text-zinc-400 leading-relaxed mb-5">
+          Full-stack Next.js implementation showcasing UI, API routes, realtime updates, and database-backed search —
+          comparing Next.js as a full-stack platform against the split-service GCP model.
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <span class="chip bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Next.js 15</span>
+          <span class="chip bg-sky-500/10 text-sky-400 border border-sky-500/20">TypeScript</span>
+          <span class="chip bg-slate-500/10 text-slate-400 border border-slate-500/20">PostgreSQL</span>
+          <span class="chip bg-teal-500/10 text-teal-400 border border-teal-500/20">API Routes</span>
+        </div>
+      </div>
+
+      <!-- Card: AWS Fargate -->
+      <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
+           onclick="openModal('fargate')">
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                 style="background:linear-gradient(135deg,#f59e0b22,#ef444422);border:1px solid rgba(245,158,11,0.3)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-amber-400"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+            </div>
+            <div>
+              <h2 class="font-semibold text-zinc-100">AWS Fargate Fullstack</h2>
+              <p class="text-xs text-zinc-500 mt-0.5">React · Spring Boot · DynamoDB · SQS</p>
+            </div>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               class="text-zinc-600 group-hover:text-amber-400 transition-colors mt-1 flex-shrink-0">
+            <path d="M7 17L17 7M17 7H7M17 7v10"/>
+          </svg>
+        </div>
+        <p class="text-sm text-zinc-400 leading-relaxed mb-5">
+          AWS-first deployment: React UI behind CloudFront + Spring Boot on ECS Fargate, with DynamoDB persistence
+          and SQS for async job processing. Deployed via CodeBuild CI/CD pipeline.
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">React</span>
+          <span class="chip bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Spring Boot</span>
+          <span class="chip bg-amber-500/10 text-amber-400 border border-amber-500/20">AWS Fargate</span>
+          <span class="chip bg-orange-500/10 text-orange-400 border border-orange-500/20">DynamoDB</span>
+          <span class="chip bg-rose-500/10 text-rose-400 border border-rose-500/20">SQS</span>
+        </div>
+      </div>
+
+      <!-- Card: Serverless -->
+      <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
+           onclick="openModal('serverless')">
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                 style="background:linear-gradient(135deg,#10b98122,#06b6d422);border:1px solid rgba(16,185,129,0.3)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-teal-400"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            </div>
+            <div>
+              <h2 class="font-semibold text-zinc-100">Serverless AWS</h2>
+              <p class="text-xs text-zinc-500 mt-0.5">React · Lambda · SNS/SQS · DynamoDB</p>
+            </div>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               class="text-zinc-600 group-hover:text-teal-400 transition-colors mt-1 flex-shrink-0">
+            <path d="M7 17L17 7M17 7H7M17 7v10"/>
+          </svg>
+        </div>
+        <p class="text-sm text-zinc-400 leading-relaxed mb-5">
+          Event-driven async pipeline: React polls a job status endpoint while Lambda functions process jobs
+          through SNS fan-out to SQS, with DynamoDB state tracking. Deployed with Serverless Framework.
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">React</span>
+          <span class="chip bg-amber-500/10 text-amber-400 border border-amber-500/20">Lambda</span>
+          <span class="chip bg-rose-500/10 text-rose-400 border border-rose-500/20">SNS/SQS</span>
+          <span class="chip bg-teal-500/10 text-teal-400 border border-teal-500/20">DynamoDB</span>
+          <span class="chip bg-slate-500/10 text-slate-400 border border-slate-500/20">Serverless FW</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-border px-6 py-8">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <p class="text-xs text-zinc-600">gangulybikramjit@gmail.com</p>
+      <a href="https://github.com/bganguly" target="_blank" rel="noopener"
+         class="text-xs text-zinc-600 hover:text-zinc-400 transition-colors">github.com/bganguly</a>
+    </div>
+  </footer>
+
+  <!-- Modal -->
+  <div id="modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4"
+       onclick="closeModalOnBackdrop(event)">
+    <div class="modal-backdrop absolute inset-0 animate-fade-in"></div>
+    <div id="modal-content"
+         class="relative w-full max-w-2xl rounded-2xl animate-slide-up overflow-hidden"
+         style="background:#16161d;border:1px solid rgba(255,255,255,0.1);max-height:90vh;overflow-y:auto">
+      <!-- Modal filled by JS -->
+    </div>
+  </div>
+
+  <script>
+    const projects = {
+      dashboard: {
+        title: 'Orders Dashboard',
+        subtitle: '4M+ rows · sub-second search · serverless autoscaling',
+        description: 'Two independent GCP Cloud Run services — a Vite/React 19 SPA proxying /api/* to a Spring Boot 4 REST API via Nginx BFF. Schema migrations in Flyway, secrets in GCP Secret Manager, all infra declared in Pulumi TypeScript.',
+        accentClass: 'text-violet-400',
+        frontend: {
+          label: 'Frontend',
+          color: 'blue',
+          title: 'React 19 + Vite',
+          chips: ['React 19', 'TypeScript', 'Vite', 'Tailwind CSS', 'Recharts', 'GCP Cloud Run', 'Nginx BFF'],
+          liveUrl: '#',        // replace with actual Cloud Run URL
+          liveLabel: 'Open App',
+          githubUrl: 'https://github.com/bganguly/dashboard-frontend',
+        },
+        backend: {
+          label: 'Backend',
+          color: 'emerald',
+          title: 'Spring Boot 4 · Java 21',
+          chips: ['Spring Boot 4', 'Java 21', 'Cloud SQL PG 16', 'Flyway', 'GCP Cloud Run', 'Pulumi IaC', 'Secret Manager'],
+          liveUrl: '#',        // replace with actual Cloud Run API URL
+          liveLabel: 'View API',
+          githubUrl: 'https://github.com/bganguly/springboot-gcp-dashboard-backend',
+        },
+      },
+      nextjs: {
+        title: 'Next.js Dashboard',
+        subtitle: 'Full-stack · API Routes · realtime · Postgres',
+        description: 'Explores Next.js as a unified full-stack platform: UI, API routes, realtime updates, and database-backed search all in one service. Acts as an architectural comparison to the split-service GCP approach.',
+        accentClass: 'text-indigo-400',
+        frontend: {
+          label: 'App',
+          color: 'indigo',
+          title: 'Next.js 15 · TypeScript',
+          chips: ['Next.js 15', 'TypeScript', 'Tailwind CSS', 'React Server Components'],
+          liveUrl: '#',        // replace with live URL
+          liveLabel: 'Open App',
+          githubUrl: 'https://github.com/bganguly/nextjs-labs',
+        },
+        backend: {
+          label: 'API Layer',
+          color: 'slate',
+          title: 'API Routes · PostgreSQL',
+          chips: ['Next.js API Routes', 'PostgreSQL', 'Prisma', 'Server Actions'],
+          liveUrl: '#',        // replace with API base URL
+          liveLabel: 'View API',
+          githubUrl: 'https://github.com/bganguly/nextjs-labs',
+        },
+      },
+      fargate: {
+        title: 'AWS Fargate Fullstack',
+        subtitle: 'React · Spring Boot · CloudFront · CodeBuild',
+        description: 'AWS-native architecture: React SPA served via CloudFront, Spring Boot containerised on ECS Fargate, async job processing with DynamoDB + SQS, all deployed via CodeBuild CI/CD.',
+        accentClass: 'text-amber-400',
+        frontend: {
+          label: 'Frontend',
+          color: 'blue',
+          title: 'React · CloudFront',
+          chips: ['React', 'TypeScript', 'AWS CloudFront', 'S3'],
+          liveUrl: '#',        // replace with CloudFront URL
+          liveLabel: 'Open App',
+          githubUrl: 'https://github.com/bganguly/react-springboot-aws-fargate',
+        },
+        backend: {
+          label: 'Backend',
+          color: 'amber',
+          title: 'Spring Boot · ECS Fargate',
+          chips: ['Spring Boot', 'Java', 'ECS Fargate', 'DynamoDB', 'SQS', 'CodeBuild'],
+          liveUrl: '#',        // replace with API URL
+          liveLabel: 'View API',
+          githubUrl: 'https://github.com/bganguly/react-springboot-aws-fargate',
+        },
+      },
+      serverless: {
+        title: 'Serverless AWS',
+        subtitle: 'Lambda · SNS → SQS · DynamoDB · polling UI',
+        description: 'Event-driven async pipeline deployed with Serverless Framework. React polls a job status endpoint while Lambda functions process jobs through SNS fan-out → SQS consumption, with DynamoDB tracking state transitions.',
+        accentClass: 'text-teal-400',
+        frontend: {
+          label: 'Frontend',
+          color: 'blue',
+          title: 'React · API Gateway',
+          chips: ['React', 'API Gateway', 'Long polling', 'Job status UI'],
+          liveUrl: '#',        // replace with live URL
+          liveLabel: 'Open App',
+          githubUrl: 'https://github.com/bganguly/react-typescript-serverless-aws',
+        },
+        backend: {
+          label: 'Backend',
+          color: 'teal',
+          title: 'Lambda · SNS/SQS',
+          chips: ['AWS Lambda', 'SNS', 'SQS', 'DynamoDB', 'Serverless Framework'],
+          liveUrl: '#',        // replace with API URL
+          liveLabel: 'View API',
+          githubUrl: 'https://github.com/bganguly/react-typescript-serverless-aws',
+        },
+      },
+    };
+
+    const colorMap = {
+      blue:    { bg: 'rgba(59,130,246,0.08)',  border: 'rgba(59,130,246,0.2)',  chip: 'bg-blue-500/10 text-blue-300 border-blue-500/20',    btn: 'rgba(59,130,246,0.15)',  btnBorder: 'rgba(59,130,246,0.35)',  btnText: '#93c5fd', label: 'text-blue-400' },
+      emerald: { bg: 'rgba(16,185,129,0.08)',  border: 'rgba(16,185,129,0.2)',  chip: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20', btn: 'rgba(16,185,129,0.15)', btnBorder: 'rgba(16,185,129,0.35)', btnText: '#6ee7b7', label: 'text-emerald-400' },
+      indigo:  { bg: 'rgba(99,102,241,0.08)',  border: 'rgba(99,102,241,0.2)',  chip: 'bg-indigo-500/10 text-indigo-300 border-indigo-500/20',  btn: 'rgba(99,102,241,0.15)',  btnBorder: 'rgba(99,102,241,0.35)',  btnText: '#a5b4fc', label: 'text-indigo-400' },
+      amber:   { bg: 'rgba(245,158,11,0.08)',  border: 'rgba(245,158,11,0.2)',  chip: 'bg-amber-500/10 text-amber-300 border-amber-500/20',    btn: 'rgba(245,158,11,0.15)',  btnBorder: 'rgba(245,158,11,0.35)',  btnText: '#fcd34d', label: 'text-amber-400' },
+      teal:    { bg: 'rgba(20,184,166,0.08)',  border: 'rgba(20,184,166,0.2)',  chip: 'bg-teal-500/10 text-teal-300 border-teal-500/20',      btn: 'rgba(20,184,166,0.15)',  btnBorder: 'rgba(20,184,166,0.35)',  btnText: '#5eead4', label: 'text-teal-400' },
+      slate:   { bg: 'rgba(100,116,139,0.08)', border: 'rgba(100,116,139,0.2)', chip: 'bg-slate-500/10 text-slate-300 border-slate-500/20',   btn: 'rgba(100,116,139,0.15)', btnBorder: 'rgba(100,116,139,0.35)', btnText: '#cbd5e1', label: 'text-slate-400' },
+    };
+
+    function panelHtml(side, c) {
+      const col = colorMap[c.color];
+      const chips = c.chips.map(t =>
+        `<span class="chip border ${col.chip} mb-1">${t}</span>`
+      ).join(' ');
+      const hasLive = c.liveUrl && c.liveUrl !== '#';
+      const liveBtn = hasLive
+        ? `<a href="${c.liveUrl}" target="_blank" rel="noopener"
+              class="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90"
+              style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">
+             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+             ${c.liveLabel}
+           </a>`
+        : `<span class="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg text-xs font-medium opacity-30 cursor-not-allowed select-none"
+                style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">
+             ${c.liveLabel} — coming soon
+           </span>`;
+      return `
+        <div class="flex-1 rounded-xl p-4" style="background:${col.bg};border:1px solid ${col.border}">
+          <p class="text-[10px] font-semibold tracking-widest uppercase mb-1 ${col.label}">${c.label}</p>
+          <p class="font-semibold text-sm text-zinc-100 mb-3">${c.title}</p>
+          <div class="flex flex-wrap gap-1 mb-4">${chips}</div>
+          <div class="flex flex-col gap-2">
+            ${liveBtn}
+            <a href="${c.githubUrl}" target="_blank" rel="noopener"
+               class="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg text-xs font-medium text-zinc-400 hover:text-zinc-200 transition-colors"
+               style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+              GitHub
+            </a>
+          </div>
+        </div>`;
+    }
+
+    function openModal(key) {
+      const p = projects[key];
+      const content = document.getElementById('modal-content');
+      content.innerHTML = `
+        <div class="p-6">
+          <div class="flex items-start justify-between mb-1">
+            <h2 class="font-bold text-lg text-zinc-100">${p.title}</h2>
+            <button onclick="closeModal()" class="ml-4 text-zinc-500 hover:text-zinc-200 transition-colors flex-shrink-0 mt-0.5">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+          <p class="text-xs ${p.accentClass} mb-3">${p.subtitle}</p>
+          <p class="text-sm text-zinc-400 leading-relaxed mb-6">${p.description}</p>
+          <div class="flex flex-col sm:flex-row gap-3">
+            ${panelHtml('frontend', p.frontend)}
+            ${panelHtml('backend', p.backend)}
+          </div>
+        </div>`;
+      const modal = document.getElementById('modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.style.overflow = '';
+    }
+
+    function closeModalOnBackdrop(e) {
+      if (e.target === document.getElementById('modal')) closeModal();
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+  </script>
+</body>
+</html>

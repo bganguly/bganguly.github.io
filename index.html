@@ -128,7 +128,13 @@
                 <h2 class="font-semibold text-zinc-100">Orders Dashboard</h2>
                 <span class="chip bg-violet-500/15 text-violet-300 border border-violet-500/25 text-[10px]">Featured</span>
               </div>
-              <p class="text-xs text-zinc-500 mt-0.5">Vite + Spring Boot + GCP</p>
+              <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
+                  <span class="flex items-center gap-1 text-[11px] font-medium text-orange-400"><span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>GCP Cloud Run</span>
+                  <span class="text-zinc-700 text-[10px]">·</span>
+                  <span class="flex items-center gap-1 text-[11px] font-medium text-emerald-400"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Spring Boot 4 · Java 21</span>
+                  <span class="text-zinc-700 text-[10px]">·</span>
+                  <span class="flex items-center gap-1 text-[11px] font-medium text-blue-400"><span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>React 19 + Vite</span>
+              </div>
             </div>
           </div>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -164,7 +170,13 @@
             </div>
             <div>
               <h2 class="font-semibold text-zinc-100">Next.js Dashboard</h2>
-              <p class="text-xs text-zinc-500 mt-0.5">Full-stack · API Routes · Postgres</p>
+              <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
+                  <span class="flex items-center gap-1 text-[11px] font-medium text-zinc-300"><span class="w-1.5 h-1.5 rounded-full bg-zinc-300"></span>Vercel</span>
+                  <span class="text-zinc-700 text-[10px]">·</span>
+                  <span class="flex items-center gap-1 text-[11px] font-medium text-slate-400"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>API Routes · PostgreSQL</span>
+                  <span class="text-zinc-700 text-[10px]">·</span>
+                  <span class="flex items-center gap-1 text-[11px] font-medium text-indigo-400"><span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>Next.js 15 · TypeScript</span>
+              </div>
             </div>
           </div>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -195,7 +207,13 @@
             </div>
             <div>
               <h2 class="font-semibold text-zinc-100">AWS Fargate Fullstack</h2>
-              <p class="text-xs text-zinc-500 mt-0.5">React · Spring Boot · DynamoDB · SQS</p>
+              <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
+                  <span class="flex items-center gap-1 text-[11px] font-medium text-amber-400"><span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>AWS Fargate</span>
+                  <span class="text-zinc-700 text-[10px]">·</span>
+                  <span class="flex items-center gap-1 text-[11px] font-medium text-emerald-400"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Spring Boot · Java</span>
+                  <span class="text-zinc-700 text-[10px]">·</span>
+                  <span class="flex items-center gap-1 text-[11px] font-medium text-blue-400"><span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>React · CloudFront</span>
+              </div>
             </div>
           </div>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -217,8 +235,9 @@
       </div>
 
       <!-- Card: Serverless -->
-      <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
-           onclick="openModal('serverless')">
+      <div class="md:col-span-2 flex justify-center">
+      <div class="glass rounded-2xl p-6 card-hover cursor-pointer group w-full md:w-1/2"
+           onclick="openModal('serverless')"
         <div class="flex items-start justify-between mb-4">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center"
@@ -227,7 +246,13 @@
             </div>
             <div>
               <h2 class="font-semibold text-zinc-100">Serverless AWS</h2>
-              <p class="text-xs text-zinc-500 mt-0.5">React · Lambda · SNS/SQS · DynamoDB</p>
+              <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
+                  <span class="flex items-center gap-1 text-[11px] font-medium text-amber-400"><span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>AWS Lambda</span>
+                  <span class="text-zinc-700 text-[10px]">·</span>
+                  <span class="flex items-center gap-1 text-[11px] font-medium text-teal-400"><span class="w-1.5 h-1.5 rounded-full bg-teal-400"></span>SNS · SQS · DynamoDB</span>
+                  <span class="text-zinc-700 text-[10px]">·</span>
+                  <span class="flex items-center gap-1 text-[11px] font-medium text-blue-400"><span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>React · API Gateway</span>
+              </div>
             </div>
           </div>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -246,6 +271,7 @@
           <span class="chip bg-teal-500/10 text-teal-400 border border-teal-500/20">DynamoDB</span>
           <span class="chip bg-slate-500/10 text-slate-400 border border-slate-500/20">Serverless FW</span>
         </div>
+      </div>
       </div>
 
     </div>

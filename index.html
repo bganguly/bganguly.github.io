@@ -234,10 +234,10 @@
         </div>
       </div>
 
-      <!-- Card: Serverless -->
-      <div class="md:col-span-2 flex justify-center">
-      <div class="glass rounded-2xl p-6 card-hover cursor-pointer group w-full md:w-1/2"
-           onclick="openModal('serverless')"
+      <!-- Card: Serverless (centered) -->
+      <div class="md:col-span-2 glass rounded-2xl p-6 card-hover cursor-pointer group"
+           style="max-width:calc(50% - 10px);margin:0 auto;width:100%"
+           onclick="openModal('serverless')">
         <div class="flex items-start justify-between mb-4">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center"
@@ -247,11 +247,11 @@
             <div>
               <h2 class="font-semibold text-zinc-100">Serverless AWS</h2>
               <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
-                  <span class="flex items-center gap-1 text-[11px] font-medium text-amber-400"><span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>AWS Lambda</span>
-                  <span class="text-zinc-700 text-[10px]">·</span>
-                  <span class="flex items-center gap-1 text-[11px] font-medium text-teal-400"><span class="w-1.5 h-1.5 rounded-full bg-teal-400"></span>SNS · SQS · DynamoDB</span>
-                  <span class="text-zinc-700 text-[10px]">·</span>
-                  <span class="flex items-center gap-1 text-[11px] font-medium text-blue-400"><span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>React · API Gateway</span>
+                <span class="flex items-center gap-1 text-[11px] font-medium text-amber-400"><span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>AWS Lambda</span>
+                <span class="text-zinc-700 text-[10px]">·</span>
+                <span class="flex items-center gap-1 text-[11px] font-medium text-teal-400"><span class="w-1.5 h-1.5 rounded-full bg-teal-400"></span>SNS · SQS · DynamoDB</span>
+                <span class="text-zinc-700 text-[10px]">·</span>
+                <span class="flex items-center gap-1 text-[11px] font-medium text-blue-400"><span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>React · API Gateway</span>
               </div>
             </div>
           </div>
@@ -271,7 +271,6 @@
           <span class="chip bg-teal-500/10 text-teal-400 border border-teal-500/20">DynamoDB</span>
           <span class="chip bg-slate-500/10 text-slate-400 border border-slate-500/20">Serverless FW</span>
         </div>
-      </div>
       </div>
 
     </div>

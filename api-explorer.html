@@ -62,8 +62,11 @@
     .status-cancelled  { background: rgba(239,68,68,0.15); color: #fca5a5; }
     .status-processing { background: rgba(99,102,241,0.15); color: #a5b4fc; }
     .raw-json { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 12px; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: #71717a; max-height: 200px; overflow-y: auto; white-space: pre; }
-    details summary { cursor: pointer; font-size: 0.7rem; color: #52525b; margin-top: 10px; user-select: none; }
+    details summary { cursor: pointer; font-size: 0.7rem; color: #52525b; margin-top: 10px; user-select: none; list-style: none; display: flex; align-items: center; gap: 5px; }
     details summary:hover { color: #a1a1aa; }
+    details summary::before { content: '▶'; font-size: 0.55rem; transition: transform 0.15s; }
+    details[open] summary::before { transform: rotate(90deg); }
+    details[open] summary { color: #a1a1aa; }
     .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(139,92,246,0.3); border-top-color: #a78bfa; border-radius: 50%; animation: spin 0.6s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .error-msg { color: #f87171; font-size: 0.75rem; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); border-radius: 8px; padding: 10px 14px; }
@@ -327,9 +330,9 @@
     async function fetchTimed(url) {
       const t0 = performance.now();
       const res = await fetch(url);
-      const ms = Math.round(performance.now() - t0);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
+      const ms = Math.round(performance.now() - t0);
       return { json, ms };
     }
 

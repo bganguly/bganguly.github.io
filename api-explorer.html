@@ -110,102 +110,111 @@
   <section class="px-6 pb-24 max-w-5xl mx-auto space-y-5">
 
     <!-- 1. Recent Orders -->
-    <div class="glass rounded-2xl p-6">
-      <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
-        <div>
-          <div class="flex items-center gap-2 mb-1">
-            <span class="chip method-get text-[11px] px-2 py-0.5">GET</span>
-            <span class="endpoint-path">/api/orders</span>
-          </div>
-          <p class="text-xs text-zinc-500">Latest orders — paginated, sorted by date descending</p>
+    <div class="glass rounded-2xl overflow-hidden">
+      <button class="w-full flex items-center justify-between gap-4 px-6 py-4 text-left" onclick="toggleCard('orders')">
+        <div class="flex items-center gap-3">
+          <span class="chip method-get text-[11px] px-2 py-0.5">GET</span>
+          <span class="endpoint-path">/api/orders</span>
+          <span class="text-xs text-zinc-600 hidden sm:inline">Latest orders — paginated, sorted by date descending</span>
         </div>
-        <button class="run-btn" onclick="runOrders()">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg>
-          Run
-        </button>
+        <svg id="chevron-orders" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-zinc-600 flex-shrink-0 transition-transform duration-200"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div id="body-orders" class="px-6 pb-6 border-t" style="border-color:rgba(255,255,255,0.06)">
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-4 mb-4">
+          <div class="flex flex-wrap gap-2 font-mono text-[11px] text-zinc-600">
+            <span>pageSize=<span class="text-violet-400">10</span></span>
+            <span>sort=<span class="text-violet-400">placedAt</span></span>
+            <span>dir=<span class="text-violet-400">desc</span></span>
+          </div>
+          <button class="run-btn" onclick="runOrders()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg>
+            Run
+          </button>
+        </div>
+        <div id="result-orders"></div>
       </div>
-      <div class="flex flex-wrap gap-2 mb-4 font-mono text-[11px] text-zinc-600">
-        <span>pageSize=<span class="text-violet-400">10</span></span>
-        <span>sort=<span class="text-violet-400">placedAt</span></span>
-        <span>dir=<span class="text-violet-400">desc</span></span>
-      </div>
-      <div id="result-orders"></div>
     </div>
 
     <!-- 2. Search Orders -->
-    <div class="glass rounded-2xl p-6">
-      <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
-        <div>
-          <div class="flex items-center gap-2 mb-1">
-            <span class="chip method-get text-[11px] px-2 py-0.5">GET</span>
-            <span class="endpoint-path">/api/orders?q=…</span>
-          </div>
-          <p class="text-xs text-zinc-500">Full-text search via GIN trigram index — sub-second on millions of rows</p>
+    <div class="glass rounded-2xl overflow-hidden">
+      <button class="w-full flex items-center justify-between gap-4 px-6 py-4 text-left" onclick="toggleCard('search')">
+        <div class="flex items-center gap-3">
+          <span class="chip method-get text-[11px] px-2 py-0.5">GET</span>
+          <span class="endpoint-path">/api/orders?q=…</span>
+          <span class="text-xs text-zinc-600 hidden sm:inline">Full-text search via GIN trigram index</span>
         </div>
-        <button class="run-btn" onclick="runSearch()">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg>
-          Run
-        </button>
+        <svg id="chevron-search" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-zinc-600 flex-shrink-0 transition-transform duration-200"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div id="body-search" class="px-6 pb-6 border-t" style="border-color:rgba(255,255,255,0.06)">
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-4 mb-4">
+          <div class="flex items-center gap-3">
+            <input type="text" id="search-q" placeholder="e.g. coffee, east, pending…" style="width:220px" />
+            <span class="font-mono text-[11px] text-zinc-600">pageSize=<span class="text-violet-400">10</span></span>
+          </div>
+          <button class="run-btn" onclick="runSearch()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg>
+            Run
+          </button>
+        </div>
+        <div id="result-search"></div>
       </div>
-      <div class="flex items-center gap-3 mb-4">
-        <input type="text" id="search-q" placeholder="e.g. coffee, east, pending…" style="width:220px" />
-        <span class="font-mono text-[11px] text-zinc-600">pageSize=<span class="text-violet-400">10</span></span>
-      </div>
-      <div id="result-search"></div>
     </div>
 
     <!-- 3. Aggregates -->
-    <div class="glass rounded-2xl p-6">
-      <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
-        <div>
-          <div class="flex items-center gap-2 mb-1">
-            <span class="chip method-get text-[11px] px-2 py-0.5">GET</span>
-            <span class="endpoint-path">/api/aggregates</span>
+    <div class="glass rounded-2xl overflow-hidden">
+      <button class="w-full flex items-center justify-between gap-4 px-6 py-4 text-left" onclick="toggleCard('aggregates')">
+        <div class="flex items-center gap-3">
+          <span class="chip method-get text-[11px] px-2 py-0.5">GET</span>
+          <span class="endpoint-path">/api/aggregates</span>
+          <span class="text-xs text-zinc-600 hidden sm:inline">Pre-aggregated daily totals — millisecond response</span>
+        </div>
+        <svg id="chevron-aggregates" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-zinc-600 flex-shrink-0 transition-transform duration-200"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div id="body-aggregates" class="px-6 pb-6 border-t" style="border-color:rgba(255,255,255,0.06)">
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-4 mb-4">
+          <div class="flex flex-wrap items-center gap-3">
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] text-zinc-600">from</span>
+              <input type="date" id="agg-from" style="width:150px" />
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] text-zinc-600">to</span>
+              <input type="date" id="agg-to" style="width:150px" />
+            </div>
+            <span class="font-mono text-[11px] text-zinc-600">topCategories=<span class="text-violet-400">3</span></span>
           </div>
-          <p class="text-xs text-zinc-500">Pre-aggregated daily totals from Cloud SQL — millisecond response</p>
+          <button class="run-btn" onclick="runAggregates()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg>
+            Run
+          </button>
         </div>
-        <button class="run-btn" onclick="runAggregates()">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg>
-          Run
-        </button>
+        <div id="result-aggregates"></div>
       </div>
-      <div class="flex flex-wrap items-center gap-3 mb-4">
-        <div class="flex items-center gap-2">
-          <span class="text-[11px] text-zinc-600">from</span>
-          <input type="date" id="agg-from" style="width:150px" />
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="text-[11px] text-zinc-600">to</span>
-          <input type="date" id="agg-to" style="width:150px" />
-        </div>
-        <span class="font-mono text-[11px] text-zinc-600">topCategories=<span class="text-violet-400">3</span></span>
-      </div>
-      <div id="result-aggregates"></div>
     </div>
 
     <!-- 4. Customers -->
-    <div class="glass rounded-2xl p-6">
-      <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
-        <div>
-          <div class="flex items-center gap-2 mb-1">
-            <span class="chip method-get text-[11px] px-2 py-0.5">GET</span>
-            <span class="endpoint-path">/api/customers</span>
+    <div class="glass rounded-2xl overflow-hidden">
+      <button class="w-full flex items-center justify-between gap-4 px-6 py-4 text-left" onclick="toggleCard('customers')">
+        <div class="flex items-center gap-3">
+          <span class="chip method-get text-[11px] px-2 py-0.5">GET</span>
+          <span class="endpoint-path">/api/customers</span>
+          <span class="text-xs text-zinc-600 hidden sm:inline">Customer list — cursor-paginated</span>
+        </div>
+        <svg id="chevron-customers" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-zinc-600 flex-shrink-0 transition-transform duration-200"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div id="body-customers" class="px-6 pb-6 border-t" style="border-color:rgba(255,255,255,0.06)">
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-4 mb-4">
+          <div class="flex items-center gap-3">
+            <input type="text" id="customer-q" placeholder="name or region…" style="width:180px" />
+            <span class="font-mono text-[11px] text-zinc-600">limit=<span class="text-violet-400">10</span></span>
           </div>
-          <p class="text-xs text-zinc-500">Customer list — cursor-paginated</p>
+          <button class="run-btn" onclick="runCustomers()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg>
+            Run
+          </button>
         </div>
-        <button class="run-btn" onclick="runCustomers()">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg>
-          Run
-        </button>
+        <div id="result-customers"></div>
       </div>
-      <div class="flex flex-wrap gap-3 mb-4">
-        <div class="flex items-center gap-2">
-          <span class="text-[11px] text-zinc-600">search</span>
-          <input type="text" id="customer-q" placeholder="name or region…" style="width:180px" />
-        </div>
-        <span class="font-mono text-[11px] text-zinc-600">limit=<span class="text-violet-400">10</span></span>
-      </div>
-      <div id="result-customers"></div>
     </div>
 
   </section>
@@ -405,6 +414,21 @@
         document.getElementById('result-customers').innerHTML = renderError(e);
       }
     }
+
+    const cardIds = ['orders', 'search', 'aggregates', 'customers'];
+
+    function toggleCard(id) {
+      const body = document.getElementById('body-' + id);
+      const chevron = document.getElementById('chevron-' + id);
+      const isOpen = !body.classList.contains('hidden');
+      body.classList.toggle('hidden', isOpen);
+      chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
+    }
+
+    // Start all collapsed
+    cardIds.forEach(id => {
+      document.getElementById('body-' + id).classList.add('hidden');
+    });
 
     document.getElementById('search-q').addEventListener('keydown', e => { if (e.key === 'Enter') runSearch(); });
     document.getElementById('customer-q').addEventListener('keydown', e => { if (e.key === 'Enter') runCustomers(); });

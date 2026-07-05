@@ -114,7 +114,7 @@
     <p class="text-xs font-medium text-zinc-500 tracking-widest uppercase mb-8">Projects</p>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-      <!-- Card: Orders Dashboard (Featured) -->
+      <!-- Card: Orders Dashboard — GCP (Featured) -->
       <div class="md:col-span-2 glass rounded-2xl p-6 card-hover cursor-pointer group"
            onclick="openModal('dashboard')">
         <div class="flex items-start justify-between mb-4">
@@ -125,7 +125,7 @@
             </div>
             <div>
               <div class="flex items-center gap-2">
-                <h2 class="font-semibold text-zinc-100">Orders Dashboard</h2>
+                <h2 class="font-semibold text-zinc-100">Orders Dashboard — GCP</h2>
                 <span class="chip bg-violet-500/15 text-violet-300 border border-violet-500/25 text-[10px]">Featured</span>
               </div>
               <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
@@ -161,7 +161,7 @@
         </div>
       </div>
 
-      <!-- Card: Next.js Dashboard -->
+      <!-- Card: Next.js Dashboard — AWS -->
       <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
            onclick="openModal('nextjs')">
         <div class="flex items-start justify-between mb-4">
@@ -171,7 +171,7 @@
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-indigo-400"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
             </div>
             <div>
-              <h2 class="font-semibold text-zinc-100">Next.js Dashboard</h2>
+              <h2 class="font-semibold text-zinc-100">Next.js Dashboard — AWS</h2>
               <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
                   <span class="flex items-center gap-1 text-[11px] font-medium text-blue-400"><span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>Next.js 16.2 · TypeScript 5.9</span>
                   <span class="text-zinc-700 text-[10px]">·</span>
@@ -211,7 +211,7 @@
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-amber-400"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
             </div>
             <div>
-              <h2 class="font-semibold text-zinc-100">AWS Fargate Fullstack</h2>
+              <h2 class="font-semibold text-zinc-100">Fargate Fullstack — AWS</h2>
               <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
                   <span class="flex items-center gap-1 text-[11px] font-medium text-blue-400"><span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>React 19.2 · CloudFront</span>
                   <span class="text-zinc-700 text-[10px]">·</span>
@@ -255,7 +255,7 @@
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-teal-400"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
             </div>
             <div>
-              <h2 class="font-semibold text-zinc-100">Serverless AWS</h2>
+              <h2 class="font-semibold text-zinc-100">Serverless — AWS</h2>
               <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
                 <span class="flex items-center gap-1 text-[11px] font-medium text-blue-400"><span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>React 19.2 · API Gateway</span>
                 <span class="text-zinc-700 text-[10px]">·</span>
@@ -315,7 +315,7 @@
 
     const projects = {
       dashboard: {
-        title: 'Orders Dashboard',
+        title: 'Orders Dashboard — GCP',
         subtitle: 'millions of orders · sub-second search · serverless autoscaling',
         description: 'Two independent GCP Cloud Run services — a Vite/React 19.2 SPA proxying /api/* to a Spring Boot 4.1 REST API via Nginx BFF. Schema migrations in Flyway 12, secrets in GCP Secret Manager, all infra declared in Pulumi TypeScript.',
         accentClass: 'text-violet-400',
@@ -348,7 +348,7 @@
         githubUrl: GH,
       },
       nextjs: {
-        title: 'Next.js Dashboard',
+        title: 'Next.js Dashboard — AWS',
         subtitle: 'Full-stack · realtime · Postgres 16',
         description: 'Explores Next.js as a unified full-stack platform: UI, realtime updates, and database-backed search all in one AWS-hosted service. Acts as an architectural comparison to the split-service GCP approach.',
         accentClass: 'text-indigo-400',
@@ -381,7 +381,7 @@
         githubUrl: GH + '/nextjs-labs',
       },
       fargate: {
-        title: 'AWS Fargate Fullstack',
+        title: 'Fargate Fullstack — AWS',
         subtitle: 'React 19.2 · Spring Boot 4.1 · CloudFront · CodeBuild',
         description: 'AWS-native architecture: React SPA served via CloudFront, Spring Boot containerised on ECS Fargate, async job processing with DynamoDB + SQS, all deployed via CodeBuild CI/CD.',
         accentClass: 'text-amber-400',
@@ -414,7 +414,7 @@
         githubUrl: GH + '/react-springboot-aws-fargate',
       },
       serverless: {
-        title: 'Serverless AWS',
+        title: 'Serverless — AWS',
         subtitle: 'Lambda · SNS → SQS · DynamoDB · polling UI',
         description: 'Event-driven async pipeline deployed with Serverless Framework. React polls a job status endpoint while Lambda functions process jobs through SNS fan-out → SQS consumption, with DynamoDB tracking state transitions.',
         accentClass: 'text-teal-400',

@@ -311,6 +311,7 @@
     </div>
   </div>
 
+  <script src="deploy-live.js"></script>
   <script>
     // ── Access-gate config (EmailJS) ─────────────────────────────────────
     // IDs live in localStorage only — nothing is ever committed to source.
@@ -521,6 +522,15 @@
         githubUrl: GH + '/react-typescript-serverless-aws',
       },
     };
+
+    // Apply deploy-time live overrides written by deploy.sh
+    if (window._deployLive) {
+      for (const [key, flags] of Object.entries(window._deployLive)) {
+        if (!projects[key]) continue;
+        if (!flags.frontend && projects[key].frontend) projects[key].frontend.liveUrl = '#';
+        if (!flags.backend  && projects[key].backend)  projects[key].backend.liveUrl  = '#';
+      }
+    }
 
     // Probe each project's live URLs at page load (no-cors HEAD, 8 s timeout).
     (function () {

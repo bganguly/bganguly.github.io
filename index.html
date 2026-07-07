@@ -336,13 +336,18 @@
       };
     }
 
-    // Populated at load by liveness probes; true = app responded → show request-access form.
+    const isLocal = ['localhost', '127.0.0.1', ''].includes(location.hostname);
+
+    // Remote probes: true = cloud app responded → show request-access form.
     const LIVE_STATUS = {
       dashboard:  false,
       nextjs:     false,
       fargate:    false,
       serverless: false,
     };
+
+    // Local probes: keyed by localUrl string, true = local service responding.
+    const LOCAL_LIVE = {};
 
     async function requestAccess(event, projectKey, label) {
       event.preventDefault();
@@ -395,6 +400,7 @@
           chips: ['Spring Boot 4.1', 'Java 21', 'Flyway 12.4', 'REST API'],
           liveUrl: 'orders-dashboard/api-explorer.html',
           liveLabel: 'View API',
+          localUrl: 'http://localhost:8080',
           githubUrl: GH + '/springboot-gcp-dashboard-backend',
         },
         frontend: {
@@ -404,6 +410,7 @@
           chips: ['React 19.2', 'TypeScript 5.9', 'Vite 6.4', 'Recharts 3.9'],
           liveUrl: 'https://dash-frontend-7u2hpcwtmq-uc.a.run.app/',
           liveLabel: 'Open App',
+          localUrl: 'http://localhost:3006',
           githubUrl: GH + '/dashboard-frontend',
         },
         githubUrl: GH,
@@ -503,19 +510,33 @@
       },
     };
 
-    // Probe each project's main live URL at page load (no-cors, 8 s timeout).
-    // Checks cloud.liveUrl first, falls back to frontend.liveUrl.
+    // Probe each project's live URLs at page load (no-cors HEAD, 8 s timeout).
     (function () {
-      Object.entries(projects).forEach(([key, p]) => {
-        const url = [p.cloud?.liveUrl, p.frontend?.liveUrl].find(u => u && u !== '#');
-        if (!url) return;
+      function probe(url, onSuccess) {
         const ctrl = new AbortController();
         const timer = setTimeout(() => ctrl.abort(), 8000);
         fetch(url, { method: 'HEAD', mode: 'no-cors', signal: ctrl.signal })
-          .then(() => { LIVE_STATUS[key] = true; })
-          .catch(() => {})
-          .finally(() => clearTimeout(timer));
+          .then(onSuccess).catch(() => {}).finally(() => clearTimeout(timer));
+      }
+
+      // Remote probes: determine whether to show request-access or disabled state.
+      Object.entries(projects).forEach(([key, p]) => {
+        const url = [p.cloud?.liveUrl, p.frontend?.liveUrl].find(u => u && u !== '#');
+        if (url) probe(url, () => { LIVE_STATUS[key] = true; });
       });
+
+      // Local probes: show green/grey dot per chiclet.
+      if (isLocal) {
+        const seen = new Set();
+        Object.values(projects).forEach(p => {
+          [p.frontend?.localUrl, p.backend?.localUrl].filter(Boolean).forEach(url => {
+            if (seen.has(url)) return;
+            seen.add(url);
+            LOCAL_LIVE[url] = false;
+            probe(url, () => { LOCAL_LIVE[url] = true; });
+          });
+        });
+      }
     })();
 
     const colorMap = {
@@ -532,15 +553,31 @@
     const githubIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>`;
     const arrowIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>`;
 
-    // key is the project key (dashboard/nextjs/…) for gated chiclets; null for backends.
+    // key = project key for frontend chiclets; null for backends.
     function liveBtn(c, col, key) {
+      // ── Local dev mode ─────────────────────────────────────────────────────
+      if (isLocal) {
+        // Backend (key=null): link to liveUrl (api-explorer), dot shows local service status.
+        // Frontend (key set): link to localUrl, dot shows local service status.
+        const linkUrl = !key
+          ? (c.liveUrl && c.liveUrl !== '#' ? c.liveUrl : null)
+          : c.localUrl;
+        if (!linkUrl) return '';
+        const live = c.localUrl ? (LOCAL_LIVE[c.localUrl] ?? false) : false;
+        const dot = `<span style="width:7px;height:7px;border-radius:50%;background:${live ? '#4ade80' : '#52525b'};flex-shrink:0;display:inline-block;margin-right:2px"></span>`;
+        const base = 'flex items-center justify-center gap-1.5 w-full py-2 rounded-lg text-xs font-semibold mt-auto transition-opacity';
+        const cls = live ? `${base} hover:opacity-90` : `${base} opacity-50`;
+        return `<a href="${linkUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${dot}${arrowIcon}${c.liveLabel}</a>`;
+      }
+
+      // ── Remote / production mode ────────────────────────────────────────────
       if (!c.liveUrl || c.liveUrl === '#') return '';
-      // Backend chiclets (key=null): direct link only.
+      // Backend: direct link (no gating).
       if (!key) {
         const cls = 'flex items-center justify-center gap-1.5 w-full py-2 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90 mt-auto';
         return `<a href="${c.liveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
       }
-      // Frontend chiclets: email form when live, disabled when not.
+      // Frontend: email form when remote service is live, disabled when not.
       if (LIVE_STATUS[key]) {
         const inputStyle = `background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#e4e4e7;border-radius:6px;padding:5px 9px;font-size:0.75rem;outline:none;min-width:0;flex:1`;
         const btnStyle = `background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText};border-radius:6px;padding:5px 11px;font-size:0.72rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0`;
@@ -604,13 +641,6 @@
             ${smallPanelHtml(p.backend, null)}
           </div>
           ${cloudPanelHtml(p.cloud)}
-          <div class="flex justify-center">
-            <a href="${p.githubUrl}" target="_blank" rel="noopener"
-               class="flex items-center gap-2 px-5 py-2 rounded-lg text-xs font-medium text-zinc-400 hover:text-zinc-200 transition-colors"
-               style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1)">
-              ${githubIcon} View on GitHub
-            </a>
-          </div>
         </div>`;
       const modal = document.getElementById('modal');
       modal.classList.remove('hidden');

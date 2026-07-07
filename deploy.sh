@@ -63,10 +63,10 @@ case "${1:-}" in
 
     printf '\n━━━ Live endpoint selection ━━━\n\n'
     printf 'GCP Orders Dashboard\n'
-    DASH_FE=$(_yn "frontend live?" y)
+    DASH_FE=$(_yn "frontend live?" n)
     DASH_BE=$(_yn "backend API Explorer live?" y)
     printf '\nNext.js Dashboard (AWS)\n'
-    NEXT_FE=$(_yn "frontend live?" y)
+    NEXT_FE=$(_yn "frontend live?" n)
     NEXT_BE=$(_yn "backend API Explorer live?" y)
     printf '\n'
 
@@ -87,9 +87,8 @@ EOF
     if ! git diff --cached --quiet; then
       git commit -m "deploy: update live endpoint selection"
     fi
-    git push origin main
-    gh workflow run "Deploy Pages" --repo bganguly/bganguly.github.io --ref main
-    echo "Triggered. Check: gh run list --repo bganguly/bganguly.github.io"
+    git push origin HEAD:main
+    echo "Published. Pages rebuilds in ~30s."
     ;;
   *)
     echo "Usage: $0 [dev|setup|deploy]"

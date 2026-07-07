@@ -433,12 +433,12 @@
           liveLabel: 'Open Live App',
         },
         // Local port 3004 (Next.js -p 3004 in package.json scripts; full-stack, one process).
+        // Backend (Prisma/PG) is internal to Next.js — no standalone local endpoint to probe.
         backend: {
           label: 'Backend',
           color: 'slate',
           title: 'PostgreSQL 16 · Prisma',
           chips: ['PostgreSQL 16', 'Prisma', 'SSE'],
-          localUrl: 'http://localhost:3004',
           githubUrl: GH + '/nextjs-dashboard',
         },
         frontend: {

@@ -7,18 +7,14 @@ Static single-page portfolio + API explorer. Deployed to GitHub Pages via a GitH
 ## Local dev
 
 ```bash
-python3 -m http.server 8080
+./deploy.sh dev
 # then open http://localhost:8080
 ```
-
-Any static file server works — the site has no build step.
-
----
 
 ## Deploy
 
 ```bash
-gh workflow run "Deploy Pages" --repo bganguly/bganguly.github.io --ref main
+./deploy.sh
 ```
 
 GitHub Pages can be flaky. If it fails with "Deployment failed, try again later", re-run the same command.

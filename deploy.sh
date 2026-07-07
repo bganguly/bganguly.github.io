@@ -12,11 +12,11 @@ _seed_url() {
 
 case "${1:-}" in
   dev)
-    if [[ -f "$CREDS" ]]; then
-      open "$(_seed_url)" &
-    else
-      open http://localhost:8080 &
+    if [[ ! -f "$CREDS" ]]; then
+      printf '\nNo .emailjs creds found. Run setup first.\n'
+      exec "$0" setup
     fi
+    open "$(_seed_url)" &
     echo "Serving at http://localhost:8080"
     python3 -m http.server 8080 --directory "$REPO_DIR"
     ;;

@@ -393,6 +393,10 @@
           liveUrl: 'https://dash-frontend-7u2hpcwtmq-uc.a.run.app/',
           liveLabel: 'Open Live App',
         },
+        // Local port assignments (must not collide with portfolio dev server on 9090):
+        //   frontend  → 3006  (Vite strictPort in vite.config.ts)
+        //   backend   → 3007  (start with: PORT=3007 ./gradlew bootRun;
+        //                       set BACKEND_URL=http://localhost:3007 for the Vite proxy)
         backend: {
           label: 'Backend',
           color: 'emerald',
@@ -400,7 +404,7 @@
           chips: ['Spring Boot 4.1', 'Java 21', 'Flyway 12.4', 'REST API'],
           liveUrl: 'orders-dashboard/api-explorer.html',
           liveLabel: 'View API',
-          localUrl: 'http://localhost:8080',
+          localUrl: 'http://localhost:3007',
           githubUrl: GH + '/springboot-gcp-dashboard-backend',
         },
         frontend: {

@@ -7,7 +7,7 @@ _encode() { python3 -c "import urllib.parse,sys; print(urllib.parse.quote(sys.ar
 
 _seed_url() {
   source "$CREDS"
-  echo "http://localhost:8080?s=$(_encode "$EJS_S")&t=$(_encode "$EJS_T")&k=$(_encode "$EJS_K")&e=$(_encode "$EJS_E")"
+  echo "http://localhost:9090?s=$(_encode "$EJS_S")&t=$(_encode "$EJS_T")&k=$(_encode "$EJS_K")&e=$(_encode "$EJS_E")"
 }
 
 case "${1:-}" in
@@ -17,8 +17,8 @@ case "${1:-}" in
       exec "$0" setup
     fi
     open "$(_seed_url)" &
-    echo "Serving at http://localhost:8080"
-    python3 -m http.server 8080 --directory "$REPO_DIR"
+    echo "Serving at http://localhost:9090"
+    python3 -m http.server 9090 --directory "$REPO_DIR"
     ;;
   setup)
     printf '\n╔══════════════════════════════════════════════╗\n'
@@ -43,7 +43,7 @@ case "${1:-}" in
     read -rp 'Contact email : ' EJS_E
     printf 'EJS_S=%s\nEJS_T=%s\nEJS_K=%s\nEJS_E=%s\n' "$EJS_S" "$EJS_T" "$EJS_K" "$EJS_E" > "$CREDS"
     echo "Saved to .emailjs"
-    python3 -m http.server 8080 --directory "$REPO_DIR" &>/dev/null &
+    python3 -m http.server 9090 --directory "$REPO_DIR" &>/dev/null &
     SERVER_PID=$!
     sleep 0.4
     open "$(_seed_url)"

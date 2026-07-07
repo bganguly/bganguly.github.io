@@ -557,17 +557,15 @@
     function liveBtn(c, col, key) {
       // ── Local dev mode ─────────────────────────────────────────────────────
       if (isLocal) {
-        // Backend (key=null): link to liveUrl (api-explorer), dot shows local service status.
-        // Frontend (key set): link to localUrl, dot shows local service status.
-        const linkUrl = !key
-          ? (c.liveUrl && c.liveUrl !== '#' ? c.liveUrl : null)
-          : c.localUrl;
-        if (!linkUrl) return '';
-        const live = c.localUrl ? (LOCAL_LIVE[c.localUrl] ?? false) : false;
-        const dot = `<span style="width:7px;height:7px;border-radius:50%;background:${live ? '#4ade80' : '#52525b'};flex-shrink:0;display:inline-block;margin-right:2px"></span>`;
-        const base = 'flex items-center justify-center gap-1.5 w-full py-2 rounded-lg text-xs font-semibold mt-auto transition-opacity';
-        const cls = live ? `${base} hover:opacity-90` : `${base} opacity-50`;
-        return `<a href="${linkUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${dot}${arrowIcon}${c.liveLabel}</a>`;
+        // Both frontend and backend: show localhost:PORT label; link when live, disabled when not.
+        if (!c.localUrl) return '';
+        const live = LOCAL_LIVE[c.localUrl] ?? false;
+        const addr = c.localUrl.replace('http://', ''); // "localhost:3006"
+        const base = 'flex items-center justify-center w-full py-2 rounded-lg text-xs font-mono mt-auto';
+        if (live) {
+          return `<a href="${c.localUrl}" target="_blank" rel="noopener" class="${base} transition-opacity hover:opacity-90" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${addr}</a>`;
+        }
+        return `<span class="${base} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${addr} · offline</span>`;
       }
 
       // ── Remote / production mode ────────────────────────────────────────────

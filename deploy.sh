@@ -21,10 +21,22 @@ case "${1:-}" in
     python3 -m http.server 8080 --directory "$REPO_DIR"
     ;;
   setup)
-    printf '\n=== EmailJS Setup ===\n'
-    printf 'The contact form sends email via EmailJS (https://www.emailjs.com).\n'
-    printf 'Log in → Email Services for Service ID, Email Templates for Template ID,\n'
-    printf 'and Account → API Keys for Public Key.\n\n'
+    printf '\n╔══════════════════════════════════════════════╗\n'
+    printf '║           EmailJS One-Time Setup             ║\n'
+    printf '╚══════════════════════════════════════════════╝\n'
+    printf '\nThe contact form sends email via EmailJS.\n'
+    printf 'Log in or create a free account at: https://www.emailjs.com\n'
+    printf '\n── Where to find each value ──────────────────────────────────\n'
+    printf '  Service ID   Left nav → Email Services → your service row\n'
+    printf '  Template ID  Left nav → Email Templates → your template row\n'
+    printf '  Public Key   Top-right avatar → Account → API Keys\n'
+    printf '\n── Template variables (add these to your EmailJS template) ───\n'
+    printf '  {{from_email}}  visitor'\''s email address (Reply-To)\n'
+    printf '  {{project}}     which project they clicked (e.g. "springboot-fargate")\n'
+    printf '  {{requested}}   the label of the artifact they requested\n'
+    printf '\n── Contact email ─────────────────────────────────────────────\n'
+    printf '  The address EmailJS will deliver to (your inbox).\n'
+    printf '─────────────────────────────────────────────────────────────\n\n'
     read -rp 'Service ID    : ' EJS_S
     read -rp 'Template ID   : ' EJS_T
     read -rp 'Public Key    : ' EJS_K

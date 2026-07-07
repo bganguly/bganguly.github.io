@@ -543,15 +543,17 @@
         if (url) probe(url, () => { LIVE_STATUS[key] = true; });
       });
 
-      // Local probes: show green/grey dot per chiclet.
+      // Local probes: keyed by origin (host+port) so a sub-path localUrl like
+      // localhost:3004/api-explorer shares the same live status as localhost:3004.
       if (isLocal) {
         const seen = new Set();
         Object.values(projects).forEach(p => {
           [p.frontend?.localUrl, p.backend?.localUrl].filter(Boolean).forEach(url => {
-            if (seen.has(url)) return;
-            seen.add(url);
-            LOCAL_LIVE[url] = false;
-            probe(url, () => { LOCAL_LIVE[url] = true; });
+            const origin = new URL(url).origin;
+            if (seen.has(origin)) return;
+            seen.add(origin);
+            LOCAL_LIVE[origin] = false;
+            probe(url, () => { LOCAL_LIVE[origin] = true; });
           });
         });
       }
@@ -577,8 +579,8 @@
       if (isLocal) {
         // Both frontend and backend: show localhost:PORT label; link when live, disabled when not.
         if (!c.localUrl) return '';
-        const live = LOCAL_LIVE[c.localUrl] ?? false;
-        const addr = c.localUrl.replace('http://', ''); // "localhost:3006"
+        const live = LOCAL_LIVE[new URL(c.localUrl).origin] ?? false;
+        const addr = c.localUrl.replace('http://', ''); // "localhost:3006" or "localhost:3004/api-explorer"
         const base = 'flex items-center justify-center w-full py-2 rounded-lg text-xs font-mono mt-auto';
         if (live) {
           return `<a href="${c.localUrl}" target="_blank" rel="noopener" class="${base} transition-opacity hover:opacity-90" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${addr}</a>`;

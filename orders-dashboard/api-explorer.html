@@ -71,6 +71,7 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     .error-msg { color: #f87171; font-size: 0.75rem; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); border-radius: 8px; padding: 10px 14px; }
     .stat-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 12px 16px; }
+    #brush-handle-l:hover, #brush-handle-r:hover { background: #a5b4fc; }
     ::-webkit-scrollbar { width: 4px; height: 4px; }
     ::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
   </style>
@@ -214,6 +215,40 @@
           </button>
         </div>
         <div id="result-customers"></div>
+      </div>
+    </div>
+
+    <!-- 5. Date-Range Brush -->
+    <div class="glass rounded-2xl overflow-hidden">
+      <button class="w-full flex items-center justify-between gap-4 px-6 py-4 text-left" onclick="toggleCard('brush')">
+        <div class="flex items-center gap-3">
+          <span class="chip method-get text-[11px] px-2 py-0.5">GET</span>
+          <span class="endpoint-path">/api/aggregates?from=…&to=…</span>
+          <span class="text-xs text-zinc-600 hidden sm:inline">Drag brush handles · sub-second re-fetch on 4 M rows</span>
+        </div>
+        <svg id="chevron-brush" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-zinc-600 flex-shrink-0 transition-transform duration-200"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div id="body-brush" class="px-6 pb-6 border-t" style="border-color:rgba(255,255,255,0.06)">
+        <div id="brush-init" class="flex flex-wrap items-center justify-between gap-3 pt-4 mb-4">
+          <p class="text-xs text-zinc-600">Loads a date range of aggregates, then drag the handles to re-query any sub-range live.</p>
+          <button class="run-btn" onclick="initBrush()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg>
+            Load chart
+          </button>
+        </div>
+        <div id="brush-chart" class="hidden">
+          <svg id="brush-svg" viewBox="0 0 600 80" width="100%" height="80" preserveAspectRatio="none" style="display:block;border-radius:6px"></svg>
+          <div id="brush-track" style="position:relative;height:20px;margin-top:8px;background:rgba(255,255,255,0.04);border-radius:10px;cursor:crosshair;user-select:none">
+            <div id="brush-fill" style="position:absolute;top:0;height:100%;background:rgba(129,140,248,0.18);border:1px solid rgba(129,140,248,0.45);border-radius:10px;pointer-events:none"></div>
+            <div id="brush-handle-l" style="position:absolute;top:50%;transform:translate(-50%,-50%);width:10px;height:22px;background:#818cf8;border-radius:3px;cursor:ew-resize;touch-action:none;z-index:2;transition:background .1s"></div>
+            <div id="brush-handle-r" style="position:absolute;top:50%;transform:translate(-50%,-50%);width:10px;height:22px;background:#818cf8;border-radius:3px;cursor:ew-resize;touch-action:none;z-index:2;transition:background .1s"></div>
+          </div>
+          <div class="flex justify-between mt-1.5">
+            <span id="brush-label-l" class="text-[10px] font-mono text-zinc-600"></span>
+            <span id="brush-label-r" class="text-[10px] font-mono text-zinc-600"></span>
+          </div>
+        </div>
+        <div id="result-brush" class="mt-4"></div>
       </div>
     </div>
 
@@ -415,7 +450,118 @@
       }
     }
 
-    const cardIds = ['orders', 'search', 'aggregates', 'customers'];
+    // ── Date-Range Brush ──────────────────────────────────────────────────
+    let _brushData = [];
+    let _brushL = 0.0;
+    let _brushR = 1.0;
+    let _brushTimer = null;
+
+    function _brushDayTotal(day) {
+      return Object.values(day.categories || {}).reduce((s, c) => s + (c.totalOrders || 0), 0);
+    }
+
+    function _brushIndices() {
+      const n = _brushData.length;
+      return [Math.round(_brushL * (n - 1)), Math.round(_brushR * (n - 1))];
+    }
+
+    function _renderBrushSvg() {
+      const n = _brushData.length;
+      if (!n) return;
+      const [lIdx, rIdx] = _brushIndices();
+      const totals = _brushData.map(_brushDayTotal);
+      const mx = Math.max(...totals, 1);
+      const W = 600, H = 80, barW = W / n;
+      const bars = totals.map((v, i) => {
+        const x = i * barW;
+        const h = Math.max(2, (v / mx) * (H - 4));
+        return `<rect x="${x.toFixed(2)}" y="${(H - h).toFixed(2)}" width="${(barW - 0.4).toFixed(2)}" height="${h.toFixed(2)}" fill="${i >= lIdx && i <= rIdx ? '#818cf8' : '#1e293b'}" rx="1"/>`;
+      }).join('');
+      document.getElementById('brush-svg').innerHTML = bars;
+      const tw = document.getElementById('brush-track').clientWidth;
+      document.getElementById('brush-handle-l').style.left = (_brushL * tw) + 'px';
+      document.getElementById('brush-handle-r').style.left = (_brushR * tw) + 'px';
+      document.getElementById('brush-fill').style.left  = (_brushL * 100) + '%';
+      document.getElementById('brush-fill').style.width = ((_brushR - _brushL) * 100) + '%';
+      const dates = _brushData.map(d => d.date);
+      document.getElementById('brush-label-l').textContent = dates[lIdx] || '';
+      document.getElementById('brush-label-r').textContent = dates[rIdx] || '';
+    }
+
+    function _renderBrushStats(ms, from, to, data) {
+      let orders = 0, revenue = 0;
+      data.forEach(day => Object.values(day.categories || {}).forEach(c => {
+        orders  += c.totalOrders  || 0;
+        revenue += c.totalRevenue || 0;
+      }));
+      document.getElementById('result-brush').innerHTML =
+        metaBar(ms, `${data.length} day${data.length !== 1 ? 's' : ''} · ${from} → ${to}`) +
+        `<div class="grid grid-cols-3 gap-3">
+          <div class="stat-card"><p class="text-[10px] text-zinc-600 uppercase tracking-wider mb-1">Orders</p><p class="text-xl font-bold text-zinc-100">${orders.toLocaleString()}</p></div>
+          <div class="stat-card"><p class="text-[10px] text-zinc-600 uppercase tracking-wider mb-1">Revenue</p><p class="text-xl font-bold text-emerald-400">$${revenue.toLocaleString(undefined,{maximumFractionDigits:0})}</p></div>
+          <div class="stat-card"><p class="text-[10px] text-zinc-600 uppercase tracking-wider mb-1">Days in range</p><p class="text-xl font-bold text-zinc-100">${data.length}</p></div>
+        </div>`;
+    }
+
+    async function _fetchBrushRange() {
+      const dates = _brushData.map(d => d.date);
+      const [lIdx, rIdx] = _brushIndices();
+      const from = dates[lIdx], to = dates[rIdx];
+      if (!from || !to) return;
+      document.getElementById('result-brush').innerHTML =
+        `<div class="flex items-center gap-2 text-xs text-zinc-600"><div class="spinner"></div> Fetching ${from} → ${to}…</div>`;
+      try {
+        const { json, ms } = await fetchTimed(`${BASE}/aggregates?from=${from}&to=${to}&topCategories=1`);
+        const data = Array.isArray(json.data || json) ? (json.data || json) : [];
+        _renderBrushStats(ms, from, to, data);
+      } catch (e) {
+        document.getElementById('result-brush').innerHTML = renderError(e);
+      }
+    }
+
+    async function initBrush() {
+      document.getElementById('brush-init').innerHTML =
+        `<div class="flex items-center gap-2 text-xs text-zinc-600 py-1"><div class="spinner"></div> Loading aggregates…</div>`;
+      try {
+        const { json, ms } = await fetchTimed(`${BASE}/aggregates?from=2026-01-01&to=2026-12-31&topCategories=1`);
+        _brushData = Array.isArray(json.data || json) ? (json.data || json) : [];
+        if (!_brushData.length) throw new Error('No aggregate data in this range');
+        _brushL = 0; _brushR = 1;
+        document.getElementById('brush-init').classList.add('hidden');
+        document.getElementById('brush-chart').classList.remove('hidden');
+        _renderBrushSvg();
+        const dates = _brushData.map(d => d.date);
+        _renderBrushStats(ms, dates[0], dates[dates.length - 1], _brushData);
+      } catch (e) {
+        document.getElementById('brush-init').innerHTML = renderError(e);
+      }
+    }
+
+    function setupBrushDrag() {
+      const track = document.getElementById('brush-track');
+      ['l', 'r'].forEach(side => {
+        const handle = document.getElementById('brush-handle-' + side);
+        handle.addEventListener('pointerdown', e => {
+          if (!_brushData.length) return;
+          e.preventDefault();
+          handle.setPointerCapture(e.pointerId);
+          const onMove = ev => {
+            const rect = track.getBoundingClientRect();
+            const pos = Math.max(0, Math.min(1, (ev.clientX - rect.left) / rect.width));
+            const minStep = 1 / Math.max(_brushData.length, 1);
+            if (side === 'l') _brushL = Math.min(pos, _brushR - minStep);
+            else              _brushR = Math.max(pos, _brushL + minStep);
+            _renderBrushSvg();
+            clearTimeout(_brushTimer);
+            _brushTimer = setTimeout(_fetchBrushRange, 180);
+          };
+          handle.addEventListener('pointermove', onMove);
+          handle.addEventListener('pointerup', () => handle.removeEventListener('pointermove', onMove), { once: true });
+        });
+      });
+    }
+
+    const cardIds = ['orders', 'search', 'aggregates', 'customers', 'brush'];
 
     function toggleCard(id) {
       const body = document.getElementById('body-' + id);
@@ -432,6 +578,7 @@
 
     document.getElementById('search-q').addEventListener('keydown', e => { if (e.key === 'Enter') runSearch(); });
     document.getElementById('customer-q').addEventListener('keydown', e => { if (e.key === 'Enter') runCustomers(); });
+    setupBrushDrag();
   </script>
 </body>
 </html>

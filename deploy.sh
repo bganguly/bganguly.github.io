@@ -5,6 +5,7 @@ REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
 case "${1:-}" in
   dev)
     echo "Serving at http://localhost:8080"
+    open http://localhost:8080 &
     python3 -m http.server 8080 --directory "$REPO_DIR"
     ;;
   ""|deploy)

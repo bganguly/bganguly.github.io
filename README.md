@@ -38,10 +38,12 @@ README.md
 
 ## Access-gate config (index.html)
 
-Two constants near the top of the `<script>` block control whether live links are shown or replaced with an email-capture form:
+Three constants near the top of the `<script>` block wire up EmailJS, and one object controls which projects show live links vs. an email-capture form:
 
 ```js
-const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID';
+const EJS_SERVICE  = 'YOUR_SERVICE_ID';   // EmailJS → Email Services
+const EJS_TEMPLATE = 'YOUR_TEMPLATE_ID';  // EmailJS → Email Templates
+const EJS_KEY      = 'YOUR_PUBLIC_KEY';   // EmailJS → Account → Public Key
 
 const SHOW_LIVE = {
   dashboard:  true,   // Orders Dashboard — GCP
@@ -51,11 +53,12 @@ const SHOW_LIVE = {
 };
 ```
 
-Set any key to `false` to replace that project's live buttons with a "Request access" email form. Submissions POST to Formspree, which emails you at gangulybikramjit@gmail.com.
+Set any key to `false` to replace that project's live buttons with a "Request access" form. Submissions call `emailjs.send()` directly from the browser — no backend needed — and land in your Gmail.
 
-### Setting up Formspree
+### Setting up EmailJS
 
-1. Go to [formspree.io](https://formspree.io) and sign in with GitHub
-2. Create a new form → set the notification email to `gangulybikramjit@gmail.com`
-3. Copy the form ID from the endpoint URL (e.g. `https://formspree.io/f/xyzabcde` → ID is `xyzabcde`)
-4. Replace `YOUR_FORM_ID` in `index.html`
+1. Sign up at [emailjs.com](https://emailjs.com) (free tier: 200 emails/month)
+2. **Email Services** → Add Service → connect Gmail (`gangulybikramjit@gmail.com`) → copy the Service ID
+3. **Email Templates** → Create Template → use variables `{{from_email}}`, `{{project}}`, `{{requested}}` → copy the Template ID
+4. **Account** → API Keys → copy the Public Key
+5. Replace the three `YOUR_*` placeholders in `index.html`

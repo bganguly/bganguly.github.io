@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -311,13 +312,17 @@
   </div>
 
   <script>
-    // ── Access-gate config ────────────────────────────────────────────────
-    // Set FORMSPREE_ENDPOINT after creating a free form at formspree.io
-    // (Formspree emails gangulybikramjit@gmail.com on each submission).
-    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID';
+    // ── Access-gate config (EmailJS) ─────────────────────────────────────
+    // 1. Sign up at emailjs.com → connect Gmail → create a template
+    // 2. Fill in the three IDs below (all found in your EmailJS dashboard)
+    // Template variables used: {{from_email}}, {{project}}, {{requested}}
+    const EJS_SERVICE  = 'YOUR_SERVICE_ID';
+    const EJS_TEMPLATE = 'YOUR_TEMPLATE_ID';
+    const EJS_KEY      = 'YOUR_PUBLIC_KEY';
+    emailjs.init({ publicKey: EJS_KEY });
 
-    // Flip any key to false to replace its live buttons with an email-capture
-    // form. Submissions notify you via Formspree; visitor sees "I'll reach out."
+    // Flip any key to false to swap that project's live buttons for an
+    // email-capture form. Submissions arrive in your Gmail via EmailJS.
     const SHOW_LIVE = {
       dashboard:  true,
       nextjs:     true,
@@ -328,25 +333,22 @@
     async function requestAccess(event, projectKey, label) {
       event.preventDefault();
       const form = event.target;
-      const emailInput = form.querySelector('input[type="email"]');
-      const btn = form.querySelector('button[type="submit"]');
-      const email = emailInput.value.trim();
+      const btn  = form.querySelector('button[type="submit"]');
+      const email = form.querySelector('input[type="email"]').value.trim();
       btn.disabled = true;
       btn.textContent = 'Sending…';
       try {
-        const res = await fetch(FORMSPREE_ENDPOINT, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify({ email, project: projectKey, requested: label,
-            _subject: `Portfolio access request — ${projectKey}` }),
+        await emailjs.send(EJS_SERVICE, EJS_TEMPLATE, {
+          from_email: email,
+          project:    projectKey,
+          requested:  label,
         });
-        if (!res.ok) throw new Error('Submit failed');
         form.innerHTML = `<p style="font-size:0.72rem;color:#6ee7b7;padding:4px 0">Request sent — I'll reach out directly.</p>`;
       } catch {
         btn.disabled = false;
         btn.textContent = 'Try again';
         form.insertAdjacentHTML('beforeend',
-          `<p style="font-size:0.68rem;color:#f87171;margin-top:4px">Could not send — email me directly at gangulybikramjit@gmail.com</p>`);
+          `<p style="font-size:0.68rem;color:#f87171;margin-top:4px">Could not send — email me at gangulybikramjit@gmail.com</p>`);
       }
     }
     // ─────────────────────────────────────────────────────────────────────

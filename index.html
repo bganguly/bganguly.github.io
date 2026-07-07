@@ -338,15 +338,9 @@
 
     const isLocal = ['localhost', '127.0.0.1', ''].includes(location.hostname);
 
-    // Remote probes: true = cloud app responded → show request-access form.
-    const LIVE_STATUS = {
-      dashboard:  false,
-      nextjs:     false,
-      fargate:    false,
-      serverless: false,
-    };
-
-    // Local probes: keyed by localUrl string, true = local service responding.
+    // Remote panel choices: null/absent = prompt (frontend) or show (backend), true = show link, false = request access.
+    const REMOTE_CHOICE = {};
+    let currentModalKey = null;
     const LOCAL_LIVE = {};
 
     async function requestAccess(event, projectKey, label) {
@@ -537,12 +531,6 @@
           .then(onSuccess).catch(() => {}).finally(() => clearTimeout(timer));
       }
 
-      // Remote probes: determine whether to show request-access or disabled state.
-      Object.entries(projects).forEach(([key, p]) => {
-        const url = [p.cloud?.liveUrl, p.frontend?.liveUrl].find(u => u && u !== '#');
-        if (url) probe(url, () => { LIVE_STATUS[key] = true; });
-      });
-
       // Local probes: keyed by origin (host+port) so a sub-path localUrl like
       // localhost:3004/api-explorer shares the same live status as localhost:3004.
       if (isLocal) {
@@ -573,18 +561,16 @@
     const githubIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>`;
     const arrowIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>`;
 
-    // key = project key for frontend chiclets; null for backends.
-    function liveBtn(c, col, key) {
+    // panelId = "${projectKey}-frontend" or "${projectKey}-backend"
+    function liveBtn(c, col, panelId) {
       // ── Local dev mode ─────────────────────────────────────────────────────
       if (isLocal) {
-        // Both frontend and backend: show localhost:PORT label; link when live, disabled when not.
         if (!c.localUrl) return '';
         const live = LOCAL_LIVE[new URL(c.localUrl).origin] ?? false;
-        const addr = c.localUrl.replace('http://', ''); // "localhost:3006" or "localhost:3004/api-explorer"
+        const addr = c.localUrl.replace('http://', '');
         const base = 'flex items-center justify-center w-full py-2 rounded-lg text-xs font-mono mt-auto';
         if (live) {
-          // Frontends open in a new tab; backends navigate in-place so history.back() works on the target page.
-          const navAttrs = key ? 'target="_blank" rel="noopener"' : '';
+          const navAttrs = panelId.endsWith('-backend') ? '' : 'target="_blank" rel="noopener"';
           return `<a href="${c.localUrl}" ${navAttrs} class="${base} transition-opacity hover:opacity-90" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${addr}</a>`;
         }
         return `<span class="${base} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${addr} · offline</span>`;
@@ -592,27 +578,56 @@
 
       // ── Remote / production mode ────────────────────────────────────────────
       if (!c.liveUrl || c.liveUrl === '#') return '';
-      // Backend: direct link (no gating).
-      if (!key) {
-        const cls = 'flex items-center justify-center gap-1.5 w-full py-2 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90 mt-auto';
-        return `<a href="${c.liveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
-      }
-      // Frontend: email form when remote service is live, disabled when not.
-      if (LIVE_STATUS[key]) {
-        const inputStyle = `background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#e4e4e7;border-radius:6px;padding:5px 9px;font-size:0.75rem;outline:none;min-width:0;flex:1`;
-        const btnStyle = `background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText};border-radius:6px;padding:5px 11px;font-size:0.72rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0`;
-        const headingStyle = `font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${col.btnText};opacity:0.7;margin-bottom:2px`;
-        return `<form onsubmit="requestAccess(event,'${key}','${c.liveLabel}')" style="display:flex;flex-direction:column;gap:4px;width:100%;margin-top:auto">
+      const isBackend = panelId.endsWith('-backend');
+      const projectKey = panelId.replace(/-(?:frontend|backend)$/, '');
+      const choice = REMOTE_CHOICE[panelId];
+      const cls = 'flex items-center justify-center gap-1.5 w-full py-2 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90 mt-auto';
+      const toggleStyle = `font-size:0.68rem;color:${col.btnText};opacity:0.55;text-align:center;margin-top:4px;cursor:pointer;text-decoration:underline;text-underline-offset:2px`;
+      const inputStyle = `background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#e4e4e7;border-radius:6px;padding:5px 9px;font-size:0.75rem;outline:none;min-width:0;flex:1`;
+      const submitStyle = `background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText};border-radius:6px;padding:5px 11px;font-size:0.72rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0`;
+      const headingStyle = `font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${col.btnText};opacity:0.7;margin-bottom:2px`;
+
+      const accessForm = (toggleShow) => `
+        <form onsubmit="requestAccess(event,'${projectKey}','${c.liveLabel}')" style="display:flex;flex-direction:column;gap:4px;width:100%;margin-top:auto">
           <p style="${headingStyle}">Request Access</p>
           <div style="display:flex;gap:6px;align-items:center">
             <input type="email" placeholder="your@company.com" required style="${inputStyle}"
               onfocus="this.style.borderColor='${col.btnBorder}'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" />
-            <button type="submit" style="${btnStyle}">${arrowIcon}</button>
+            <button type="submit" style="${submitStyle}">${arrowIcon}</button>
           </div>
-        </form>`;
+        </form>
+        ${toggleShow ? `<p style="${toggleStyle}" onclick="chooseEndpoint('${panelId}',true)">show live link instead</p>` : ''}`;
+
+      if (isBackend) {
+        if (choice !== false) {
+          return `<a href="${c.liveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>
+            <p style="${toggleStyle}" onclick="chooseEndpoint('${panelId}',false)">request access instead</p>`;
+        }
+        return accessForm(true);
       }
-      const cls = 'flex items-center justify-center gap-1.5 w-full py-2 rounded-lg text-xs font-semibold mt-auto';
-      return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} — coming soon</span>`;
+
+      // Frontend: y/n prompt until chosen
+      if (choice === undefined) {
+        const yBtn = `background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText};border-radius:6px;padding:4px 16px;font-size:0.75rem;font-weight:600;cursor:pointer`;
+        const nBtn = `background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:#a1a1aa;border-radius:6px;padding:4px 16px;font-size:0.75rem;font-weight:600;cursor:pointer`;
+        return `<div style="display:flex;flex-direction:column;gap:6px;margin-top:auto">
+          <p style="font-size:0.68rem;color:#a1a1aa;text-align:center">Show live link?</p>
+          <div style="display:flex;gap:8px;justify-content:center">
+            <button onclick="chooseEndpoint('${panelId}',true)" style="${yBtn}">Yes</button>
+            <button onclick="chooseEndpoint('${panelId}',false)" style="${nBtn}">No</button>
+          </div>
+        </div>`;
+      }
+      if (choice === true) {
+        return `<a href="${c.liveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>
+          <p style="${toggleStyle}" onclick="chooseEndpoint('${panelId}',false)">request access instead</p>`;
+      }
+      return accessForm(true);
+    }
+
+    function chooseEndpoint(panelId, show) {
+      REMOTE_CHOICE[panelId] = show;
+      openModal(currentModalKey);
     }
 
     function cloudPanelHtml(c) {
@@ -626,7 +641,7 @@
         </div>`;
     }
 
-    function smallPanelHtml(c, key) {
+    function smallPanelHtml(c, panelId) {
       const col = colorMap[c.color];
       const chips = c.chips.map(t => `<span class="chip border ${col.chip}">${t}</span>`).join(' ');
       const hasGH = c.githubUrl && c.githubUrl !== '#';
@@ -638,12 +653,13 @@
           <p class="text-[10px] font-semibold tracking-widest uppercase mb-1 ${col.label}">${c.label}</p>
           <p class="font-semibold text-sm text-zinc-100 mb-2">${c.title}</p>
           <div class="flex flex-wrap gap-1 mb-3">${chips}</div>
-          ${liveBtn(c, col, key)}
+          ${liveBtn(c, col, panelId)}
           ${ghLink}
         </div>`;
     }
 
     function openModal(key) {
+      currentModalKey = key;
       const p = projects[key];
       const content = document.getElementById('modal-content');
       content.innerHTML = `
@@ -657,8 +673,8 @@
           <p class="text-xs ${p.accentClass} mb-2">${p.subtitle}</p>
           <p class="text-sm text-zinc-400 leading-relaxed mb-5">${p.description}</p>
           <div class="flex gap-3 mb-4">
-            ${smallPanelHtml(p.frontend, key)}
-            ${smallPanelHtml(p.backend, null)}
+            ${smallPanelHtml(p.frontend, key + '-frontend')}
+            ${smallPanelHtml(p.backend, key + '-backend')}
           </div>
           ${cloudPanelHtml(p.cloud)}
         </div>`;

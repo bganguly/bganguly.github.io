@@ -336,9 +336,8 @@
       };
     }
 
-    // Set any key to true to show the live link directly.
-    // false = show email-capture form instead.
-    const SHOW_LIVE = {
+    // Populated at load by liveness probes; true = app responded → show request-access form.
+    const LIVE_STATUS = {
       dashboard:  false,
       nextjs:     false,
       fargate:    false,
@@ -504,6 +503,21 @@
       },
     };
 
+    // Probe each project's main live URL at page load (no-cors, 8 s timeout).
+    // Checks cloud.liveUrl first, falls back to frontend.liveUrl.
+    (function () {
+      Object.entries(projects).forEach(([key, p]) => {
+        const url = [p.cloud?.liveUrl, p.frontend?.liveUrl].find(u => u && u !== '#');
+        if (!url) return;
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 8000);
+        fetch(url, { method: 'HEAD', mode: 'no-cors', signal: ctrl.signal })
+          .then(() => { LIVE_STATUS[key] = true; })
+          .catch(() => {})
+          .finally(() => clearTimeout(timer));
+      });
+    })();
+
     const colorMap = {
       gcp:     { bg: 'rgba(251,146,60,0.08)',  border: 'rgba(251,146,60,0.25)',  chip: 'bg-orange-500/10 text-orange-300 border-orange-500/20',  btn: 'rgba(251,146,60,0.18)',  btnBorder: 'rgba(251,146,60,0.45)',  btnText: '#fdba74', label: 'text-orange-400' },
       aws:     { bg: 'rgba(245,158,11,0.08)',  border: 'rgba(245,158,11,0.25)',  chip: 'bg-amber-500/10 text-amber-300 border-amber-500/20',    btn: 'rgba(245,158,11,0.18)',  btnBorder: 'rgba(245,158,11,0.45)',  btnText: '#fcd34d', label: 'text-amber-400' },
@@ -518,14 +532,20 @@
     const githubIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>`;
     const arrowIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>`;
 
-    function liveBtn(c, col, large, key) {
-      if (!c.liveUrl) return '';
-      if (key && SHOW_LIVE[key] === false) {
+    // key is the project key (dashboard/nextjs/…) for gated chiclets; null for backends.
+    function liveBtn(c, col, key) {
+      if (!c.liveUrl || c.liveUrl === '#') return '';
+      // Backend chiclets (key=null): direct link only.
+      if (!key) {
+        const cls = 'flex items-center justify-center gap-1.5 w-full py-2 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90 mt-auto';
+        return `<a href="${c.liveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
+      }
+      // Frontend chiclets: email form when live, disabled when not.
+      if (LIVE_STATUS[key]) {
         const inputStyle = `background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#e4e4e7;border-radius:6px;padding:5px 9px;font-size:0.75rem;outline:none;min-width:0;flex:1`;
         const btnStyle = `background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText};border-radius:6px;padding:5px 11px;font-size:0.72rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0`;
         const headingStyle = `font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${col.btnText};opacity:0.7;margin-bottom:2px`;
-        const wrap = large ? 'display:flex;flex-direction:column;gap:4px;min-width:180px' : 'display:flex;flex-direction:column;gap:4px;width:100%;margin-top:auto';
-        return `<form onsubmit="requestAccess(event,'${key}','${c.liveLabel}')" style="${wrap}">
+        return `<form onsubmit="requestAccess(event,'${key}','${c.liveLabel}')" style="display:flex;flex-direction:column;gap:4px;width:100%;margin-top:auto">
           <p style="${headingStyle}">Request Access</p>
           <div style="display:flex;gap:6px;align-items:center">
             <input type="email" placeholder="your@company.com" required style="${inputStyle}"
@@ -534,26 +554,18 @@
           </div>
         </form>`;
       }
-      const hasLive = c.liveUrl && c.liveUrl !== '#';
-      const cls = large
-        ? 'flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 flex-shrink-0'
-        : 'flex items-center justify-center gap-1.5 w-full py-2 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90 mt-auto';
-      return hasLive
-        ? `<a href="${c.liveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`
-        : `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} — coming soon</span>`;
+      const cls = 'flex items-center justify-center gap-1.5 w-full py-2 rounded-lg text-xs font-semibold mt-auto';
+      return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} — coming soon</span>`;
     }
 
-    function cloudPanelHtml(c, key) {
+    function cloudPanelHtml(c) {
       const col = colorMap[c.color];
       const chips = c.chips.map(t => `<span class="chip border ${col.chip}">${t}</span>`).join(' ');
       return `
-        <div class="rounded-xl p-5 mb-3 flex items-center justify-between gap-4" style="background:${col.bg};border:1px solid ${col.border}">
-          <div class="flex-1 min-w-0">
-            <p class="text-[10px] font-semibold tracking-widest uppercase mb-1 ${col.label}">${c.label}</p>
-            <p class="font-bold text-base text-zinc-100 mb-3">${c.title}</p>
-            <div class="flex flex-wrap gap-1.5">${chips}</div>
-          </div>
-          <div>${liveBtn(c, col, true, key)}</div>
+        <div class="rounded-xl p-5 mb-3" style="background:${col.bg};border:1px solid ${col.border}">
+          <p class="text-[10px] font-semibold tracking-widest uppercase mb-1 ${col.label}">${c.label}</p>
+          <p class="font-bold text-base text-zinc-100 mb-3">${c.title}</p>
+          <div class="flex flex-wrap gap-1.5">${chips}</div>
         </div>`;
     }
 
@@ -569,7 +581,7 @@
           <p class="text-[10px] font-semibold tracking-widest uppercase mb-1 ${col.label}">${c.label}</p>
           <p class="font-semibold text-sm text-zinc-100 mb-2">${c.title}</p>
           <div class="flex flex-wrap gap-1 mb-3">${chips}</div>
-          ${liveBtn(c, col, false, key)}
+          ${liveBtn(c, col, key)}
           ${ghLink}
         </div>`;
     }
@@ -591,7 +603,7 @@
             ${smallPanelHtml(p.frontend, key)}
             ${smallPanelHtml(p.backend, null)}
           </div>
-          ${cloudPanelHtml(p.cloud, key)}
+          ${cloudPanelHtml(p.cloud)}
           <div class="flex justify-center">
             <a href="${p.githubUrl}" target="_blank" rel="noopener"
                class="flex items-center gap-2 px-5 py-2 rounded-lg text-xs font-medium text-zinc-400 hover:text-zinc-200 transition-colors"

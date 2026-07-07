@@ -583,7 +583,9 @@
         const addr = c.localUrl.replace('http://', ''); // "localhost:3006" or "localhost:3004/api-explorer"
         const base = 'flex items-center justify-center w-full py-2 rounded-lg text-xs font-mono mt-auto';
         if (live) {
-          return `<a href="${c.localUrl}" target="_blank" rel="noopener" class="${base} transition-opacity hover:opacity-90" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${addr}</a>`;
+          // Frontends open in a new tab; backends navigate in-place so history.back() works on the target page.
+          const navAttrs = key ? 'target="_blank" rel="noopener"' : '';
+          return `<a href="${c.localUrl}" ${navAttrs} class="${base} transition-opacity hover:opacity-90" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${addr}</a>`;
         }
         return `<span class="${base} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${addr} · offline</span>`;
       }

@@ -393,10 +393,10 @@
           liveUrl: 'https://dash-frontend-7u2hpcwtmq-uc.a.run.app/',
           liveLabel: 'Open Live App',
         },
-        // Local port assignments (must not collide with portfolio dev server on 9090):
-        //   frontend  → 3006  (Vite strictPort in vite.config.ts)
-        //   backend   → 3007  (start with: PORT=3007 ./gradlew bootRun;
-        //                       set BACKEND_URL=http://localhost:3007 for the Vite proxy)
+        // Local port assignments — all stored in project config, no CLI args needed:
+        //   frontend  → 3006  (Vite strictPort in dashboard-frontend/vite.config.ts)
+        //   backend   → 3007  (application-local.yml; run: SPRING_PROFILES_ACTIVE=local ./gradlew bootRun)
+        //                       set BACKEND_URL=http://localhost:3007 when running dashboard-frontend dev
         backend: {
           label: 'Backend',
           color: 'emerald',
@@ -432,11 +432,13 @@
           liveUrl: '#',
           liveLabel: 'Open Live App',
         },
+        // Local port 3004 (Next.js -p 3004 in package.json scripts; full-stack, one process).
         backend: {
           label: 'Backend',
           color: 'slate',
           title: 'PostgreSQL 16 · Prisma',
           chips: ['PostgreSQL 16', 'Prisma', 'SSE'],
+          localUrl: 'http://localhost:3004',
           githubUrl: GH + '/nextjs-dashboard',
         },
         frontend: {
@@ -446,6 +448,7 @@
           chips: ['Next.js 16.2', 'TypeScript 5.9', 'Tailwind CSS 4.3', 'RSC'],
           liveUrl: 'https://d2c7wi0kgxiq2f.cloudfront.net/',
           liveLabel: 'Open App',
+          localUrl: 'http://localhost:3004',
           githubUrl: GH + '/nextjs-dashboard',
         },
         githubUrl: GH + '/nextjs-dashboard',
@@ -463,11 +466,14 @@
           liveUrl: '#',
           liveLabel: 'Open Live App',
         },
+        // Local ports — frontend 3008 (Vite strictPort in vite.config.ts),
+        // backend 3009 (application-local.yml; run: SPRING_PROFILES_ACTIVE=local ./mvnw spring-boot:run).
         backend: {
           label: 'Backend',
           color: 'amber',
           title: 'Spring Boot 4.1 · Java 21 · ECS Fargate',
           chips: ['Spring Boot 4.1', 'Java 21', 'ECS Fargate'],
+          localUrl: 'http://localhost:3009',
           githubUrl: GH + '/react-springboot-aws-fargate',
         },
         frontend: {
@@ -477,6 +483,7 @@
           chips: ['React 19.2', 'TypeScript 5.8', 'S3', 'CloudFront'],
           liveUrl: '#',
           liveLabel: 'Open App',
+          localUrl: 'http://localhost:3008',
           githubUrl: GH + '/react-springboot-aws-fargate',
         },
         githubUrl: GH + '/react-springboot-aws-fargate',
@@ -494,11 +501,14 @@
           liveUrl: '#',
           liveLabel: 'Open Live App',
         },
+        // Local ports — frontend 3010 (Vite strictPort in vite.config.ts),
+        // backend 3011 (serverless-offline httpPort in serverless.yml; run: npx sls offline).
         backend: {
           label: 'Backend',
           color: 'teal',
           title: 'Lambda · SNS/SQS',
           chips: ['AWS Lambda', 'SNS → SQS', 'Serverless 4.13'],
+          localUrl: 'http://localhost:3011',
           githubUrl: GH + '/react-typescript-serverless-aws',
         },
         frontend: {
@@ -508,6 +518,7 @@
           chips: ['React 19.2', 'TypeScript 5.8', 'API Gateway', 'Job polling UI'],
           liveUrl: '#',
           liveLabel: 'Open App',
+          localUrl: 'http://localhost:3010',
           githubUrl: GH + '/react-typescript-serverless-aws',
         },
         githubUrl: GH + '/react-typescript-serverless-aws',

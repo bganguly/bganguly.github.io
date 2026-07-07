@@ -339,9 +339,6 @@
 
     const isLocal = ['localhost', '127.0.0.1', ''].includes(location.hostname);
 
-    // Remote panel choices: null/absent = prompt (frontend) or show (backend), true = show link, false = request access.
-    const REMOTE_CHOICE = {};
-    let currentModalKey = null;
     const LOCAL_LIVE = {};
 
     async function requestAccess(event, projectKey, label) {
@@ -590,54 +587,25 @@
       if (!c.liveUrl || c.liveUrl === '#') return '';
       const isBackend = panelId.endsWith('-backend');
       const projectKey = panelId.replace(/-(?:frontend|backend)$/, '');
-      const choice = REMOTE_CHOICE[panelId];
       const cls = 'flex items-center justify-center gap-1.5 w-full py-2 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90 mt-auto';
-      const toggleStyle = `font-size:0.68rem;color:${col.btnText};opacity:0.55;text-align:center;margin-top:4px;cursor:pointer;text-decoration:underline;text-underline-offset:2px`;
+
+      // Backend: direct link, no access gating (deploy.sh controls visibility via deploy-live.js)
+      if (isBackend) {
+        return `<a href="${c.liveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
+      }
+
+      // Frontend: request access form (deploy.sh gates whether liveUrl is active)
       const inputStyle = `background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#e4e4e7;border-radius:6px;padding:5px 9px;font-size:0.75rem;outline:none;min-width:0;flex:1`;
       const submitStyle = `background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText};border-radius:6px;padding:5px 11px;font-size:0.72rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0`;
       const headingStyle = `font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${col.btnText};opacity:0.7;margin-bottom:2px`;
-
-      const accessForm = (toggleShow) => `
-        <form onsubmit="requestAccess(event,'${projectKey}','${c.liveLabel}')" style="display:flex;flex-direction:column;gap:4px;width:100%;margin-top:auto">
-          <p style="${headingStyle}">Request Access</p>
-          <div style="display:flex;gap:6px;align-items:center">
-            <input type="email" placeholder="your@company.com" required style="${inputStyle}"
-              onfocus="this.style.borderColor='${col.btnBorder}'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" />
-            <button type="submit" style="${submitStyle}">${arrowIcon}</button>
-          </div>
-        </form>
-        ${toggleShow ? `<p style="${toggleStyle}" onclick="chooseEndpoint('${panelId}',true)">show live link instead</p>` : ''}`;
-
-      if (isBackend) {
-        if (choice !== false) {
-          return `<a href="${c.liveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>
-            <p style="${toggleStyle}" onclick="chooseEndpoint('${panelId}',false)">request access instead</p>`;
-        }
-        return accessForm(true);
-      }
-
-      // Frontend: y/n prompt until chosen
-      if (choice === undefined) {
-        const yBtn = `background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText};border-radius:6px;padding:4px 16px;font-size:0.75rem;font-weight:600;cursor:pointer`;
-        const nBtn = `background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:#a1a1aa;border-radius:6px;padding:4px 16px;font-size:0.75rem;font-weight:600;cursor:pointer`;
-        return `<div style="display:flex;flex-direction:column;gap:6px;margin-top:auto">
-          <p style="font-size:0.68rem;color:#a1a1aa;text-align:center">Show live link?</p>
-          <div style="display:flex;gap:8px;justify-content:center">
-            <button onclick="chooseEndpoint('${panelId}',true)" style="${yBtn}">Yes</button>
-            <button onclick="chooseEndpoint('${panelId}',false)" style="${nBtn}">No</button>
-          </div>
-        </div>`;
-      }
-      if (choice === true) {
-        return `<a href="${c.liveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>
-          <p style="${toggleStyle}" onclick="chooseEndpoint('${panelId}',false)">request access instead</p>`;
-      }
-      return accessForm(true);
-    }
-
-    function chooseEndpoint(panelId, show) {
-      REMOTE_CHOICE[panelId] = show;
-      openModal(currentModalKey);
+      return `<form onsubmit="requestAccess(event,'${projectKey}','${c.liveLabel}')" style="display:flex;flex-direction:column;gap:4px;width:100%;margin-top:auto">
+        <p style="${headingStyle}">Request Access</p>
+        <div style="display:flex;gap:6px;align-items:center">
+          <input type="email" placeholder="your@company.com" required style="${inputStyle}"
+            onfocus="this.style.borderColor='${col.btnBorder}'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" />
+          <button type="submit" style="${submitStyle}">${arrowIcon}</button>
+        </div>
+      </form>`;
     }
 
     function cloudPanelHtml(c) {
@@ -669,7 +637,6 @@
     }
 
     function openModal(key) {
-      currentModalKey = key;
       const p = projects[key];
       const content = document.getElementById('modal-content');
       content.innerHTML = `

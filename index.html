@@ -88,16 +88,16 @@
 
   <!-- Hero -->
   <section class="pt-32 pb-16 px-6 max-w-6xl mx-auto">
-    <div class="max-w-2xl">
+    <div class="text-center">
       <p class="text-xs font-medium text-violet-400 tracking-widest uppercase mb-4">Engineering Portfolio</p>
       <h1 class="text-4xl font-bold tracking-tight mb-4">
         <span class="gradient-text">Bikram Ganguly</span>
       </h1>
-      <p class="text-zinc-400 text-lg leading-relaxed mb-6">
+      <p class="text-zinc-400 text-lg leading-relaxed mb-6 max-w-2xl mx-auto">
         Full-stack engineering — React, Spring Boot, Next.js, serverless AWS &amp; GCP.
         Production systems at scale: sub-second search on millions of rows, event-driven pipelines, IaC-managed cloud infra.
       </p>
-      <div class="flex flex-wrap gap-2">
+      <div class="flex flex-wrap gap-2 justify-center">
         <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">React 19.2</span>
         <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">Next.js 16.2</span>
         <span class="chip bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Spring Boot 4.1</span>
@@ -427,8 +427,6 @@
           color: 'slate',
           title: 'PostgreSQL 16 · Prisma',
           chips: ['PostgreSQL 16', 'Prisma', 'SSE'],
-          liveUrl: 'http://52.20.203.30/api/orders?page=1&pageSize=5',
-          liveLabel: 'View API',
           githubUrl: GH + '/nextjs-dashboard',
         },
         frontend: {
@@ -591,7 +589,7 @@
           <p class="text-sm text-zinc-400 leading-relaxed mb-5">${p.description}</p>
           <div class="flex gap-3 mb-4">
             ${smallPanelHtml(p.frontend, key)}
-            ${smallPanelHtml(p.backend, key)}
+            ${smallPanelHtml(p.backend, null)}
           </div>
           ${cloudPanelHtml(p.cloud, key)}
           <div class="flex justify-center">

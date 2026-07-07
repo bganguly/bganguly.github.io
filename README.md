@@ -53,7 +53,7 @@ const SHOW_LIVE = {
 
 EmailJS IDs are stored in `localStorage` only — never in source control.
 
-1. Go to [emailjs.com](https://emailjs.com) → **Sign in with Google** (no new account needed)
+1. Go to [emailjs.com](https://emailjs.com) → create a free account (email + password — no Google SSO)
 2. **Email Services** → Add Service → connect Gmail or Outlook → note the Service ID
 3. **Email Templates** → Create Template with variables `{{from_email}}`, `{{project}}`, `{{requested}}` → note the Template ID
 4. **Account** → API Keys → copy the Public Key
@@ -62,6 +62,6 @@ EmailJS IDs are stored in `localStorage` only — never in source control.
    https://bganguly.github.io?setup
    http://localhost:8080?setup
    ```
-   Fill the three prompts. IDs are saved to `localStorage` and the param is stripped from the URL.
+   Fill the four prompts (Service ID, Template ID, Public Key, contact email). Values are saved to `localStorage` and the param is stripped from the URL.
 
 To re-configure, visit `?setup` again. To show a project's live link directly, flip its `SHOW_LIVE` key to `true`.

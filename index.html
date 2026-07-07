@@ -321,9 +321,11 @@
         const s = prompt('EmailJS Service ID:');
         const t = prompt('EmailJS Template ID:');
         const k = prompt('EmailJS Public Key:');
+        const e = prompt('Your contact email (shown in fallback messages):');
         if (s) localStorage.setItem('ejs_service',  s);
         if (t) localStorage.setItem('ejs_template', t);
         if (k) localStorage.setItem('ejs_key',      k);
+        if (e) localStorage.setItem('ejs_contact',  e);
         history.replaceState({}, '', location.pathname);
       }
       const k = localStorage.getItem('ejs_key');
@@ -335,6 +337,7 @@
         service:  localStorage.getItem('ejs_service')  || '',
         template: localStorage.getItem('ejs_template') || '',
         key:      localStorage.getItem('ejs_key')      || '',
+        contact:  localStorage.getItem('ejs_contact')  || '',
       };
     }
 
@@ -354,7 +357,8 @@
       const email = form.querySelector('input[type="email"]').value.trim();
       const cfg   = _ejsCfg();
       if (!cfg.service || !cfg.template || !cfg.key) {
-        form.innerHTML = `<p style="font-size:0.72rem;color:#6ee7b7;padding:4px 0">Email me at gangulybikramjit@gmail.com to request access.</p>`;
+        const addr = cfg.contact ? `Email me at ${cfg.contact}` : 'Contact me directly';
+        form.innerHTML = `<p style="font-size:0.72rem;color:#6ee7b7;padding:4px 0">${addr} to request access.</p>`;
         return;
       }
       btn.disabled = true;
@@ -367,8 +371,9 @@
       } catch {
         btn.disabled = false;
         btn.textContent = 'Try again';
+        const addr = cfg.contact ? `email me at ${cfg.contact}` : 'contact me directly';
         form.insertAdjacentHTML('beforeend',
-          `<p style="font-size:0.68rem;color:#f87171;margin-top:4px">Could not send — email me at gangulybikramjit@gmail.com</p>`);
+          `<p style="font-size:0.68rem;color:#f87171;margin-top:4px">Could not send — ${addr}</p>`);
       }
     }
     // ─────────────────────────────────────────────────────────────────────

@@ -36,29 +36,32 @@ README.md
 
 ---
 
-## Access-gate config (index.html)
+## Access-gate config
 
-Three constants near the top of the `<script>` block wire up EmailJS, and one object controls which projects show live links vs. an email-capture form:
+`SHOW_LIVE` in `index.html` controls whether each project shows its live link or an email-capture form. All keys default to `false` in source — nothing is ever committed to change this.
 
 ```js
-const EJS_SERVICE  = 'YOUR_SERVICE_ID';   // EmailJS → Email Services
-const EJS_TEMPLATE = 'YOUR_TEMPLATE_ID';  // EmailJS → Email Templates
-const EJS_KEY      = 'YOUR_PUBLIC_KEY';   // EmailJS → Account → Public Key
-
 const SHOW_LIVE = {
-  dashboard:  true,   // Orders Dashboard — GCP
-  nextjs:     true,   // Next.js Dashboard — AWS
-  fargate:    true,   // Job Runner — AWS
-  serverless: true,   // Event Pipeline — AWS
+  dashboard:  false,  // Orders Dashboard — GCP
+  nextjs:     false,  // Next.js Dashboard — AWS
+  fargate:    false,  // Job Runner — AWS
+  serverless: false,  // Event Pipeline — AWS
 };
 ```
 
-Set any key to `false` to replace that project's live buttons with a "Request access" form. Submissions call `emailjs.send()` directly from the browser — no backend needed — and land in your Gmail.
+### EmailJS setup (one-time, per browser)
 
-### Setting up EmailJS
+EmailJS IDs are stored in `localStorage` only — never in source control.
 
-1. Sign up at [emailjs.com](https://emailjs.com) (free tier: 200 emails/month)
-2. **Email Services** → Add Service → connect Gmail (`gangulybikramjit@gmail.com`) → copy the Service ID
-3. **Email Templates** → Create Template → use variables `{{from_email}}`, `{{project}}`, `{{requested}}` → copy the Template ID
+1. Go to [emailjs.com](https://emailjs.com) → **Sign in with Google** (no new account needed)
+2. **Email Services** → Add Service → connect Gmail or Outlook → note the Service ID
+3. **Email Templates** → Create Template with variables `{{from_email}}`, `{{project}}`, `{{requested}}` → note the Template ID
 4. **Account** → API Keys → copy the Public Key
-5. Replace the three `YOUR_*` placeholders in `index.html`
+5. Visit the live site (or localhost) with `?setup` appended to the URL:
+   ```
+   https://bganguly.github.io?setup
+   http://localhost:8080?setup
+   ```
+   Fill the three prompts. IDs are saved to `localStorage` and the param is stripped from the URL.
+
+To re-configure, visit `?setup` again. To show a project's live link directly, flip its `SHOW_LIVE` key to `true`.

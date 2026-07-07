@@ -313,35 +313,55 @@
 
   <script>
     // ── Access-gate config (EmailJS) ─────────────────────────────────────
-    // 1. Sign up at emailjs.com → connect Gmail → create a template
-    // 2. Fill in the three IDs below (all found in your EmailJS dashboard)
-    // Template variables used: {{from_email}}, {{project}}, {{requested}}
-    const EJS_SERVICE  = 'YOUR_SERVICE_ID';
-    const EJS_TEMPLATE = 'YOUR_TEMPLATE_ID';
-    const EJS_KEY      = 'YOUR_PUBLIC_KEY';
-    emailjs.init({ publicKey: EJS_KEY });
+    // IDs live in localStorage only — nothing is ever committed to source.
+    // One-time setup: visit this page with ?setup in the URL, fill the prompts.
+    // Template variables: {{from_email}}, {{project}}, {{requested}}
+    (function () {
+      if (new URLSearchParams(location.search).has('setup')) {
+        const s = prompt('EmailJS Service ID:');
+        const t = prompt('EmailJS Template ID:');
+        const k = prompt('EmailJS Public Key:');
+        if (s) localStorage.setItem('ejs_service',  s);
+        if (t) localStorage.setItem('ejs_template', t);
+        if (k) localStorage.setItem('ejs_key',      k);
+        history.replaceState({}, '', location.pathname);
+      }
+      const k = localStorage.getItem('ejs_key');
+      if (k) emailjs.init({ publicKey: k });
+    })();
 
-    // Flip any key to false to swap that project's live buttons for an
-    // email-capture form. Submissions arrive in your Gmail via EmailJS.
+    function _ejsCfg() {
+      return {
+        service:  localStorage.getItem('ejs_service')  || '',
+        template: localStorage.getItem('ejs_template') || '',
+        key:      localStorage.getItem('ejs_key')      || '',
+      };
+    }
+
+    // Set any key to true to show the live link directly.
+    // false = show email-capture form instead.
     const SHOW_LIVE = {
-      dashboard:  true,
-      nextjs:     true,
-      fargate:    true,
-      serverless: true,
+      dashboard:  false,
+      nextjs:     false,
+      fargate:    false,
+      serverless: false,
     };
 
     async function requestAccess(event, projectKey, label) {
       event.preventDefault();
-      const form = event.target;
-      const btn  = form.querySelector('button[type="submit"]');
+      const form  = event.target;
+      const btn   = form.querySelector('button[type="submit"]');
       const email = form.querySelector('input[type="email"]').value.trim();
+      const cfg   = _ejsCfg();
+      if (!cfg.service || !cfg.template || !cfg.key) {
+        form.innerHTML = `<p style="font-size:0.72rem;color:#6ee7b7;padding:4px 0">Email me at gangulybikramjit@gmail.com to request access.</p>`;
+        return;
+      }
       btn.disabled = true;
       btn.textContent = 'Sending…';
       try {
-        await emailjs.send(EJS_SERVICE, EJS_TEMPLATE, {
-          from_email: email,
-          project:    projectKey,
-          requested:  label,
+        await emailjs.send(cfg.service, cfg.template, {
+          from_email: email, project: projectKey, requested: label,
         });
         form.innerHTML = `<p style="font-size:0.72rem;color:#6ee7b7;padding:4px 0">Request sent — I'll reach out directly.</p>`;
       } catch {

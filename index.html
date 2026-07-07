@@ -468,12 +468,12 @@
         },
         // Local ports — frontend 3008 (Vite strictPort in vite.config.ts),
         // backend 3009 (application-local.yml; run: SPRING_PROFILES_ACTIVE=local ./mvnw spring-boot:run).
+        // Backend has no directly testable HTTP artifact — no localUrl.
         backend: {
           label: 'Backend',
           color: 'amber',
           title: 'Spring Boot 4.1 · Java 21 · ECS Fargate',
           chips: ['Spring Boot 4.1', 'Java 21', 'ECS Fargate'],
-          localUrl: 'http://localhost:3009',
           githubUrl: GH + '/react-springboot-aws-fargate',
         },
         frontend: {
@@ -503,12 +503,12 @@
         },
         // Local ports — frontend 3010 (Vite strictPort in vite.config.ts),
         // backend 3011 (serverless-offline httpPort in serverless.yml; run: npx sls offline).
+        // Backend is event-driven (SNS→SQS→Lambda) — no directly testable HTTP artifact; no localUrl.
         backend: {
           label: 'Backend',
           color: 'teal',
           title: 'Lambda · SNS/SQS',
           chips: ['AWS Lambda', 'SNS → SQS', 'Serverless 4.13'],
-          localUrl: 'http://localhost:3011',
           githubUrl: GH + '/react-typescript-serverless-aws',
         },
         frontend: {

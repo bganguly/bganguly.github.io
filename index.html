@@ -317,19 +317,14 @@
     // One-time setup: visit this page with ?setup in the URL, fill the prompts.
     // Template variables: {{from_email}}, {{project}}, {{requested}}
     (function () {
-      if (new URLSearchParams(location.search).has('setup')) {
-        const s = prompt('EmailJS Service ID:');
-        const t = prompt('EmailJS Template ID:');
-        const k = prompt('EmailJS Public Key:');
-        const e = prompt('Your contact email (shown in fallback messages):');
-        if (s) localStorage.setItem('ejs_service',  s);
-        if (t) localStorage.setItem('ejs_template', t);
-        if (k) localStorage.setItem('ejs_key',      k);
-        if (e) localStorage.setItem('ejs_contact',  e);
-        history.replaceState({}, '', location.pathname);
-      }
-      const k = localStorage.getItem('ejs_key');
-      if (k) emailjs.init({ publicKey: k });
+      const params = new URLSearchParams(location.search);
+      const s = params.get('s'); if (s) localStorage.setItem('ejs_service',  s);
+      const t = params.get('t'); if (t) localStorage.setItem('ejs_template', t);
+      const k = params.get('k'); if (k) localStorage.setItem('ejs_key',      k);
+      const e = params.get('e'); if (e) localStorage.setItem('ejs_contact',  e);
+      if (s || t || k || e) history.replaceState({}, '', location.pathname);
+      const key = localStorage.getItem('ejs_key');
+      if (key) emailjs.init({ publicKey: key });
     })();
 
     function _ejsCfg() {
@@ -465,8 +460,6 @@
           color: 'amber',
           title: 'Spring Boot 4.1 · Java 21 · ECS Fargate',
           chips: ['Spring Boot 4.1', 'Java 21', 'ECS Fargate'],
-          liveUrl: '#',
-          liveLabel: 'View API',
           githubUrl: GH + '/react-springboot-aws-fargate',
         },
         frontend: {
@@ -498,8 +491,6 @@
           color: 'teal',
           title: 'Lambda · SNS/SQS',
           chips: ['AWS Lambda', 'SNS → SQS', 'Serverless 4.13'],
-          liveUrl: '#',
-          liveLabel: 'View API',
           githubUrl: GH + '/react-typescript-serverless-aws',
         },
         frontend: {
@@ -530,15 +521,19 @@
     const arrowIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>`;
 
     function liveBtn(c, col, large, key) {
+      if (!c.liveUrl) return '';
       if (key && SHOW_LIVE[key] === false) {
-        const pad = large ? '6px 12px' : '5px 0';
-        const inputStyle = `background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#e4e4e7;border-radius:6px;padding:${large ? '6px 10px' : '5px 8px'};font-size:0.75rem;outline:none;min-width:0`;
-        const btnStyle = `background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText};border-radius:6px;padding:${pad};font-size:0.72rem;font-weight:600;cursor:pointer;white-space:nowrap${large ? '' : ';width:100%'}`;
-        const wrap = large ? 'display:flex;align-items:center;gap:8px' : 'display:flex;flex-direction:column;gap:6px;width:100%;margin-top:auto';
+        const inputStyle = `background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#e4e4e7;border-radius:6px;padding:5px 9px;font-size:0.75rem;outline:none;min-width:0;flex:1`;
+        const btnStyle = `background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText};border-radius:6px;padding:5px 11px;font-size:0.72rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0`;
+        const headingStyle = `font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${col.btnText};opacity:0.7;margin-bottom:2px`;
+        const wrap = large ? 'display:flex;flex-direction:column;gap:4px;min-width:180px' : 'display:flex;flex-direction:column;gap:4px;width:100%;margin-top:auto';
         return `<form onsubmit="requestAccess(event,'${key}','${c.liveLabel}')" style="${wrap}">
-          <input type="email" placeholder="your@company.com" required style="${inputStyle}"
-            onfocus="this.style.borderColor='${col.btnBorder}'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" />
-          <button type="submit" style="${btnStyle}">${arrowIcon} Request access</button>
+          <p style="${headingStyle}">Request Access</p>
+          <div style="display:flex;gap:6px;align-items:center">
+            <input type="email" placeholder="your@company.com" required style="${inputStyle}"
+              onfocus="this.style.borderColor='${col.btnBorder}'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" />
+            <button type="submit" style="${btnStyle}">${arrowIcon}</button>
+          </div>
         </form>`;
       }
       const hasLive = c.liveUrl && c.liveUrl !== '#';

@@ -13,7 +13,7 @@ _seed_url() {
 case "${1:-}" in
   dev)
     if [[ ! -f "$CREDS" ]]; then
-      printf '\nNo .emailjs creds found. Run setup first.\n'
+      printf '\nNo .emailjs creds found — starting one-time setup to configure the contact form.\n'
       exec "$0" setup
     fi
     open "$(_seed_url)" &
@@ -21,7 +21,10 @@ case "${1:-}" in
     python3 -m http.server 8080 --directory "$REPO_DIR"
     ;;
   setup)
-    printf '\n=== EmailJS Setup ===\n\n'
+    printf '\n=== EmailJS Setup ===\n'
+    printf 'The contact form sends email via EmailJS (https://www.emailjs.com).\n'
+    printf 'Log in → Email Services for Service ID, Email Templates for Template ID,\n'
+    printf 'and Account → API Keys for Public Key.\n\n'
     read -rp 'Service ID    : ' EJS_S
     read -rp 'Template ID   : ' EJS_T
     read -rp 'Public Key    : ' EJS_K

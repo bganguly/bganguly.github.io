@@ -110,6 +110,135 @@
     </div>
   </section>
 
+  <!-- AI / LLM — local-only; hidden attribute + class removed by JS when isLocal -->
+  <section id="llm-section" hidden class="px-6 pb-16 max-w-6xl mx-auto">
+    <div class="flex items-center gap-3 mb-8">
+      <p class="text-xs font-medium text-violet-400 tracking-widest uppercase">AI · LLM</p>
+      <span class="text-[10px] px-2 py-0.5 rounded-full font-medium"
+        style="background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.3);color:#c4b5fd">local only</span>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+      <!-- NL-to-SQL (featured) -->
+      <div class="md:col-span-2 glass rounded-2xl p-6 card-hover cursor-pointer group"
+           onclick="openModal('nlsql')">
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                 style="background:linear-gradient(135deg,#7c3aed22,#6366f122);border:1px solid rgba(139,92,246,0.3)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-violet-400"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="font-semibold text-zinc-100">NL-to-SQL Comparison</h2>
+                <span class="chip bg-violet-500/15 text-violet-300 border border-violet-500/25 text-[10px]">LLM</span>
+              </div>
+              <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
+                <span class="flex items-center gap-1 text-[11px] font-medium text-violet-400"><span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>Anthropic · OpenAI</span>
+                <span class="text-zinc-700 text-[10px]">·</span>
+                <span class="flex items-center gap-1 text-[11px] font-medium text-blue-400"><span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>DuckDB-WASM · Parquet</span>
+                <span class="text-zinc-700 text-[10px]">·</span>
+                <span class="flex items-center gap-1 text-[11px] font-medium text-emerald-400"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>DOL H1B LCA data</span>
+              </div>
+            </div>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               class="text-zinc-600 group-hover:text-violet-400 transition-colors mt-1 flex-shrink-0">
+            <path d="M7 17L17 7M17 7H7M17 7v10"/>
+          </svg>
+        </div>
+        <p class="text-sm text-zinc-400 leading-relaxed mb-5">
+          Side-by-side NL-to-SQL generation across Anthropic and OpenAI models. SQL runs in-browser via DuckDB-WASM
+          against a Parquet snapshot of DOL H1B LCA disclosures — no backend, schema auto-detected from Parquet metadata.
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">Anthropic</span>
+          <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">OpenAI</span>
+          <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">DuckDB-WASM</span>
+          <span class="chip bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Parquet · H1B LCA</span>
+          <span class="chip bg-sky-500/10 text-sky-400 border border-sky-500/20">React 19 · Vite</span>
+        </div>
+      </div>
+
+      <!-- RAG · H1B LCA -->
+      <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
+           onclick="openModal('ragLca')">
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                 style="background:linear-gradient(135deg,#7c3aed22,#10b98122);border:1px solid rgba(139,92,246,0.3)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-violet-400"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="font-semibold text-zinc-100">RAG · H1B LCA Dataset</h2>
+                <span class="chip bg-zinc-700/50 text-zinc-400 border border-zinc-600/50 text-[10px]">In Development</span>
+              </div>
+              <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
+                <span class="flex items-center gap-1 text-[11px] font-medium text-violet-400"><span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>pgvector · RAG pipeline</span>
+                <span class="text-zinc-700 text-[10px]">·</span>
+                <span class="flex items-center gap-1 text-[11px] font-medium text-emerald-400"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>DOL government data</span>
+              </div>
+            </div>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               class="text-zinc-600 group-hover:text-violet-400 transition-colors mt-1 flex-shrink-0">
+            <path d="M7 17L17 7M17 7H7M17 7v10"/>
+          </svg>
+        </div>
+        <p class="text-sm text-zinc-400 leading-relaxed mb-5">
+          RAG pipeline over DOL H1B LCA disclosures. Chunks employer+SOC records, embeds via OpenAI, stores in pgvector.
+          LLM answers cite actual records with source attribution.
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">RAG</span>
+          <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">pgvector</span>
+          <span class="chip bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">FastAPI</span>
+          <span class="chip bg-slate-500/10 text-slate-400 border border-slate-500/20">OpenAI embeddings</span>
+        </div>
+      </div>
+
+      <!-- Regulatory Doc RAG -->
+      <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
+           onclick="openModal('ragDoc')">
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                 style="background:linear-gradient(135deg,#7c3aed22,#e11d4822);border:1px solid rgba(139,92,246,0.3)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-violet-400"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="font-semibold text-zinc-100">Regulatory Doc RAG</h2>
+                <span class="chip bg-zinc-700/50 text-zinc-400 border border-zinc-600/50 text-[10px]">In Development</span>
+              </div>
+              <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
+                <span class="flex items-center gap-1 text-[11px] font-medium text-violet-400"><span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>Pinecone · audit trail</span>
+                <span class="text-zinc-700 text-[10px]">·</span>
+                <span class="flex items-center gap-1 text-[11px] font-medium text-rose-400"><span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>government PDFs</span>
+              </div>
+            </div>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               class="text-zinc-600 group-hover:text-violet-400 transition-colors mt-1 flex-shrink-0">
+            <path d="M7 17L17 7M17 7H7M17 7v10"/>
+          </svg>
+        </div>
+        <p class="text-sm text-zinc-400 leading-relaxed mb-5">
+          RAG over DOL/DHS regulatory PDFs with full audit logging — every retrieval and LLM call recorded with
+          chunk sourcing and confidence scores. Pinecone as managed vector store.
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">RAG</span>
+          <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">Pinecone</span>
+          <span class="chip bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">FastAPI</span>
+          <span class="chip bg-rose-500/10 text-rose-400 border border-rose-500/20">Audit logging</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
   <!-- Projects -->
   <section class="px-6 pb-24 max-w-6xl mx-auto">
     <p class="text-xs font-medium text-zinc-500 tracking-widest uppercase mb-8">Projects</p>
@@ -519,6 +648,69 @@
         },
         githubUrl: GH + '/react-typescript-serverless-aws',
       },
+
+      // ── AI / LLM (local-only; hidden in production) ───────────────────────
+      nlsql: {
+        title: 'NL-to-SQL Comparison',
+        subtitle: 'Anthropic · OpenAI · DuckDB-WASM · H1B LCA data',
+        description: 'Compares natural-language-to-SQL generation across Anthropic and OpenAI models, executing generated SQL in-browser via DuckDB-WASM against a Parquet dataset of DOL H1B LCA disclosures. Schema is auto-detected from Parquet metadata; no backend required.',
+        accentClass: 'text-violet-400',
+        frontend: {
+          label: 'App',
+          color: 'violet',
+          title: 'React 19 · Vite · DuckDB-WASM',
+          chips: ['React 19', 'Vite', 'DuckDB-WASM', 'Anthropic', 'OpenAI', 'Parquet'],
+          localUrl: 'http://localhost:5173',
+          githubUrl: GH + '/natural-language-to-llm-query-comparison',
+        },
+        githubUrl: GH + '/natural-language-to-llm-query-comparison',
+      },
+      ragLca: {
+        title: 'RAG · H1B LCA Dataset',
+        subtitle: 'FastAPI · pgvector · OpenAI embeddings · DOL data',
+        description: 'RAG pipeline over DOL H1B LCA government disclosures. Chunks employer+SOC records, embeds via OpenAI text-embedding-3-small, stores in pgvector. Natural-language questions retrieve top-k chunks; LLM synthesises answers citing actual records.',
+        accentClass: 'text-violet-400',
+        backend: {
+          label: 'Backend',
+          color: 'violet',
+          title: 'FastAPI · pgvector · OpenAI',
+          chips: ['FastAPI', 'pgvector', 'OpenAI embeddings', 'PostgreSQL 16', 'RAG'],
+          localUrl: 'http://localhost:8000',
+          githubUrl: GH + '/rag-lca-pgvector',
+        },
+        frontend: {
+          label: 'Frontend',
+          color: 'blue',
+          title: 'React · Chat UI',
+          chips: ['React 19', 'Vite', 'TypeScript'],
+          localUrl: 'http://localhost:5174',
+          githubUrl: GH + '/rag-lca-pgvector',
+        },
+        githubUrl: GH + '/rag-lca-pgvector',
+      },
+      ragDoc: {
+        title: 'Regulatory Doc RAG',
+        subtitle: 'FastAPI · Pinecone · audit trail · government PDFs',
+        description: 'RAG over publicly available regulatory documents (DOL wage determinations, DHS policy memos). Every retrieval and LLM call is audit-logged — chunk sourcing, confidence scores, and who-asked-what — demonstrating regulated-environment data practices with Pinecone as the managed vector store.',
+        accentClass: 'text-violet-400',
+        backend: {
+          label: 'Backend',
+          color: 'violet',
+          title: 'FastAPI · Pinecone · Audit log',
+          chips: ['FastAPI', 'Pinecone', 'OpenAI', 'Audit logging', 'RAG'],
+          localUrl: 'http://localhost:8001',
+          githubUrl: GH + '/rag-regulatory-pinecone',
+        },
+        frontend: {
+          label: 'Frontend',
+          color: 'blue',
+          title: 'React · Doc Q&A UI',
+          chips: ['React 19', 'Vite', 'TypeScript'],
+          localUrl: 'http://localhost:5175',
+          githubUrl: GH + '/rag-regulatory-pinecone',
+        },
+        githubUrl: GH + '/rag-regulatory-pinecone',
+      },
     };
 
     // Apply deploy-time live overrides written by deploy.sh
@@ -585,6 +777,7 @@
       amber:   { bg: 'rgba(245,158,11,0.08)',  border: 'rgba(245,158,11,0.2)',   chip: 'bg-amber-500/10 text-amber-300 border-amber-500/20',     btn: 'rgba(245,158,11,0.15)',  btnBorder: 'rgba(245,158,11,0.35)',  btnText: '#fcd34d', label: 'text-amber-400' },
       teal:    { bg: 'rgba(20,184,166,0.08)',  border: 'rgba(20,184,166,0.2)',   chip: 'bg-teal-500/10 text-teal-300 border-teal-500/20',        btn: 'rgba(20,184,166,0.15)',  btnBorder: 'rgba(20,184,166,0.35)',  btnText: '#5eead4', label: 'text-teal-400' },
       slate:   { bg: 'rgba(100,116,139,0.08)', border: 'rgba(100,116,139,0.2)',  chip: 'bg-slate-500/10 text-slate-300 border-slate-500/20',    btn: 'rgba(100,116,139,0.15)', btnBorder: 'rgba(100,116,139,0.35)', btnText: '#cbd5e1', label: 'text-slate-400' },
+      violet:  { bg: 'rgba(139,92,246,0.08)',  border: 'rgba(139,92,246,0.2)',   chip: 'bg-violet-500/10 text-violet-300 border-violet-500/20',  btn: 'rgba(139,92,246,0.15)',  btnBorder: 'rgba(139,92,246,0.35)',  btnText: '#c4b5fd', label: 'text-violet-400' },
     };
 
     const githubIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>`;
@@ -687,10 +880,10 @@
           <p class="text-xs ${p.accentClass} mb-2">${p.subtitle}</p>
           <p class="text-sm text-zinc-400 leading-relaxed mb-5">${p.description}</p>
           <div class="flex gap-3 mb-4">
-            ${smallPanelHtml(p.frontend, key + '-frontend')}
-            ${smallPanelHtml(p.backend, key + '-backend')}
+            ${p.frontend ? smallPanelHtml(p.frontend, key + '-frontend') : ''}
+            ${p.backend  ? smallPanelHtml(p.backend,  key + '-backend')  : ''}
           </div>
-          ${cloudPanelHtml(p.cloud)}
+          ${p.cloud ? cloudPanelHtml(p.cloud) : ''}
         </div>`;
       const modal = document.getElementById('modal');
       modal.classList.remove('hidden');
@@ -710,6 +903,11 @@
     }
 
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    if (isLocal) {
+      const s = document.getElementById('llm-section');
+      s.removeAttribute('hidden');
+    }
   </script>
 </body>
 </html>

@@ -160,82 +160,6 @@
         </div>
       </div>
 
-      <!-- RAG · H1B LCA -->
-      <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
-           onclick="openModal('ragLca')">
-        <div class="flex items-start justify-between mb-4">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center"
-                 style="background:linear-gradient(135deg,#7c3aed22,#10b98122);border:1px solid rgba(139,92,246,0.3)">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-violet-400"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
-            </div>
-            <div>
-              <div class="flex items-center gap-2">
-                <h2 class="font-semibold text-zinc-100">RAG · H1B LCA Dataset</h2>
-                <span class="chip bg-zinc-700/50 text-zinc-400 border border-zinc-600/50 text-[10px]">In Development</span>
-              </div>
-              <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
-                <span class="flex items-center gap-1 text-[11px] font-medium text-violet-400"><span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>pgvector · RAG pipeline</span>
-                <span class="text-zinc-700 text-[10px]">·</span>
-                <span class="flex items-center gap-1 text-[11px] font-medium text-emerald-400"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>DOL government data</span>
-              </div>
-            </div>
-          </div>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-               class="text-zinc-600 group-hover:text-violet-400 transition-colors mt-1 flex-shrink-0">
-            <path d="M7 17L17 7M17 7H7M17 7v10"/>
-          </svg>
-        </div>
-        <p class="text-sm text-zinc-400 leading-relaxed mb-5">
-          RAG pipeline over DOL H1B LCA disclosures. Chunks employer+SOC records, embeds via OpenAI, stores in pgvector.
-          LLM answers cite actual records with source attribution.
-        </p>
-        <div class="flex flex-wrap gap-2">
-          <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">RAG</span>
-          <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">pgvector</span>
-          <span class="chip bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">FastAPI</span>
-          <span class="chip bg-slate-500/10 text-slate-400 border border-slate-500/20">OpenAI embeddings</span>
-        </div>
-      </div>
-
-      <!-- Regulatory Doc RAG -->
-      <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
-           onclick="openModal('ragDoc')">
-        <div class="flex items-start justify-between mb-4">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center"
-                 style="background:linear-gradient(135deg,#7c3aed22,#e11d4822);border:1px solid rgba(139,92,246,0.3)">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-violet-400"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-            </div>
-            <div>
-              <div class="flex items-center gap-2">
-                <h2 class="font-semibold text-zinc-100">Regulatory Doc RAG</h2>
-                <span class="chip bg-zinc-700/50 text-zinc-400 border border-zinc-600/50 text-[10px]">In Development</span>
-              </div>
-              <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
-                <span class="flex items-center gap-1 text-[11px] font-medium text-violet-400"><span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>Pinecone · audit trail</span>
-                <span class="text-zinc-700 text-[10px]">·</span>
-                <span class="flex items-center gap-1 text-[11px] font-medium text-rose-400"><span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>government PDFs</span>
-              </div>
-            </div>
-          </div>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-               class="text-zinc-600 group-hover:text-violet-400 transition-colors mt-1 flex-shrink-0">
-            <path d="M7 17L17 7M17 7H7M17 7v10"/>
-          </svg>
-        </div>
-        <p class="text-sm text-zinc-400 leading-relaxed mb-5">
-          RAG over DOL/DHS regulatory PDFs with full audit logging — every retrieval and LLM call recorded with
-          chunk sourcing and confidence scores. Pinecone as managed vector store.
-        </p>
-        <div class="flex flex-wrap gap-2">
-          <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">RAG</span>
-          <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">Pinecone</span>
-          <span class="chip bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">FastAPI</span>
-          <span class="chip bg-rose-500/10 text-rose-400 border border-rose-500/20">Audit logging</span>
-        </div>
-      </div>
-
     </div>
   </section>
 
@@ -664,52 +588,6 @@
           githubUrl: GH + '/natural-language-to-llm-query-comparison',
         },
         githubUrl: GH + '/natural-language-to-llm-query-comparison',
-      },
-      ragLca: {
-        title: 'RAG · H1B LCA Dataset',
-        subtitle: 'FastAPI · pgvector · OpenAI embeddings · DOL data',
-        description: 'RAG pipeline over DOL H1B LCA government disclosures. Chunks employer+SOC records, embeds via OpenAI text-embedding-3-small, stores in pgvector. Natural-language questions retrieve top-k chunks; LLM synthesises answers citing actual records.',
-        accentClass: 'text-violet-400',
-        backend: {
-          label: 'Backend',
-          color: 'violet',
-          title: 'FastAPI · pgvector · OpenAI',
-          chips: ['FastAPI', 'pgvector', 'OpenAI embeddings', 'PostgreSQL 16', 'RAG'],
-          localUrl: 'http://localhost:8000',
-          githubUrl: GH + '/rag-lca-pgvector',
-        },
-        frontend: {
-          label: 'Frontend',
-          color: 'blue',
-          title: 'React · Chat UI',
-          chips: ['React 19', 'Vite', 'TypeScript'],
-          localUrl: 'http://localhost:5174',
-          githubUrl: GH + '/rag-lca-pgvector',
-        },
-        githubUrl: GH + '/rag-lca-pgvector',
-      },
-      ragDoc: {
-        title: 'Regulatory Doc RAG',
-        subtitle: 'FastAPI · Pinecone · audit trail · government PDFs',
-        description: 'RAG over publicly available regulatory documents (DOL wage determinations, DHS policy memos). Every retrieval and LLM call is audit-logged — chunk sourcing, confidence scores, and who-asked-what — demonstrating regulated-environment data practices with Pinecone as the managed vector store.',
-        accentClass: 'text-violet-400',
-        backend: {
-          label: 'Backend',
-          color: 'violet',
-          title: 'FastAPI · Pinecone · Audit log',
-          chips: ['FastAPI', 'Pinecone', 'OpenAI', 'Audit logging', 'RAG'],
-          localUrl: 'http://localhost:8001',
-          githubUrl: GH + '/rag-regulatory-pinecone',
-        },
-        frontend: {
-          label: 'Frontend',
-          color: 'blue',
-          title: 'React · Doc Q&A UI',
-          chips: ['React 19', 'Vite', 'TypeScript'],
-          localUrl: 'http://localhost:5175',
-          githubUrl: GH + '/rag-regulatory-pinecone',
-        },
-        githubUrl: GH + '/rag-regulatory-pinecone',
       },
     };
 

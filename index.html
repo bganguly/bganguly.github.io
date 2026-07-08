@@ -340,6 +340,7 @@
     const isLocal = ['localhost', '127.0.0.1', ''].includes(location.hostname);
 
     const LOCAL_LIVE = {};
+    const PROD_LIVE  = {}; // null=unknown, true=reachable, false=unreachable
 
     async function requestAccess(event, projectKey, label) {
       event.preventDefault();
@@ -552,6 +553,27 @@
           });
         });
       }
+
+      // Production probes: detect completely unreachable origins (DNS/network failure).
+      // Cannot distinguish 200 from 5xx via no-cors; deploy.sh _deployLive is authoritative
+      // for error-page cases. This catches total outages (service deleted, DNS gone, etc.).
+      if (!isLocal) {
+        const seen = new Set();
+        Object.values(projects).forEach(p => {
+          [p.frontend?.liveUrl, p.backend?.liveUrl].filter(u => u && u !== '#' && u.startsWith('http')).forEach(url => {
+            const origin = new URL(url).origin;
+            if (seen.has(origin)) return;
+            seen.add(origin);
+            PROD_LIVE[origin] = null;
+            const ctrl = new AbortController();
+            const t = setTimeout(() => ctrl.abort(), 8000);
+            fetch(url, { method: 'HEAD', mode: 'no-cors', signal: ctrl.signal })
+              .then(() => { PROD_LIVE[origin] = true; })
+              .catch(() => { PROD_LIVE[origin] = false; })
+              .finally(() => clearTimeout(t));
+          });
+        });
+      }
     })();
 
     const colorMap = {
@@ -588,14 +610,26 @@
       const projectKey = panelId.replace(/-(?:frontend|backend)$/, '');
       const cls = 'flex items-center justify-center gap-1.5 w-full py-2 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90 mt-auto';
 
+      // Helper: check if a live URL's origin is confirmed unreachable by the page-load probe.
+      const _prodOffline = (url) => {
+        if (!url || url === '#' || !url.startsWith('http')) return false;
+        return PROD_LIVE[new URL(url).origin] === false;
+      };
+
       // Backend: direct link when live, nothing when not (deploy.sh controls via deploy-live.js)
       if (isBackend) {
         if (!c.liveUrl || c.liveUrl === '#') return '';
+        if (_prodOffline(c.liveUrl)) {
+          return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · offline</span>`;
+        }
         return `<a href="${c.liveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
       }
 
       // Frontend: direct link when live (y), request access form when not (n / liveUrl='#')
       if (c.liveUrl && c.liveUrl !== '#') {
+        if (_prodOffline(c.liveUrl)) {
+          return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · offline</span>`;
+        }
         return `<a href="${c.liveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
       }
       const inputStyle = `background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#e4e4e7;border-radius:6px;padding:5px 9px;font-size:0.75rem;outline:none;min-width:0;flex:1`;

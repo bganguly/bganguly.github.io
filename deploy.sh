@@ -75,6 +75,8 @@ case "${1:-}" in
     _P_DASH_FE=$(_probe "https://dash-frontend-7u2hpcwtmq-uc.a.run.app/")
     _P_NEXT_FE=$(_probe "https://d2c7wi0kgxiq2f.cloudfront.net/")
     _P_NEXT_BE=$(_probe "https://d2c7wi0kgxiq2f.cloudfront.net/api-explorer")
+    _P_SRVL_FE=$(_probe "https://d281doisqbuiu2.cloudfront.net/")
+    _P_SRVL_BE=$(_probe "https://d281doisqbuiu2.cloudfront.net/api-explorer.html")
     printf 'Done.\n'
 
     printf '\n━━━ Live endpoint selection (Enter = accept probe, y/n = override) ━━━\n\n'
@@ -84,10 +86,12 @@ case "${1:-}" in
     printf '\nNext.js dashboard (AWS)\n'
     NEXT_FE=$(_yn "  frontend       probe: $(_label "$_P_NEXT_FE")" "$_P_NEXT_FE")
     NEXT_BE=$(_yn "  API explorer   probe: $(_label "$_P_NEXT_BE")" "$_P_NEXT_BE")
+    printf '\nEvent Pipeline (serverless)\n'
+    SRVL_FE=$(_yn "  frontend       probe: $(_label "$_P_SRVL_FE")" "$_P_SRVL_FE")
+    SRVL_BE=$(_yn "  API explorer   probe: $(_label "$_P_SRVL_BE")" "$_P_SRVL_BE")
     printf '\n'
 
     FARG_FE=false; FARG_BE=false
-    SRVL_FE=false; SRVL_BE=false
 
     printf '\nRebuilding nl-to-sql app...\n'
     npm --prefix /Users/bikram/Personal/interview-prep/grouped-projects/llm-implementations/natural-language-to-llm-query-comparison run build -- --base=/nl-to-sql/ 2>&1 | tail -5

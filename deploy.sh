@@ -61,13 +61,26 @@ case "${1:-}" in
       [[ "$ans" =~ ^[Yy] ]] && echo "true" || echo "false"
     }
 
+    # Probe a URL: returns "true" if HTTP 2xx, "false" otherwise.
+    _probe() {
+      local url="$1" code
+      code=$(curl -s -o /dev/null -w '%{http_code}' --connect-timeout 10 --max-time 30 "$url" 2>/dev/null || echo "000")
+      [[ "$code" =~ ^2 ]] && echo "true" || echo "false"
+    }
+
+    printf '\n━━━ Probing live endpoints…\n'
+    _P_DASH_FE=$(_probe "https://dash-frontend-7u2hpcwtmq-uc.a.run.app/")
+    _P_NEXT_FE=$(_probe "https://d2c7wi0kgxiq2f.cloudfront.net/")
+    _P_NEXT_BE=$(_probe "https://d2c7wi0kgxiq2f.cloudfront.net/api-explorer")
+    printf 'Done.\n'
+
     printf '\n━━━ Live endpoint selection ━━━\n\n'
     printf 'GCP Orders Dashboard\n'
-    DASH_FE=$(_yn "frontend live?" n)
+    DASH_FE=$(_yn "frontend live? [probe: $_P_DASH_FE]" "$_P_DASH_FE")
     DASH_BE=$(_yn "backend API Explorer live?" y)
     printf '\nNext.js Dashboard (AWS)\n'
-    NEXT_FE=$(_yn "frontend live?" n)
-    NEXT_BE=$(_yn "backend API Explorer live?" y)
+    NEXT_FE=$(_yn "frontend live? [probe: $_P_NEXT_FE]" "$_P_NEXT_FE")
+    NEXT_BE=$(_yn "backend API Explorer live? [probe: $_P_NEXT_BE]" "$_P_NEXT_BE")
     printf '\n'
 
     FARG_FE=false; FARG_BE=false

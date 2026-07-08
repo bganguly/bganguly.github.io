@@ -110,12 +110,10 @@
     </div>
   </section>
 
-  <!-- AI / LLM — local-only; hidden attribute + class removed by JS when isLocal -->
-  <section id="llm-section" hidden class="px-6 pb-16 max-w-6xl mx-auto">
+  <!-- AI / LLM -->
+  <section id="llm-section" class="px-6 pb-16 max-w-6xl mx-auto">
     <div class="flex items-center gap-3 mb-8">
       <p class="text-xs font-medium text-violet-400 tracking-widest uppercase">AI · LLM</p>
-      <span class="text-[10px] px-2 py-0.5 rounded-full font-medium"
-        style="background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.3);color:#c4b5fd">local only</span>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
@@ -782,10 +780,6 @@
 
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-    if (isLocal) {
-      const s = document.getElementById('llm-section');
-      s.removeAttribute('hidden');
-    }
   </script>
 </body>
 </html>

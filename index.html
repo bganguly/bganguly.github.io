@@ -483,8 +483,6 @@
           color: 'slate',
           title: 'PostgreSQL 16 · Prisma',
           chips: ['PostgreSQL 16', 'Prisma', 'SSE'],
-          liveUrl: 'https://d2c7wi0kgxiq2f.cloudfront.net/api-explorer',
-          liveLabel: 'API Explorer',
           localUrl: 'http://localhost:3004/api-explorer',
           githubUrl: GH + '/nextjs-dashboard',
         },
@@ -787,6 +785,15 @@
     }
 
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    // Auto-open modal from ?open=<key> — used by api-explorer back buttons
+    (function() {
+      const openKey = new URLSearchParams(location.search).get('open');
+      if (openKey && projects[openKey]) {
+        history.replaceState({}, '', location.pathname);
+        openModal(openKey);
+      }
+    })();
 
   </script>
 </body>

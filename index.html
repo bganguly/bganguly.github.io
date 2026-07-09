@@ -600,6 +600,10 @@
         if (!flags.frontend && projects[key].frontend) projects[key].frontend.liveUrl = '#';
         if (!flags.backend  && projects[key].backend)  projects[key].backend.liveUrl  = '#';
       }
+      if (!isLocal && window._deployLive.showLlmSection === false) {
+        const s = document.getElementById('llm-section');
+        if (s) s.hidden = true;
+      }
     }
 
     // Probe each project's live URLs at page load (no-cors HEAD, 8 s timeout).

@@ -188,6 +188,21 @@
     }
     .key-input::placeholder { color: var(--text-dim); }
     .key-input:focus { border-color: var(--accent-border); }
+    .key-input.input-error { border-color: var(--danger); box-shadow: 0 0 0 2px rgba(248,113,113,0.18); }
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%     { transform: translateX(-5px); }
+      40%     { transform: translateX(4px); }
+      60%     { transform: translateX(-3px); }
+      80%     { transform: translateX(2px); }
+    }
+    .shake { animation: shake 0.35s ease; }
+    .input-hint {
+      font-size: 0.7rem;
+      margin-top: 4px;
+      color: var(--danger);
+      min-height: 1em;
+    }
     .btn-sm {
       background: var(--surface-2);
       border: 1px solid var(--border-2);
@@ -244,6 +259,7 @@
       transition: border-color 0.15s;
     }
     .clinical-textarea:focus { border-color: var(--accent-border); }
+    .clinical-textarea.input-error { border-color: var(--danger); box-shadow: 0 0 0 2px rgba(248,113,113,0.18); }
     .clinical-textarea::placeholder { color: var(--text-dim); }
 
     .btn-run {
@@ -577,9 +593,11 @@
         <span class="label">Anthropic API Key</span>
         <div class="key-row">
           <input id="apiKey" type="password" placeholder="sk-ant-..."
-            class="key-input" autocomplete="off" spellcheck="false" />
+            class="key-input" autocomplete="off" spellcheck="false"
+            oninput="clearFieldError('apiKey')" />
           <button id="keyToggle" class="btn-sm" onclick="toggleKey()">show</button>
         </div>
+        <p id="apiKeyHint" class="input-hint"></p>
         <p class="hint">Stored in localStorage only. Sent exclusively to api.anthropic.com.</p>
       </div>
 
@@ -593,7 +611,8 @@
       <div class="card">
         <span class="label">Clinical Text</span>
         <textarea id="inputText" class="clinical-textarea" rows="11"
-          placeholder="Paste clinical text here…"></textarea>
+          placeholder="Paste clinical text here…"
+          oninput="clearFieldError('inputText')"></textarea>
         <button id="runBtn" class="btn-run" onclick="deidentify()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
           De-identify
@@ -902,8 +921,8 @@ Patient email: cmendez78@protonmail.com` },
       const key  = document.getElementById('apiKey').value.trim();
       const text = document.getElementById('inputText').value.trim();
 
-      if (!key)  { alert('Enter your Anthropic API key first.'); return; }
-      if (!text) { alert('Enter some clinical text first.'); return; }
+      if (!key)  { showFieldError('apiKey', 'apiKeyHint', 'API key required — enter your sk-ant-… key above.'); return; }
+      if (!text) { showFieldError('inputText', null, null); document.getElementById('inputText').focus(); return; }
 
       document.getElementById('runBtn').disabled = true;
       document.getElementById('loadingMsg').textContent = 'Calling claude-haiku-4-5…';
@@ -1001,6 +1020,22 @@ Return [] if no PHI is found.`,
       } finally {
         document.getElementById('runBtn').disabled = false;
       }
+    }
+
+    // ── Inline field errors ───────────────────────────────────────────────────
+    function showFieldError(inputId, hintId, message) {
+      const el = document.getElementById(inputId);
+      el.classList.add('input-error', 'shake');
+      el.addEventListener('animationend', () => el.classList.remove('shake'), { once: true });
+      el.focus();
+      if (hintId && message) {
+        document.getElementById(hintId).textContent = message;
+      }
+    }
+    function clearFieldError(inputId) {
+      document.getElementById(inputId).classList.remove('input-error');
+      const hintId = { apiKey: 'apiKeyHint' }[inputId];
+      if (hintId) document.getElementById(hintId).textContent = '';
     }
 
     // ── Key show/hide ─────────────────────────────────────────────────────────

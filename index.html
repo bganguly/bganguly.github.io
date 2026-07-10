@@ -631,6 +631,7 @@
           liveLabel: 'Open App',
           localUrl: 'http://localhost:5173',
           githubUrl: GH + '/natural-language-to-llm-query-comparison',
+          apiKeyNote: 'Requires Anthropic &amp; OpenAI API keys',
         },
         githubUrl: GH + '/natural-language-to-llm-query-comparison',
       },
@@ -641,14 +642,24 @@
         description: 'Healthcare PHI detection and synthetic substitution pipeline. spaCy biomedical NER (en_core_sci_md) handles ~90% of records as tier-1; Claude Haiku 4.5 covers ambiguous fallbacks. Each detected entity (name, SSN, MRN, date, phone, email, location) is replaced with a Faker-generated synthetic equivalent — not blank redaction — preserving analytical signal. SHA-256 hashes of originals stored in a PostgreSQL redaction log for auditing. Full observability: structured JSON logs, Prometheus metrics, OpenTelemetry traces → Jaeger. The browser demo runs Claude directly for PHI detection; full pipeline adds spaCy tier-1 + Celery workers.',
         accentClass: 'text-teal-400',
         frontend: {
-          label: 'Demo',
+          label: 'Pipeline',
           color: 'teal',
+          title: 'Architecture · Trace · Example',
+          chips: ['spaCy tier-1', 'Claude Haiku 4.5', 'OTel → Jaeger', 'Synthetic substitution'],
+          liveUrl: 'phi-deidentification/pipeline.html',
+          liveLabel: 'View Pipeline',
+          githubUrl: GH + '/phi-deidentification-pipeline',
+        },
+        backend: {
+          label: 'Demo',
+          color: 'emerald',
           title: 'Browser Demo — Claude Haiku 4.5',
-          chips: ['claude-haiku-4-5', 'PHI detection', 'Synthetic substitution', 'SHA-256 audit log'],
+          chips: ['claude-haiku-4-5', 'PHI detection', 'SHA-256 audit log'],
           liveUrl: 'phi-deidentification/index.html',
           liveLabel: 'Open Demo',
           localUrl: 'http://localhost:8000/docs',
           githubUrl: GH + '/phi-deidentification-pipeline',
+          apiKeyNote: 'Requires Anthropic API key',
         },
         githubUrl: GH + '/phi-deidentification-pipeline',
       },
@@ -807,6 +818,7 @@
           <p class="font-semibold text-sm text-zinc-100 mb-2">${c.title}</p>
           <div class="flex flex-wrap gap-1 mb-3">${chips}</div>
           ${liveBtn(c, col, panelId)}
+          ${c.apiKeyNote ? `<p class="text-[10px] mt-2 text-zinc-600" style="line-height:1.4">🔑 ${c.apiKeyNote}</p>` : ''}
           ${ghLink}
         </div>`;
     }

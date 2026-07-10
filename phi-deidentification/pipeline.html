@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PHI De-identification — Pipeline</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%232dd4bf'/><text x='50%25' y='56%25' dominant-baseline='middle' text-anchor='middle' fill='%230d1117' font-family='monospace' font-size='16' font-weight='700'>Φ</text></svg>" />
+  <style>
+    :root {
+      --bg:         #0d1117;
+      --surface:    #161b22;
+      --surface-2:  #1c2128;
+      --border:     #21262d;
+      --border-2:   #30363d;
+      --text:       #e6edf3;
+      --text-muted: #8b949e;
+      --text-dim:   #484f58;
+      --accent:     #2dd4bf;
+      --accent-dim: rgba(45,212,191,0.10);
+      --accent-border: rgba(45,212,191,0.35);
+      --amber:      #f59e0b;
+      --amber-dim:  rgba(245,158,11,0.10);
+      --amber-border: rgba(245,158,11,0.35);
+      --violet:     #a78bfa;
+      --violet-dim: rgba(167,139,250,0.10);
+      --violet-border: rgba(167,139,250,0.35);
+      --safe:       #34d399;
+      --safe-dim:   rgba(52,211,153,0.10);
+      --safe-border: rgba(52,211,153,0.35);
+      --radius:     6px;
+      --radius-lg:  10px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 14px; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 2px; }
+
+    /* ── Nav ──────────────────────────────────────────────────────────── */
+    nav {
+      position: sticky; top: 0; z-index: 40;
+      background: rgba(13,17,23,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      height: 48px;
+      display: flex; align-items: center;
+      padding: 0 24px; gap: 12px;
+    }
+    .nav-back {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.8rem; color: var(--text-muted);
+      transition: color 0.15s;
+    }
+    .nav-back:hover { color: var(--text); text-decoration: none; }
+    .nav-sep { color: var(--text-dim); font-size: 0.75rem; }
+    .nav-title { font-size: 0.85rem; font-weight: 600; }
+    .nav-right { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 0.72rem; }
+    .nav-model { font-family: ui-monospace, monospace; color: var(--accent); font-weight: 500; }
+    .btn-demo {
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-border);
+      border-radius: var(--radius);
+      padding: 5px 12px;
+      font-size: 0.75rem; font-weight: 600;
+      color: var(--accent);
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .btn-demo:hover { background: rgba(45,212,191,0.18); text-decoration: none; }
+
+    /* ── Page ─────────────────────────────────────────────────────────── */
+    .page-wrap { max-width: 920px; margin: 0 auto; padding: 28px 24px 72px; }
+
+    .page-title {
+      font-size: 1.25rem; font-weight: 700;
+      color: var(--text); margin-bottom: 8px;
+    }
+    .page-desc {
+      font-size: 0.82rem; color: var(--text-muted);
+      max-width: 660px; line-height: 1.65;
+    }
+    .arch-chips {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin-top: 14px;
+    }
+    .arch-chip {
+      font-size: 0.62rem; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 2px 8px; border-radius: 9999px;
+      border: 1px solid var(--border-2);
+      color: var(--text-dim); background: var(--surface);
+    }
+    .arch-chip.t  { border-color: var(--accent-border);  color: var(--accent); background: var(--accent-dim); }
+    .arch-chip.v  { border-color: var(--violet-border);  color: var(--violet); background: var(--violet-dim); }
+    .arch-chip.a  { border-color: var(--amber-border);   color: var(--amber);  background: var(--amber-dim); }
+    .arch-chip.g  { border-color: var(--safe-border);    color: var(--safe);   background: var(--safe-dim); }
+
+    /* ── Section ──────────────────────────────────────────────────────── */
+    .section { margin-top: 48px; }
+    .section-hd {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 16px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+    .section-ttl {
+      font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .section-sub {
+      font-size: 0.68rem; color: var(--text-dim);
+      margin-left: auto;
+    }
+
+    /* ── Diagram card ─────────────────────────────────────────────────── */
+    .diagram-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px 16px;
+      overflow-x: auto;
+    }
+    .diagram-card svg {
+      display: block; height: auto;
+      min-width: 500px; max-width: 100%;
+    }
+
+    /* ── Worked example ───────────────────────────────────────────────── */
+    .ex-grid {
+      display: grid;
+      grid-template-columns: 1fr 240px 1fr;
+      gap: 10px;
+      align-items: start;
+    }
+    @media (max-width: 760px) { .ex-grid { grid-template-columns: 1fr; } }
+
+    .ex-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 14px 16px;
+    }
+    .ex-lbl {
+      font-size: 0.6rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      margin-bottom: 10px; display: block;
+    }
+    .ex-text {
+      font-size: 0.82rem; line-height: 1.8;
+      color: var(--text);
+    }
+    .phi { padding: 1px 4px; border-radius: 3px; font-weight: 500; }
+    .phi-p  { background: rgba(248,113,113,0.14); color: #f87171; }
+    .phi-m  { background: rgba(245,158,11,0.12);  color: #fbbf24; }
+    .phi-d  { background: rgba(59,130,246,0.12);   color: #93c5fd; }
+    .phi-s  { background: rgba(245,158,11,0.12);  color: #fbbf24; }
+    .phi-o  { background: rgba(167,139,250,0.13); color: #c4b5fd; }
+    .phi-ph { background: rgba(245,158,11,0.12);  color: #fbbf24; }
+    .phi-r  { background: rgba(52,211,153,0.12);   color: #34d399; }
+
+    /* Entity steps (middle column) */
+    .ent-list { display: flex; flex-direction: column; gap: 5px; }
+    .ent-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 7px 10px;
+    }
+    .ent-row {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.68rem; margin-bottom: 4px;
+      font-family: ui-monospace, monospace;
+    }
+    .ent-orig { color: #f87171; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .ent-arr  { color: var(--text-dim); flex-shrink: 0; }
+    .ent-repl { color: var(--safe); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .ent-badges { display: flex; gap: 4px; flex-wrap: wrap; }
+    .badge {
+      font-size: 0.55rem; font-weight: 700;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      padding: 1px 5px; border-radius: 9999px;
+      border: 1px solid;
+    }
+    .badge-p  { color: #f87171;  border-color: rgba(248,113,113,0.4);  background: rgba(248,113,113,0.08); }
+    .badge-m  { color: #fbbf24;  border-color: rgba(245,158,11,0.4);   background: rgba(245,158,11,0.08); }
+    .badge-d  { color: #93c5fd;  border-color: rgba(59,130,246,0.4);   background: rgba(59,130,246,0.08); }
+    .badge-s  { color: #fbbf24;  border-color: rgba(245,158,11,0.4);   background: rgba(245,158,11,0.08); }
+    .badge-o  { color: #c4b5fd;  border-color: rgba(167,139,250,0.4);  background: rgba(167,139,250,0.08); }
+    .badge-ph { color: #fbbf24;  border-color: rgba(245,158,11,0.4);   background: rgba(245,158,11,0.08); }
+    .badge-sp { color: #2dd4bf;  border-color: rgba(45,212,191,0.4);   background: rgba(45,212,191,0.08); }
+    .badge-rx { color: #f59e0b;  border-color: rgba(245,158,11,0.4);   background: rgba(245,158,11,0.08); }
+    .badge-cl { color: #a78bfa;  border-color: rgba(167,139,250,0.4);  background: rgba(167,139,250,0.08); }
+
+    /* ── Trace ────────────────────────────────────────────────────────── */
+    .trace-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .trace-note {
+      padding: 10px 16px;
+      font-size: 0.7rem; color: var(--text-dim);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-2);
+    }
+    .trace-note span { color: var(--violet); }
+    .trace-row {
+      display: grid;
+      grid-template-columns: 196px 1fr 52px;
+      gap: 12px;
+      align-items: center;
+      padding: 8px 16px;
+    }
+    .trace-row + .trace-row { border-top: 1px solid var(--border); }
+    .trace-name {
+      font-size: 0.72rem; color: var(--text-muted);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .trace-name.root { color: var(--text); font-weight: 600; font-size: 0.75rem; }
+    .trace-name.indent { padding-left: 14px; }
+    .trace-name.indent::before {
+      content: '├ ';
+      color: var(--text-dim);
+      font-family: ui-monospace, monospace;
+    }
+    .trace-name.indent.last::before { content: '└ '; }
+    .trace-bg {
+      background: var(--surface-2);
+      border-radius: 3px;
+      height: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    .trace-root-bg { height: 4px; background: var(--border-2); }
+    .trace-bar {
+      position: absolute; top: 0; height: 100%;
+      border-radius: 3px;
+      width: 0; /* animated to data-w */
+      transition: width 0.9s cubic-bezier(0.16,1,0.3,1);
+    }
+    .trace-time {
+      font-size: 0.68rem; font-family: ui-monospace, monospace;
+      color: var(--text-dim); text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+    .trace-time.root { color: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="../index.html?open=phi" class="nav-back">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    Portfolio
+  </a>
+  <span class="nav-sep">›</span>
+  <span class="nav-title">PHI Pipeline</span>
+  <div class="nav-right">
+    <span class="nav-model">claude-haiku-4-5</span>
+    <a href="index.html" class="btn-demo">Open Demo →</a>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <h1 class="page-title">PHI De-identification Pipeline</h1>
+  <p class="page-desc">
+    Two-tier detection: spaCy <code style="font-family:ui-monospace,monospace;font-size:0.85em;color:var(--accent)">en_core_sci_md</code> handles
+    ~95% of entities at sub-15ms. Entities below the 0.85 confidence threshold fall back to Claude Haiku 4.5,
+    which returns structured JSON. All detected entities receive a Faker-generated synthetic substitute —
+    never blank redaction — preserving analytical signal. SHA-256 hashes of originals are stored in a
+    PostgreSQL audit log.
+  </p>
+  <div class="arch-chips">
+    <span class="arch-chip t">spaCy en_core_sci_md</span>
+    <span class="arch-chip v">Claude Haiku 4.5</span>
+    <span class="arch-chip">FastAPI · Celery · Redis</span>
+    <span class="arch-chip">PostgreSQL</span>
+    <span class="arch-chip a">Regex SSN · MRN · Phone</span>
+    <span class="arch-chip">OTel → Jaeger</span>
+    <span class="arch-chip g">Synthetic substitution</span>
+  </div>
+
+  <!-- ── Architecture ──────────────────────────────────────────────── -->
+  <div class="section">
+    <div class="section-hd">
+      <div class="section-dot" style="background:var(--accent)"></div>
+      <span class="section-ttl">Architecture</span>
+      <span class="section-sub">two-tier detection pipeline</span>
+    </div>
+    <div class="diagram-card">
+      <svg viewBox="0 0 700 628" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="5" markerHeight="5" orient="auto">
+            <path d="M 0 1.5 L 9 5 L 0 8.5 Z" fill="#484f58"/>
+          </marker>
+          <marker id="arr-g" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="5" markerHeight="5" orient="auto">
+            <path d="M 0 1.5 L 9 5 L 0 8.5 Z" fill="rgba(52,211,153,0.6)"/>
+          </marker>
+          <marker id="arr-v" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="5" markerHeight="5" orient="auto">
+            <path d="M 0 1.5 L 9 5 L 0 8.5 Z" fill="rgba(167,139,250,0.6)"/>
+          </marker>
+        </defs>
+
+        <!-- ── Connector paths (drawn first, behind nodes) ────────────── -->
+        <!-- Input → split to Regex and spaCy -->
+        <line x1="350" y1="54" x2="350" y2="67" stroke="#30363d" stroke-width="1.5"/>
+        <line x1="190" y1="67" x2="490" y2="67" stroke="#30363d" stroke-width="1.5"/>
+        <line x1="190" y1="67" x2="190" y2="80" stroke="#30363d" stroke-width="1.5" marker-end="url(#arr)"/>
+        <line x1="490" y1="67" x2="490" y2="80" stroke="#30363d" stroke-width="1.5" marker-end="url(#arr)"/>
+
+        <!-- Regex + spaCy → Merge -->
+        <line x1="190" y1="132" x2="190" y2="162" stroke="#30363d" stroke-width="1.5"/>
+        <line x1="490" y1="132" x2="490" y2="162" stroke="#30363d" stroke-width="1.5"/>
+        <line x1="190" y1="162" x2="490" y2="162" stroke="#30363d" stroke-width="1.5"/>
+        <line x1="350" y1="162" x2="350" y2="180" stroke="#30363d" stroke-width="1.5" marker-end="url(#arr)"/>
+
+        <!-- Merge → Gate -->
+        <line x1="350" y1="224" x2="350" y2="244" stroke="#30363d" stroke-width="1.5" marker-end="url(#arr)"/>
+
+        <!-- Gate → branch horizontal -->
+        <line x1="350" y1="288" x2="350" y2="316" stroke="#30363d" stroke-width="1.5"/>
+        <line x1="160" y1="316" x2="540" y2="316" stroke="#30363d" stroke-width="1.5"/>
+
+        <!-- Branch to YES (green) -->
+        <line x1="160" y1="316" x2="160" y2="336"
+          stroke="rgba(52,211,153,0.55)" stroke-width="1.5" marker-end="url(#arr-g)"/>
+
+        <!-- Branch to NO (violet) -->
+        <line x1="540" y1="316" x2="540" y2="336"
+          stroke="rgba(167,139,250,0.55)" stroke-width="1.5" marker-end="url(#arr-v)"/>
+
+        <!-- Claude → Faker (NO path) -->
+        <line x1="540" y1="388" x2="540" y2="408"
+          stroke="rgba(167,139,250,0.55)" stroke-width="1.5" marker-end="url(#arr-v)"/>
+
+        <!-- Rejoin: YES Faker bottom to horizontal converge -->
+        <line x1="160" y1="388" x2="160" y2="488"
+          stroke="rgba(52,211,153,0.3)" stroke-width="1" stroke-dasharray="4,3"/>
+        <!-- NO Faker bottom to horizontal converge -->
+        <line x1="540" y1="460" x2="540" y2="488"
+          stroke="rgba(167,139,250,0.3)" stroke-width="1" stroke-dasharray="4,3"/>
+        <!-- Horizontal convergence -->
+        <line x1="160" y1="488" x2="540" y2="488" stroke="#30363d" stroke-width="1.5"/>
+        <!-- Down to Audit -->
+        <line x1="350" y1="488" x2="350" y2="508" stroke="#30363d" stroke-width="1.5" marker-end="url(#arr)"/>
+
+        <!-- Audit → Output -->
+        <line x1="350" y1="552" x2="350" y2="570" stroke="#30363d" stroke-width="1.5" marker-end="url(#arr)"/>
+
+        <!-- ── Node boxes ──────────────────────────────────────────────── -->
+
+        <!-- INPUT -->
+        <rect x="220" y="10" width="260" height="44" rx="8"
+          fill="#161b22" stroke="#2dd4bf" stroke-width="1.5" stroke-opacity="0.5"/>
+        <text x="350" y="30" text-anchor="middle"
+          fill="#e6edf3" font-family="system-ui,sans-serif" font-size="13" font-weight="600">Raw Clinical Text</text>
+        <text x="350" y="46" text-anchor="middle"
+          fill="#8b949e" font-family="system-ui,sans-serif" font-size="10">JSON batch · patient records</text>
+
+        <!-- REGEX -->
+        <rect x="95" y="80" width="190" height="52" rx="8"
+          fill="#161b22" stroke="#f59e0b" stroke-width="1.5" stroke-opacity="0.5"/>
+        <text x="190" y="100" text-anchor="middle"
+          fill="#fbbf24" font-family="system-ui,sans-serif" font-size="12" font-weight="600">Regex Patterns</text>
+        <text x="190" y="116" text-anchor="middle"
+          fill="#8b949e" font-family="system-ui,sans-serif" font-size="10">SSN · MRN · Phone · Email</text>
+        <text x="190" y="128" text-anchor="middle"
+          fill="#484f58" font-family="ui-monospace,monospace" font-size="9">0.97 confidence</text>
+
+        <!-- spaCy NER -->
+        <rect x="395" y="80" width="190" height="52" rx="8"
+          fill="#161b22" stroke="#2dd4bf" stroke-width="1.5" stroke-opacity="0.5"/>
+        <text x="490" y="100" text-anchor="middle"
+          fill="#5eead4" font-family="system-ui,sans-serif" font-size="12" font-weight="600">spaCy NER</text>
+        <text x="490" y="116" text-anchor="middle"
+          fill="#8b949e" font-family="system-ui,sans-serif" font-size="10">en_core_sci_md</text>
+        <text x="490" y="128" text-anchor="middle"
+          fill="#484f58" font-family="ui-monospace,monospace" font-size="9">0.85 – 0.93 confidence</text>
+
+        <!-- MERGE -->
+        <rect x="245" y="180" width="210" height="44" rx="8"
+          fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+        <text x="350" y="200" text-anchor="middle"
+          fill="#e6edf3" font-family="system-ui,sans-serif" font-size="12" font-weight="600">Merge &amp; Deduplicate</text>
+        <text x="350" y="216" text-anchor="middle"
+          fill="#8b949e" font-family="system-ui,sans-serif" font-size="10">resolve overlapping spans</text>
+
+        <!-- GATE (dashed border signals decision node) -->
+        <rect x="245" y="244" width="210" height="44" rx="8"
+          fill="#1c2128" stroke="#8b949e" stroke-width="1.5"
+          stroke-opacity="0.55" stroke-dasharray="5,3"/>
+        <text x="350" y="264" text-anchor="middle"
+          fill="#e6edf3" font-family="system-ui,sans-serif" font-size="12" font-weight="600">Confidence ≥ 0.85?</text>
+        <text x="350" y="280" text-anchor="middle"
+          fill="#8b949e" font-family="system-ui,sans-serif" font-size="10">per-entity threshold</text>
+
+        <!-- Branch labels -->
+        <text x="160" y="328" text-anchor="middle"
+          fill="rgba(52,211,153,0.8)" font-family="system-ui,sans-serif"
+          font-size="9" font-weight="700" letter-spacing="0.06em">YES · ~95%</text>
+        <text x="540" y="328" text-anchor="middle"
+          fill="rgba(167,139,250,0.8)" font-family="system-ui,sans-serif"
+          font-size="9" font-weight="700" letter-spacing="0.06em">NO · ~5%</text>
+
+        <!-- YES: Faker (fast path) -->
+        <rect x="60" y="336" width="200" height="52" rx="8"
+          fill="#161b22" stroke="#34d399" stroke-width="1.5" stroke-opacity="0.5"/>
+        <text x="160" y="356" text-anchor="middle"
+          fill="#6ee7b7" font-family="system-ui,sans-serif" font-size="12" font-weight="600">Faker Synthesis</text>
+        <text x="160" y="372" text-anchor="middle"
+          fill="#8b949e" font-family="system-ui,sans-serif" font-size="10">synthetic substitute</text>
+        <text x="160" y="384" text-anchor="middle"
+          fill="#484f58" font-family="ui-monospace,monospace" font-size="9">~2ms</text>
+
+        <!-- NO: Claude Haiku -->
+        <rect x="440" y="336" width="200" height="52" rx="8"
+          fill="#161b22" stroke="#a78bfa" stroke-width="1.5" stroke-opacity="0.6"/>
+        <text x="540" y="356" text-anchor="middle"
+          fill="#c4b5fd" font-family="system-ui,sans-serif" font-size="12" font-weight="600">Claude Haiku 4.5</text>
+        <text x="540" y="372" text-anchor="middle"
+          fill="#8b949e" font-family="system-ui,sans-serif" font-size="10">NER fallback · JSON response</text>
+        <text x="540" y="384" text-anchor="middle"
+          fill="#484f58" font-family="ui-monospace,monospace" font-size="9">~820ms</text>
+
+        <!-- NO: Faker (after Claude) -->
+        <rect x="440" y="408" width="200" height="52" rx="8"
+          fill="#161b22" stroke="#34d399" stroke-width="1" stroke-opacity="0.35"/>
+        <text x="540" y="428" text-anchor="middle"
+          fill="#6ee7b7" font-family="system-ui,sans-serif" font-size="12" font-weight="600">Faker Synthesis</text>
+        <text x="540" y="444" text-anchor="middle"
+          fill="#8b949e" font-family="system-ui,sans-serif" font-size="10">synthetic substitute</text>
+        <text x="540" y="456" text-anchor="middle"
+          fill="#484f58" font-family="ui-monospace,monospace" font-size="9">~2ms</text>
+
+        <!-- AUDIT -->
+        <rect x="220" y="508" width="260" height="44" rx="8"
+          fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+        <text x="350" y="528" text-anchor="middle"
+          fill="#e6edf3" font-family="system-ui,sans-serif" font-size="12" font-weight="600">SHA-256 Audit Log</text>
+        <text x="350" y="544" text-anchor="middle"
+          fill="#8b949e" font-family="system-ui,sans-serif" font-size="10">PostgreSQL · redaction_log</text>
+
+        <!-- OUTPUT -->
+        <rect x="220" y="570" width="260" height="44" rx="8"
+          fill="#172820" stroke="#34d399" stroke-width="1.5" stroke-opacity="0.6"/>
+        <text x="350" y="590" text-anchor="middle"
+          fill="#6ee7b7" font-family="system-ui,sans-serif" font-size="13" font-weight="700">De-identified Record</text>
+        <text x="350" y="607" text-anchor="middle"
+          fill="#8b949e" font-family="system-ui,sans-serif" font-size="10">analytical signal preserved</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ── Worked Example ────────────────────────────────────────────── -->
+  <div class="section">
+    <div class="section-hd">
+      <div class="section-dot" style="background:var(--amber)"></div>
+      <span class="section-ttl">Worked Example</span>
+      <span class="section-sub">entity #6 triggers Claude fallback</span>
+    </div>
+    <div class="ex-grid">
+
+      <!-- Before -->
+      <div class="ex-panel" style="border-color:rgba(248,113,113,0.2)">
+        <span class="ex-lbl" style="color:#f87171">Before · Raw Input</span>
+        <div class="ex-text">
+          Patient <span class="phi phi-p">Sarah Johnson</span>,
+          MRN <span class="phi phi-m">7834291</span>,
+          was seen by Dr.&nbsp;<span class="phi phi-p">Michael Torres</span>
+          on <span class="phi phi-d">April&nbsp;3,&nbsp;2024</span>.
+          Her SSN on file is <span class="phi phi-s">847-32-9015</span>.
+          She was referred from
+          <span class="phi phi-o" title="spaCy 0.79 → Claude fallback">Boston Children's Hospital</span>.
+          Contact:&nbsp;<span class="phi phi-ph">617-555-0182</span>.
+        </div>
+      </div>
+
+      <!-- Entity steps -->
+      <div>
+        <span class="ex-lbl" style="color:var(--text-dim);display:block;margin-bottom:8px">Detection &amp; Replacement</span>
+        <div class="ent-list">
+
+          <div class="ent-card">
+            <div class="ent-row">
+              <span class="ent-orig">Sarah Johnson</span>
+              <span class="ent-arr">→</span>
+              <span class="ent-repl">Emily Carter</span>
+            </div>
+            <div class="ent-badges">
+              <span class="badge badge-p">PERSON</span>
+              <span class="badge badge-sp">spaCy 0.91</span>
+            </div>
+          </div>
+
+          <div class="ent-card">
+            <div class="ent-row">
+              <span class="ent-orig">7834291</span>
+              <span class="ent-arr">→</span>
+              <span class="ent-repl">4920837</span>
+            </div>
+            <div class="ent-badges">
+              <span class="badge badge-m">MRN</span>
+              <span class="badge badge-rx">Regex 0.97</span>
+            </div>
+          </div>
+
+          <div class="ent-card">
+            <div class="ent-row">
+              <span class="ent-orig">Michael Torres</span>
+              <span class="ent-arr">→</span>
+              <span class="ent-repl">David Kim</span>
+            </div>
+            <div class="ent-badges">
+              <span class="badge badge-p">PERSON</span>
+              <span class="badge badge-sp">spaCy 0.88</span>
+            </div>
+          </div>
+
+          <div class="ent-card">
+            <div class="ent-row">
+              <span class="ent-orig">April 3, 2024</span>
+              <span class="ent-arr">→</span>
+              <span class="ent-repl">May 12, 2024</span>
+            </div>
+            <div class="ent-badges">
+              <span class="badge badge-d">DATE</span>
+              <span class="badge badge-sp">spaCy 0.93</span>
+            </div>
+          </div>
+
+          <div class="ent-card">
+            <div class="ent-row">
+              <span class="ent-orig">847-32-9015</span>
+              <span class="ent-arr">→</span>
+              <span class="ent-repl">392-74-8156</span>
+            </div>
+            <div class="ent-badges">
+              <span class="badge badge-s">SSN</span>
+              <span class="badge badge-rx">Regex 0.97</span>
+            </div>
+          </div>
+
+          <div class="ent-card" style="border-color:rgba(167,139,250,0.3)">
+            <div class="ent-row">
+              <span class="ent-orig" style="max-width:80px">Boston Children's…</span>
+              <span class="ent-arr">→</span>
+              <span class="ent-repl" style="max-width:80px">Riverside Medical…</span>
+            </div>
+            <div class="ent-badges">
+              <span class="badge badge-o">ORG</span>
+              <span class="badge badge-sp">spaCy 0.79</span>
+              <span class="badge badge-cl">Claude 0.91</span>
+            </div>
+          </div>
+
+          <div class="ent-card">
+            <div class="ent-row">
+              <span class="ent-orig">617-555-0182</span>
+              <span class="ent-arr">→</span>
+              <span class="ent-repl">508-555-0239</span>
+            </div>
+            <div class="ent-badges">
+              <span class="badge badge-ph">PHONE</span>
+              <span class="badge badge-rx">Regex 0.97</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- After -->
+      <div class="ex-panel" style="border-color:rgba(52,211,153,0.2)">
+        <span class="ex-lbl" style="color:#34d399">After · De-identified</span>
+        <div class="ex-text">
+          Patient <span class="phi phi-r">Emily Carter</span>,
+          MRN <span class="phi phi-r">4920837</span>,
+          was seen by Dr.&nbsp;<span class="phi phi-r">David Kim</span>
+          on <span class="phi phi-r">May&nbsp;12,&nbsp;2024</span>.
+          Her SSN on file is <span class="phi phi-r">392-74-8156</span>.
+          She was referred from
+          <span class="phi phi-r">Riverside Medical Center</span>.
+          Contact:&nbsp;<span class="phi phi-r">508-555-0239</span>.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Distributed Trace ─────────────────────────────────────────── -->
+  <div class="section">
+    <div class="section-hd">
+      <div class="section-dot" style="background:var(--violet)"></div>
+      <span class="section-ttl">Distributed Trace</span>
+      <span class="section-sub">OpenTelemetry → Jaeger · record job-f4a1c82</span>
+    </div>
+    <div class="trace-card">
+      <div class="trace-note">
+        Claude Haiku 4.5 was invoked for <span>Boston Children's Hospital</span> (spaCy confidence 0.79,
+        below threshold 0.85). All other entities were resolved by spaCy NER or Regex in &lt;14ms combined.
+      </div>
+
+      <!-- Root span -->
+      <div class="trace-row">
+        <div class="trace-name root">Record job-f4a1c82</div>
+        <div class="trace-bg trace-root-bg">
+          <div class="trace-bar" data-w="100%"
+            style="background:linear-gradient(90deg,#2dd4bf,#a78bfa);"></div>
+        </div>
+        <div class="trace-time root">842ms</div>
+      </div>
+
+      <div class="trace-row">
+        <div class="trace-name indent">spaCy NER</div>
+        <div class="trace-bg">
+          <div class="trace-bar" data-w="3%" data-l="0%"
+            style="background:#2dd4bf;"></div>
+        </div>
+        <div class="trace-time">11ms</div>
+      </div>
+
+      <div class="trace-row">
+        <div class="trace-name indent">Regex scan</div>
+        <div class="trace-bg">
+          <div class="trace-bar" data-w="1.5%" data-l="0%"
+            style="background:#f59e0b;"></div>
+        </div>
+        <div class="trace-time">&lt;1ms</div>
+      </div>
+
+      <div class="trace-row">
+        <div class="trace-name indent">Merge &amp; dedup</div>
+        <div class="trace-bg">
+          <div class="trace-bar" data-w="0.8%" data-l="3%"
+            style="background:#484f58;"></div>
+        </div>
+        <div class="trace-time">&lt;1ms</div>
+      </div>
+
+      <div class="trace-row">
+        <div class="trace-name indent">Confidence gate</div>
+        <div class="trace-bg">
+          <div class="trace-bar" data-w="0.6%" data-l="3.8%"
+            style="background:#484f58;"></div>
+        </div>
+        <div class="trace-time">&lt;1ms</div>
+      </div>
+
+      <div class="trace-row">
+        <div class="trace-name indent" style="color:var(--violet)">Claude Haiku 4.5</div>
+        <div class="trace-bg">
+          <div class="trace-bar" data-w="92%" data-l="4.4%"
+            style="background:rgba(167,139,250,0.75);"></div>
+        </div>
+        <div class="trace-time" style="color:var(--violet)">816ms</div>
+      </div>
+
+      <div class="trace-row">
+        <div class="trace-name indent">Faker synthesis</div>
+        <div class="trace-bg">
+          <div class="trace-bar" data-w="1.5%" data-l="96.4%"
+            style="background:#34d399;"></div>
+        </div>
+        <div class="trace-time">2ms</div>
+      </div>
+
+      <div class="trace-row">
+        <div class="trace-name indent">SHA-256 hash</div>
+        <div class="trace-bg">
+          <div class="trace-bar" data-w="0.5%" data-l="97.9%"
+            style="background:#484f58;"></div>
+        </div>
+        <div class="trace-time">&lt;1ms</div>
+      </div>
+
+      <div class="trace-row">
+        <div class="trace-name indent last">PostgreSQL write</div>
+        <div class="trace-bg">
+          <div class="trace-bar" data-w="1.2%" data-l="98.4%"
+            style="background:#38bdf8;"></div>
+        </div>
+        <div class="trace-time">7ms</div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /page-wrap -->
+
+<script>
+  // Animate trace bars on load (brief delay so transition is visible)
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.querySelectorAll('.trace-bar').forEach(bar => {
+        bar.style.left  = bar.dataset.l || '0%';
+        bar.style.width = bar.dataset.w || '0%';
+      });
+    }, 120);
+  });
+</script>
+</body>
+</html>

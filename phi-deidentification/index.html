@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PHI De-identification — Demo</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%232dd4bf'/><text x='50%25' y='56%25' dominant-baseline='middle' text-anchor='middle' fill='%230d1117' font-family='monospace' font-size='16' font-weight='700'>Φ</text></svg>" />
+  <style>
+    /* ── Design tokens ──────────────────────────────────────────── */
+    :root {
+      --bg:          #0d1117;
+      --surface:     #161b22;
+      --surface-2:   #1c2128;
+      --border:      #21262d;
+      --border-2:    #30363d;
+      --text:        #e6edf3;
+      --text-muted:  #8b949e;
+      --text-dim:    #484f58;
+      --accent:      #2dd4bf;
+      --accent-dim:  rgba(45,212,191,0.12);
+      --accent-border: rgba(45,212,191,0.35);
+      --danger:      #f87171;
+      --danger-dim:  rgba(248,113,113,0.08);
+      --danger-border: rgba(248,113,113,0.3);
+      --safe:        #34d399;
+      --safe-dim:    rgba(52,211,153,0.08);
+      --safe-border: rgba(52,211,153,0.3);
+      --radius:      6px;
+      --radius-lg:   10px;
+    }
+
+    /* ── Reset ──────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 14px; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    button { cursor: pointer; font-family: inherit; }
+    textarea, input, select { font-family: inherit; }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 2px; }
+
+    /* ── Utility ─────────────────────────────────────────────────── */
+    .mono  { font-family: ui-monospace, 'Cascadia Code', 'Fira Code', Consolas, monospace; }
+    .label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    /* ── Nav ─────────────────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(13,17,23,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      height: 48px;
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 12px;
+    }
+    .nav-back {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      transition: color 0.15s;
+    }
+    .nav-back:hover { color: var(--text); text-decoration: none; }
+    .nav-sep { color: var(--text-dim); font-size: 0.75rem; }
+    .nav-title { font-size: 0.85rem; font-weight: 600; }
+    .nav-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.72rem;
+    }
+    .nav-model {
+      font-family: ui-monospace, monospace;
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .nav-badge {
+      color: var(--text-dim);
+      padding: 2px 8px;
+      border: 1px solid var(--border);
+      border-radius: 9999px;
+    }
+
+    /* ── Header ──────────────────────────────────────────────────── */
+    .page-header {
+      padding: 28px 24px 0;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .page-header h1 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .page-header p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      max-width: 640px;
+      line-height: 1.6;
+    }
+    .arch-note {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+    .arch-chip {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      border: 1px solid var(--border-2);
+      color: var(--text-dim);
+      background: var(--surface);
+    }
+    .arch-chip.active {
+      border-color: var(--accent-border);
+      color: var(--accent);
+      background: var(--accent-dim);
+    }
+    .arch-arrow {
+      color: var(--text-dim);
+      font-size: 0.65rem;
+    }
+
+    /* ── Layout ──────────────────────────────────────────────────── */
+    .layout {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 16px;
+      padding: 20px 24px 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+      align-items: start;
+    }
+    @media (max-width: 800px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+
+    /* ── Cards ───────────────────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+    }
+    .card + .card { margin-top: 12px; }
+    .card .label { margin-bottom: 10px; display: block; }
+
+    /* ── API key input ───────────────────────────────────────────── */
+    .key-row { display: flex; gap: 6px; }
+    .key-input {
+      flex: 1;
+      min-width: 0;
+      background: var(--bg);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius);
+      padding: 7px 10px;
+      font-size: 0.8rem;
+      color: var(--text);
+      font-family: ui-monospace, monospace;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .key-input::placeholder { color: var(--text-dim); }
+    .key-input:focus { border-color: var(--accent-border); }
+    .btn-sm {
+      background: var(--surface-2);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius);
+      padding: 7px 11px;
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: color 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+    .btn-sm:hover { color: var(--text); border-color: var(--border-2); }
+    .hint {
+      font-size: 0.68rem;
+      color: var(--text-dim);
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+
+    /* ── Sample picker ───────────────────────────────────────────── */
+    .sample-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 7px 10px;
+      border-radius: var(--radius);
+      border: 1px solid transparent;
+      background: transparent;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      transition: color 0.12s, background 0.12s, border-color 0.12s;
+    }
+    .sample-btn:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+    .sample-btn.active {
+      color: var(--accent);
+      border-color: var(--accent-border);
+      background: var(--accent-dim);
+    }
+
+    /* ── Text area + run button ──────────────────────────────────── */
+    .clinical-textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      font-size: 0.78rem;
+      font-family: ui-monospace, 'Cascadia Code', 'Fira Code', Consolas, monospace;
+      color: var(--text);
+      line-height: 1.6;
+      resize: vertical;
+      min-height: 200px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .clinical-textarea:focus { border-color: var(--accent-border); }
+    .clinical-textarea::placeholder { color: var(--text-dim); }
+
+    .btn-run {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: var(--radius);
+      border: 1px solid var(--accent-border);
+      background: var(--accent-dim);
+      color: var(--accent);
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: background 0.15s, opacity 0.15s;
+    }
+    .btn-run:hover { background: rgba(45,212,191,0.2); }
+    .btn-run:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ── Legend ──────────────────────────────────────────────────── */
+    .legend-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 12px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .legend-replaced {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+    .legend-dot-safe {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--safe);
+      flex-shrink: 0;
+    }
+
+    /* ── Results: empty + loading ────────────────────────────────── */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 60px 24px;
+      gap: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      min-height: 280px;
+    }
+    .empty-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 4px;
+    }
+    .empty-state p { font-size: 0.82rem; color: var(--text-muted); }
+    .empty-state strong { color: var(--accent); font-weight: 600; }
+    .empty-state small { font-size: 0.72rem; color: var(--text-dim); margin-top: -4px; }
+
+    .loading-state {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 60px 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      min-height: 280px;
+    }
+    .spinner {
+      width: 28px;
+      height: 28px;
+      border: 2px solid var(--border-2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @media (prefers-reduced-motion: reduce) { .spinner { animation: none; border-top-color: var(--accent); } }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-msg { font-size: 0.8rem; color: var(--text-muted); }
+
+    .error-state {
+      display: none;
+      padding: 20px;
+      background: rgba(248,113,113,0.06);
+      border: 1px solid rgba(248,113,113,0.25);
+      border-radius: var(--radius-lg);
+    }
+    .error-title { font-size: 0.8rem; font-weight: 600; color: var(--danger); margin-bottom: 4px; }
+    .error-msg { font-size: 0.8rem; color: var(--text-muted); font-family: ui-monospace, monospace; }
+
+    /* ── Stats bar ───────────────────────────────────────────────── */
+    .stats-bar {
+      display: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 14px 18px;
+      gap: 0;
+    }
+    .stats-inner {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-wrap: wrap;
+    }
+    .stat-block {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      padding-right: 20px;
+    }
+    .stat-block + .stat-block {
+      padding-left: 20px;
+      border-left: 1px solid var(--border);
+    }
+    .stat-num {
+      font-size: 1.4rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+    .stat-label-sm { font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; }
+    .stat-model { font-size: 0.75rem; font-family: ui-monospace, monospace; color: var(--text); }
+    .entity-badges {
+      margin-left: auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      align-items: center;
+    }
+    .ent-badge {
+      font-size: 0.63rem;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 9999px;
+      border: 1px solid;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── Before / After panels ───────────────────────────────────── */
+    .before-after {
+      display: none;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    @media (max-width: 600px) { .before-after { grid-template-columns: 1fr; } }
+
+    .text-panel {
+      border-radius: var(--radius-lg);
+      padding: 16px;
+    }
+    .text-panel.before-panel {
+      background: var(--danger-dim);
+      border: 1px solid var(--danger-border);
+    }
+    .text-panel.after-panel {
+      background: var(--safe-dim);
+      border: 1px solid var(--safe-border);
+    }
+    .panel-label {
+      font-size: 0.63rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .panel-label.before-label { color: var(--danger); }
+    .panel-label.after-label  { color: var(--safe); }
+    .panel-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+    .panel-text {
+      font-family: ui-monospace, 'Cascadia Code', 'Fira Code', Consolas, monospace;
+      font-size: 0.75rem;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: var(--text);
+    }
+
+    /* PHI highlight spans in the "before" panel */
+    .phi { border-radius: 2px; padding: 0 1px; cursor: default; }
+    .phi-PERSON { background: rgba(245,158,11,0.18); border-bottom: 1.5px solid #f59e0b; }
+    .phi-DATE   { background: rgba(251,146,60,0.18);  border-bottom: 1.5px solid #fb923c; }
+    .phi-SSN    { background: rgba(248,113,113,0.22); border-bottom: 1.5px solid #f87171; }
+    .phi-PHONE  { background: rgba(96,165,250,0.18);  border-bottom: 1.5px solid #60a5fa; }
+    .phi-MRN    { background: rgba(192,132,252,0.18); border-bottom: 1.5px solid #c084fc; }
+    .phi-EMAIL  { background: rgba(34,211,238,0.16);  border-bottom: 1.5px solid #22d3ee; }
+    .phi-GPE, .phi-LOC { background: rgba(45,212,191,0.16); border-bottom: 1.5px solid #2dd4bf; }
+    .phi-ORG    { background: rgba(129,140,248,0.16); border-bottom: 1.5px solid #818cf8; }
+
+    /* Replacement highlight spans in the "after" panel */
+    .phi-replaced {
+      background: rgba(52,211,153,0.15);
+      border-bottom: 1.5px solid var(--safe);
+      border-radius: 2px;
+      padding: 0 1px;
+      cursor: default;
+    }
+
+    /* ── Redaction log table ─────────────────────────────────────── */
+    .log-section {
+      display: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      margin-top: 12px;
+    }
+    .log-section .label { margin-bottom: 12px; }
+    .table-wrap { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.73rem;
+    }
+    thead th {
+      text-align: left;
+      padding: 0 12px 8px 0;
+      color: var(--text-dim);
+      font-weight: 500;
+      font-size: 0.67rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    tbody tr { border-bottom: 1px solid var(--border); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody td {
+      padding: 8px 12px 8px 0;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+    .td-original { font-family: ui-monospace, monospace; color: var(--danger); max-width: 160px; overflow: hidden; text-overflow: ellipsis; }
+    .td-type     { }
+    .td-replace  { font-family: ui-monospace, monospace; color: var(--safe); max-width: 200px; overflow: hidden; text-overflow: ellipsis; }
+    .td-hash     { font-family: ui-monospace, monospace; color: var(--text-dim); font-size: 0.67rem; }
+    .type-chip {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <a href="../index.html" class="nav-back">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M5 12l7 7M5 12l7-7"/></svg>
+      Portfolio
+    </a>
+    <span class="nav-sep">·</span>
+    <span class="nav-title">PHI De-identification</span>
+    <div class="nav-right">
+      <span class="nav-model">claude-haiku-4-5</span>
+      <span class="nav-badge">browser demo</span>
+    </div>
+  </nav>
+
+  <!-- Page header -->
+  <header class="page-header">
+    <h1>PHI De-identification Pipeline</h1>
+    <p>Detects Protected Health Information in clinical text and replaces each entity with a
+       synthetic equivalent — preserving analytical signal without re-exposing real patient data.</p>
+    <div class="arch-note">
+      <span class="arch-chip">spaCy en_core_sci_md</span>
+      <span class="arch-arrow">→</span>
+      <span class="arch-chip active">Claude Haiku 4.5 fallback</span>
+      <span class="arch-arrow">→</span>
+      <span class="arch-chip">Celery · Redis</span>
+      <span class="arch-arrow">→</span>
+      <span class="arch-chip">PostgreSQL audit log</span>
+      <span class="arch-arrow">→</span>
+      <span class="arch-chip">Jaeger · Grafana</span>
+    </div>
+    <p style="font-size:0.7rem;color:var(--text-dim);margin-top:8px;">
+      This demo runs browser-side with Claude only. The full pipeline adds a spaCy tier-1 (≈90% coverage) before Claude.
+    </p>
+  </header>
+
+  <!-- Main layout -->
+  <div class="layout">
+
+    <!-- LEFT: Config column -->
+    <div>
+
+      <!-- API Key -->
+      <div class="card">
+        <span class="label">Anthropic API Key</span>
+        <div class="key-row">
+          <input id="apiKey" type="password" placeholder="sk-ant-..."
+            class="key-input" autocomplete="off" spellcheck="false" />
+          <button id="keyToggle" class="btn-sm" onclick="toggleKey()">show</button>
+        </div>
+        <p class="hint">Stored in localStorage only. Sent exclusively to api.anthropic.com.</p>
+      </div>
+
+      <!-- Sample picker -->
+      <div class="card">
+        <span class="label">Sample Clinical Notes</span>
+        <div id="samplePicker"></div>
+      </div>
+
+      <!-- Input + run -->
+      <div class="card">
+        <span class="label">Clinical Text</span>
+        <textarea id="inputText" class="clinical-textarea" rows="11"
+          placeholder="Paste clinical text here…"></textarea>
+        <button id="runBtn" class="btn-run" onclick="deidentify()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+          De-identify
+        </button>
+      </div>
+
+      <!-- Legend -->
+      <div class="card">
+        <span class="label">Entity Types</span>
+        <div class="legend-grid" id="legend"></div>
+        <div class="legend-replaced">
+          <span class="legend-dot-safe"></span>
+          <span>Synthetic replacement (after panel)</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Results column -->
+    <div>
+
+      <!-- Empty state -->
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="1.5">
+            <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+        </div>
+        <p>Select a sample note or paste clinical text,<br>then click <strong>De-identify</strong></p>
+        <small>Before / after comparison appears here</small>
+      </div>
+
+      <!-- Loading state -->
+      <div class="loading-state" id="loadingState">
+        <div class="spinner"></div>
+        <p class="loading-msg" id="loadingMsg">Calling claude-haiku-4-5…</p>
+      </div>
+
+      <!-- Error state -->
+      <div class="error-state" id="errorState">
+        <p class="error-title">Error</p>
+        <p class="error-msg" id="errorMsg"></p>
+      </div>
+
+      <!-- Stats bar -->
+      <div class="stats-bar" id="statsBar">
+        <div class="stats-inner">
+          <div class="stat-block">
+            <span class="stat-label-sm">Entities</span>
+            <span class="stat-num" id="statEntities" style="color:var(--accent)">0</span>
+          </div>
+          <div class="stat-block">
+            <span class="stat-label-sm">Latency</span>
+            <span class="stat-num" id="statLatency" style="color:var(--text)">0</span>
+          </div>
+          <div class="stat-block">
+            <span class="stat-label-sm">Model</span>
+            <span class="stat-model">claude-haiku-4-5</span>
+          </div>
+          <div class="entity-badges" id="entityBadges"></div>
+        </div>
+      </div>
+
+      <!-- Before / After -->
+      <div class="before-after" id="beforeAfter">
+        <div class="text-panel before-panel">
+          <div class="panel-label before-label">
+            <span class="panel-dot" style="background:var(--danger)"></span>
+            Before — PHI exposed
+          </div>
+          <div class="panel-text" id="beforeText"></div>
+        </div>
+        <div class="text-panel after-panel">
+          <div class="panel-label after-label">
+            <span class="panel-dot" style="background:var(--safe)"></span>
+            After — de-identified
+          </div>
+          <div class="panel-text" id="afterText"></div>
+        </div>
+      </div>
+
+      <!-- Redaction log -->
+      <div class="log-section" id="logSection">
+        <span class="label">Redaction Log</span>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Original PHI</th>
+                <th>Type</th>
+                <th>Synthetic Replacement</th>
+                <th>SHA-256 (12 chars)</th>
+              </tr>
+            </thead>
+            <tbody id="logBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // ── Entity config ─────────────────────────────────────────────────────────
+    const ENT = {
+      PERSON: { color: '#f59e0b', label: 'Person' },
+      DATE:   { color: '#fb923c', label: 'Date' },
+      SSN:    { color: '#f87171', label: 'SSN' },
+      PHONE:  { color: '#60a5fa', label: 'Phone' },
+      MRN:    { color: '#c084fc', label: 'MRN' },
+      EMAIL:  { color: '#22d3ee', label: 'Email' },
+      GPE:    { color: '#2dd4bf', label: 'Location' },
+      LOC:    { color: '#2dd4bf', label: 'Location' },
+      ORG:    { color: '#818cf8', label: 'Org' },
+    };
+
+    // ── Sample clinical texts ─────────────────────────────────────────────────
+    const SAMPLES = [
+      { name: 'ED Visit Note', text:
+`Patient: Margaret Chen, DOB 03/12/1967, SSN 482-91-6034
+MRN 20485731 — ED visit 11/08/2024
+
+Pt presented with acute chest pain radiating to left arm x 2 hrs.
+Address: 847 Maple Grove Dr, Austin, TX. Phone: (512) 334-9027.
+Email: mchen67@gmail.com. Emergency contact: Robert Chen (512) 334-9028.
+Attending: Dr. Patel, Cardiology. Consulting: Dr. Sarah Nguyen, Internal Medicine.
+Assessment: NSTEMI. Admit to CCU. Start heparin drip per protocol.` },
+
+      { name: 'Discharge Summary', text:
+`DISCHARGE SUMMARY — St. Mercy Regional Medical Center
+
+Patient: James O'Sullivan    MRN: 38291045    SSN: 619-22-8847
+DOB: 07/04/1952    Admission: 10/21/2024    Discharge: 10/28/2024
+
+Address: 1203 Birchwood Ln, Nashville, TN 37201
+Phone: (615) 447-8812    Email: josullivan52@yahoo.com
+
+Admitting Dx: Type 2 Diabetes Mellitus — uncontrolled
+Attending: Dr. Anita Ramirez, Endocrinology
+PCP: Dr. Kevin Park, Valley Primary Care Associates
+
+HbA1c on admission: 11.2%. Initiated insulin therapy.
+Follow-up with Dr. Ramirez in 2 weeks (01/08/2025).` },
+
+      { name: 'Lab Referral', text:
+`LAB ORDER — Cascade Diagnostics Network
+
+Ordering Provider: Dr. Linda Hoffman, MD
+Patient: Priya Anand    DOB: 09/17/1985    MRN 55103927    SSN 307-58-1124
+Address: 422 Ridgecrest Ave, Portland, OR 97201
+Callback: (503) 881-6240    Alt: (503) 881-6241
+
+Collection Date: 12/03/2024
+Tests: CBC with differential, CMP, TSH, HbA1c, lipid panel
+
+Clinical indication: Annual wellness screening, fatigue workup.
+CC to patient email: priya.anand85@outlook.com` },
+
+      { name: 'Prescription', text:
+`Rx — Mountain View Family Practice
+
+Patient: Carlos Mendez    DOB: 02/28/1978    MRN 71204856
+SSN: 521-37-9014    Phone: (720) 558-3391
+Address: 99 Cedar Creek Blvd, Denver, CO 80202
+
+Date: 01/14/2025
+Prescriber: Dr. Theresa Kim, NPI 1234567890
+
+Medication: Metformin HCl 500 mg tablet
+Sig: 1 tab PO BID with meals x 90 days  Refills: 3
+Patient email: cmendez78@protonmail.com` },
+    ];
+
+    // ── Synthetic data ────────────────────────────────────────────────────────
+    const FAKE = {
+      people:  ['Alex Thompson','Maria Rodriguez','James Chen','Sarah Williams',
+                "Michael O'Brien",'Jennifer Park','David Martinez','Lisa Anderson',
+                'Robert Kim','Emily Davis','Thomas Patel','Laura Nguyen','Daniel Lee'],
+      cities:  ['Portland','Denver','Austin','Nashville','Phoenix','Seattle',
+                'Charlotte','Indianapolis','Columbus','Memphis','Louisville','Boise'],
+      orgs:    ['Valley Medical Group','Sunrise Health Partners','CarePoint Associates',
+                'Meridian Healthcare','Summit Medical Center','Northside Health'],
+      domains: ['gmail','yahoo','outlook','proton','icloud'],
+      fnames:  ['jsmith','mrodriguez','alee','kpatel','tnguyen','dchen','swilliams'],
+    };
+
+    const rnd = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+
+    function synthReplace(text, label) {
+      switch (label) {
+        case 'PERSON':  return pick(FAKE.people);
+        case 'DATE':    return shiftDate(text);
+        case 'SSN':     return `${rnd(100,999)}-${String(rnd(10,99)).padStart(2,'0')}-${rnd(1000,9999)}`;
+        case 'PHONE':   return `(${rnd(200,999)}) ${rnd(200,999)}-${rnd(1000,9999)}`;
+        case 'MRN':     return `MRN ${rnd(10000000,99999999)}`;
+        case 'EMAIL':   return `${pick(FAKE.fnames)}${rnd(1,99)}@${pick(FAKE.domains)}.com`;
+        case 'GPE': case 'LOC': return pick(FAKE.cities);
+        case 'ORG':     return pick(FAKE.orgs);
+        default:        return `[${label}]`;
+      }
+    }
+
+    function shiftDate(s) {
+      const fmts = [
+        { re: /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/,
+          parse: m => new Date(+m[3], +m[1]-1, +m[2]),
+          fmt: d => `${d.getMonth()+1}/${d.getDate()}/${d.getFullYear()}` },
+        { re: /^(\d{4})-(\d{2})-(\d{2})$/,
+          parse: m => new Date(+m[1], +m[2]-1, +m[3]),
+          fmt: d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}` },
+      ];
+      for (const { re, parse, fmt } of fmts) {
+        const m = s.trim().match(re);
+        if (m) { const d = parse(m); d.setDate(d.getDate() + rnd(-30,30)); return fmt(d); }
+      }
+      const d = new Date(); d.setDate(d.getDate() + rnd(-30,30));
+      return `${d.getMonth()+1}/${d.getDate()}/${d.getFullYear()}`;
+    }
+
+    // ── SHA-256 via Web Crypto ────────────────────────────────────────────────
+    async function sha256hex(text) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+    }
+
+    // ── Dedup overlapping spans (keep longest, leftmost wins on tie) ──────────
+    function dedup(entities) {
+      const sorted = [...entities].sort((a,b) => a.start - b.start || (b.end - b.start) - (a.end - a.start));
+      const result = [];
+      let maxEnd = -1;
+      for (const e of sorted) {
+        if (e.start >= maxEnd) { result.push(e); maxEnd = e.end; }
+      }
+      return result;
+    }
+
+    // ── Apply replacements + track positions for after-panel highlighting ─────
+    async function buildResult(text, entities) {
+      const sorted = dedup([...entities].sort((a,b) => a.start - b.start));
+      let result = text;
+      let offset = 0;
+      const reps   = [];  // {pos, replacement, label} — for after-panel highlighting
+      const logRows = []; // {original, label, replacement, hash} — for log table
+
+      for (const ent of sorted) {
+        const replacement = synthReplace(ent.text, ent.label);
+        const hash = (await sha256hex(ent.text)).slice(0, 12);
+        const pos = ent.start + offset;
+
+        result = result.slice(0, pos) + replacement + result.slice(pos + (ent.end - ent.start));
+        reps.push({ pos, replacement, label: ent.label });
+        logRows.push({ original: ent.text, label: ent.label, replacement, hash });
+        offset += replacement.length - (ent.end - ent.start);
+      }
+
+      return { result, reps, logRows, sortedEnts: sorted };
+    }
+
+    // ── HTML rendering helpers ────────────────────────────────────────────────
+    const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+    function renderBefore(text, entities) {
+      const sorted = dedup([...entities].sort((a,b) => a.start - b.start));
+      let html = '';
+      let cursor = 0;
+      for (const ent of sorted) {
+        if (ent.start < cursor) continue;
+        html += esc(text.slice(cursor, ent.start));
+        const cls = 'phi phi-' + ent.label;
+        const tt = `${ent.label}: ${ent.text}`;
+        html += `<span class="${cls}" title="${esc(tt)}">${esc(ent.text)}</span>`;
+        cursor = ent.end;
+      }
+      html += esc(text.slice(cursor));
+      return html;
+    }
+
+    function renderAfter(deidentText, reps) {
+      const sorted = [...reps].sort((a,b) => a.pos - b.pos);
+      let html = '';
+      let cursor = 0;
+      for (const rep of sorted) {
+        if (rep.pos < cursor) continue;
+        html += esc(deidentText.slice(cursor, rep.pos));
+        const tt = `${rep.label} → ${rep.replacement}`;
+        html += `<span class="phi-replaced" title="${esc(tt)}">${esc(rep.replacement)}</span>`;
+        cursor = rep.pos + rep.replacement.length;
+      }
+      html += esc(deidentText.slice(cursor));
+      return html;
+    }
+
+    // ── State management ──────────────────────────────────────────────────────
+    function setState(state) {
+      document.getElementById('emptyState').style.display   = state === 'empty'   ? 'flex'  : 'none';
+      document.getElementById('loadingState').style.display = state === 'loading' ? 'flex'  : 'none';
+      document.getElementById('errorState').style.display   = state === 'error'   ? 'block' : 'none';
+      document.getElementById('statsBar').style.display     = state === 'results' ? 'flex'  : 'none';
+      document.getElementById('beforeAfter').style.display  = state === 'results' ? 'grid'  : 'none';
+      document.getElementById('logSection').style.display   = state === 'results' ? 'block' : 'none';
+    }
+
+    // ── Main ──────────────────────────────────────────────────────────────────
+    async function deidentify() {
+      const key  = document.getElementById('apiKey').value.trim();
+      const text = document.getElementById('inputText').value.trim();
+
+      if (!key)  { alert('Enter your Anthropic API key first.'); return; }
+      if (!text) { alert('Enter some clinical text first.'); return; }
+
+      document.getElementById('runBtn').disabled = true;
+      document.getElementById('loadingMsg').textContent = 'Calling claude-haiku-4-5…';
+      setState('loading');
+
+      const t0 = Date.now();
+
+      try {
+        const resp = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': key,
+            'anthropic-version': '2023-06-01',
+            'anthropic-dangerous-direct-browser-access': 'true',
+          },
+          body: JSON.stringify({
+            model: 'claude-haiku-4-5',
+            max_tokens: 2048,
+            system: `You are a clinical PHI de-identification expert.
+Identify ALL Protected Health Information (PHI) in the text and return ONLY a JSON array.
+No markdown, no explanation, raw JSON only.
+Each element: {"text":"<exact substring>","label":"<TYPE>","start":<int>,"end":<int>}
+Types: PERSON, DATE, SSN, PHONE, MRN, EMAIL, GPE, LOC, ORG
+- start: zero-indexed character offset where entity begins
+- end: exclusive end offset (like Python slice — input[start:end] === text)
+- "text" must exactly equal input.slice(start, end)
+Verify every offset before returning. Omit any entity where you are unsure of the exact position.
+Return [] if no PHI is found.`,
+            messages: [{ role: 'user', content: `Clinical text:\n\n${text}\n\nReturn only the JSON array.` }],
+          }),
+        });
+
+        const elapsed = Date.now() - t0;
+        const data = await resp.json();
+
+        if (!resp.ok) throw new Error(data?.error?.message || resp.statusText);
+
+        const raw = (data.content || []).map(b => b.text || '').join('').trim();
+        let parsed;
+        try { parsed = JSON.parse(raw.replace(/```json|```/g, '').trim()); }
+        catch { throw new Error(`Model returned non-JSON: ${raw.slice(0, 120)}`); }
+
+        // Validate offsets — discard entities where text ≠ input.slice(start, end)
+        const valid = parsed.filter(e => {
+          const actual = text.slice(e.start, e.end);
+          if (actual !== e.text) {
+            console.warn('Bad offset discarded:', e, '→ actual:', actual);
+            return false;
+          }
+          return true;
+        });
+
+        // Build result (replacements + log rows) in a single pass
+        document.getElementById('loadingMsg').textContent = 'Building synthetic replacements…';
+        const { result: deidentText, reps, logRows, sortedEnts } = await buildResult(text, valid);
+
+        // ── Render ──
+        // Stats
+        const counts = {};
+        sortedEnts.forEach(e => counts[e.label] = (counts[e.label] || 0) + 1);
+
+        document.getElementById('statEntities').textContent = sortedEnts.length;
+        document.getElementById('statLatency').textContent  = `${elapsed}ms`;
+        document.getElementById('entityBadges').innerHTML = Object.entries(counts).map(([lbl, n]) => {
+          const col = ENT[lbl]?.color || '#8b949e';
+          return `<span class="ent-badge" style="color:${col};background:${col}18;border-color:${col}44">${lbl}&nbsp;${n}</span>`;
+        }).join('');
+
+        // Before / After
+        document.getElementById('beforeText').innerHTML = renderBefore(text, sortedEnts);
+        document.getElementById('afterText').innerHTML  = renderAfter(deidentText, reps);
+
+        // Log table
+        document.getElementById('logBody').innerHTML = logRows.map(row => {
+          const col = ENT[row.label]?.color || '#8b949e';
+          return `<tr>
+            <td class="td-original" title="${esc(row.original)}">${esc(row.original)}</td>
+            <td class="td-type">
+              <span class="type-chip" style="color:${col};background:${col}18;border-color:${col}44">${esc(row.label)}</span>
+            </td>
+            <td class="td-replace" title="${esc(row.replacement)}">${esc(row.replacement)}</td>
+            <td class="td-hash">${row.hash}…</td>
+          </tr>`;
+        }).join('');
+
+        setState('results');
+
+        // Persist key
+        try { localStorage.setItem('phi_demo_key', key); } catch {}
+
+      } catch (err) {
+        document.getElementById('errorMsg').textContent = err.message;
+        setState('error');
+      } finally {
+        document.getElementById('runBtn').disabled = false;
+      }
+    }
+
+    // ── Key show/hide ─────────────────────────────────────────────────────────
+    function toggleKey() {
+      const inp = document.getElementById('apiKey');
+      const btn = document.getElementById('keyToggle');
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+      btn.textContent = inp.type === 'password' ? 'show' : 'hide';
+    }
+
+    // ── Init ──────────────────────────────────────────────────────────────────
+    (function init() {
+      // Restore API key
+      try { const k = localStorage.getItem('phi_demo_key'); if (k) document.getElementById('apiKey').value = k; } catch {}
+
+      // Build sample picker
+      const picker = document.getElementById('samplePicker');
+      SAMPLES.forEach((s, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'sample-btn' + (i === 0 ? ' active' : '');
+        btn.textContent = s.name;
+        btn.onclick = () => {
+          picker.querySelectorAll('.sample-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          document.getElementById('inputText').value = s.text;
+        };
+        picker.appendChild(btn);
+      });
+      document.getElementById('inputText').value = SAMPLES[0].text;
+
+      // Build legend (deduplicate LOC from GPE)
+      const legendGrid = document.getElementById('legend');
+      Object.entries(ENT)
+        .filter(([k]) => k !== 'LOC')
+        .forEach(([label, cfg]) => {
+          const el = document.createElement('div');
+          el.className = 'legend-item';
+          el.innerHTML = `<span class="legend-dot" style="background:${cfg.color}"></span><span>${cfg.label}</span>`;
+          legendGrid.appendChild(el);
+        });
+    })();
+  </script>
+</body>
+</html>

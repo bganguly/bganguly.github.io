@@ -332,6 +332,116 @@
       letter-spacing: 0.08em; text-transform: uppercase;
       color: var(--text-dim); margin-top: 3px;
     }
+
+    /* ── Mode badge ───────────────────────────────────────────────── */
+    .mode-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 3px 8px; border-radius: 999px;
+      border: 1px solid var(--border-2);
+      color: var(--text-dim);
+    }
+    .mode-badge.live {
+      background: var(--safe-dim);
+      border-color: var(--safe-border);
+      color: var(--safe);
+    }
+    .mode-badge .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+    /* ── Gate screen ─────────────────────────────────────────────── */
+    .gate-overlay {
+      position: fixed; inset: 0; z-index: 100;
+      background: rgba(13,17,23,0.88);
+      backdrop-filter: blur(8px);
+      display: none; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .gate-card {
+      background: var(--surface);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-lg);
+      padding: 28px 32px;
+      max-width: 420px; width: 100%;
+    }
+    .gate-title {
+      font-size: 0.95rem; font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .gate-desc {
+      font-size: 0.78rem; color: var(--text-muted);
+      line-height: 1.6; margin-bottom: 20px;
+    }
+    .gate-error {
+      font-size: 0.72rem; color: #f87171;
+      background: rgba(248,113,113,0.08);
+      border: 1px solid rgba(248,113,113,0.25);
+      border-radius: var(--radius);
+      padding: 7px 10px; margin-bottom: 14px;
+    }
+    .gate-label {
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text-dim); margin-bottom: 6px;
+    }
+    .gate-row { display: flex; gap: 8px; margin-bottom: 14px; }
+    .gate-input {
+      flex: 1; background: var(--bg);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius);
+      color: var(--text); font-family: ui-monospace, monospace;
+      font-size: 0.78rem; padding: 7px 10px;
+      outline: none;
+    }
+    .gate-input:focus { border-color: var(--accent); }
+    .gate-connect-btn {
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-border);
+      border-radius: var(--radius);
+      color: var(--accent);
+      font-size: 0.78rem; font-weight: 700;
+      padding: 7px 14px; cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s;
+    }
+    .gate-connect-btn:hover { background: rgba(45,212,191,0.18); }
+    .gate-divider {
+      font-size: 0.68rem; color: var(--text-dim);
+      text-align: center; margin: 14px 0;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .gate-divider::before, .gate-divider::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+    .gate-request-btn {
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius);
+      color: var(--text-muted);
+      font-size: 0.78rem; font-weight: 600;
+      padding: 8px; cursor: pointer;
+      font-family: inherit;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .gate-request-btn:hover { border-color: var(--accent-border); color: var(--accent); }
+    .gate-sim-note {
+      font-size: 0.68rem; color: var(--text-dim);
+      text-align: center; margin-top: 16px;
+    }
+    .gate-sim-link {
+      background: none; border: none; padding: 0;
+      color: var(--text-muted); font-size: inherit;
+      cursor: pointer; text-decoration: underline;
+      font-family: inherit;
+    }
+    .gate-sim-link:hover { color: var(--text); }
+    .disconnect-btn {
+      font-size: 0.62rem; color: var(--text-dim);
+      background: none; border: none; cursor: pointer;
+      font-family: inherit; padding: 0;
+    }
+    .disconnect-btn:hover { color: #f87171; }
   </style>
 </head>
 <body>
@@ -349,11 +459,37 @@
   </div>
 </nav>
 
+<!-- Gate screen overlay (live mode, no token) -->
+<div class="gate-overlay" id="gateOverlay">
+  <div class="gate-card">
+    <div class="gate-title">Live Pipeline — Access Required</div>
+    <p class="gate-desc">
+      This batch run connects to the real PHI de-identification backend (Cloud Run).
+      spaCy tier-1 + Claude Haiku 4.5 tier-2, running on actual infrastructure.
+    </p>
+    <div class="gate-error" id="gateError" style="display:none"></div>
+    <div class="gate-label">Access Token</div>
+    <div class="gate-row">
+      <input type="password" id="tokenInput" class="gate-input" placeholder="Paste your token…"
+             onkeydown="if(event.key==='Enter')connectWithToken()" />
+      <button class="gate-connect-btn" onclick="connectWithToken()">Connect</button>
+    </div>
+    <div class="gate-divider">or</div>
+    <button class="gate-request-btn" onclick="requestAccess()">Request Access →</button>
+    <div class="gate-sim-note">
+      No token? <button class="gate-sim-link" onclick="switchToSim()">Run local simulation instead</button>
+    </div>
+  </div>
+</div>
+
 <div class="page-wrap">
 
   <div class="page-hd">
-    <h1 class="page-title">Batch Processing — Real-time Simulation</h1>
-    <p class="page-desc">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+      <h1 class="page-title" id="pageTitle" style="margin-bottom:0">Batch Processing</h1>
+      <span class="mode-badge" id="modeBadge"><span class="dot"></span>Simulation</span>
+    </div>
+    <p class="page-desc" id="pageDesc">
       50 synthetic clinical records processed by simulated Celery workers. Each record runs through
       the two-tier detection pipeline: spaCy fast path (~12ms) or Claude Haiku 4.5 fallback (~820ms).
       Adjust speed and worker count, then watch the queue drain.
@@ -363,20 +499,23 @@
   <div class="controls">
     <button class="run-btn" id="runBtn" onclick="startBatch()">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
-      Run 50 Records
+      <span id="runBtnLabel">Run 50 Records</span>
     </button>
-    <div class="speed-row">
+    <div class="speed-row" id="speedControls">
       Speed:
       <button class="spd-btn active" data-spd="1" onclick="setSpeed(this,1)">1×</button>
       <button class="spd-btn" data-spd="5" onclick="setSpeed(this,5)">5×</button>
       <button class="spd-btn" data-spd="10" onclick="setSpeed(this,10)">10×</button>
     </div>
-    <div class="workers-row">
+    <div class="workers-row" id="workerControls">
       Workers:
       <button class="wrk-btn" data-w="1" onclick="setWorkers(this,1)">1</button>
       <button class="wrk-btn active" data-w="3" onclick="setWorkers(this,3)">3</button>
       <button class="wrk-btn" data-w="6" onclick="setWorkers(this,6)">6</button>
     </div>
+    <button class="disconnect-btn" id="disconnectBtn" style="display:none" onclick="disconnect()">
+      Disconnect token ×
+    </button>
   </div>
 
   <div class="prog-wrap"><div class="prog-bar" id="progBar"></div></div>
@@ -435,6 +574,11 @@
 </div>
 
 <script>
+  // ── Mode detection ────────────────────────────────────────────────────
+  const BACKEND_URL = (window._deployLive?.phiBackendUrl || '').replace(/\/$/, '');
+  const isLive = !!BACKEND_URL;
+  let simForced = false; // user chose sim even though live is available
+
   // ── Data generation ───────────────────────────────────────────────────
 
   const FIRST  = ['Alice','Barbara','Carol','Diana','Elena','Frances','Grace','Helen','Iris','Janet','Karen','Laura','Maria','Nancy','Olivia','Patricia','Quinn','Rachel','Susan','Teresa'];
@@ -611,10 +755,135 @@
     document.getElementById('progBar').style.width = `${(doneCount / 50) * 100}%`;
   }
 
-  // ── Start ─────────────────────────────────────────────────────────────
+  // ── Completion ────────────────────────────────────────────────────────
+
+  function showDone(isLiveMode) {
+    const elapsed = (Date.now() - startTime) / 1000;
+    const fastCount = 50 - claudeHits;
+    const avgMs = elapsed > 0 ? Math.round((elapsed * 1000) / 50) : 0;
+    const throughput = elapsed > 0 ? (50 / elapsed).toFixed(1) : '—';
+
+    const claudeCell = isLiveMode
+      ? `<div class="done-stat"><div class="done-stat-val">Real</div><div class="done-stat-lbl">Pipeline mode</div></div>`
+      : `<div class="done-stat"><div class="done-stat-val" style="color:var(--violet)">${claudeHits}</div><div class="done-stat-lbl">Claude fallback</div></div>`;
+
+    const fastCell = isLiveMode
+      ? `<div class="done-stat"><div class="done-stat-val" style="color:var(--accent)">50</div><div class="done-stat-lbl">Processed</div></div>`
+      : `<div class="done-stat"><div class="done-stat-val" style="color:var(--accent)">${fastCount}</div><div class="done-stat-lbl">Fast path</div></div>`;
+
+    document.getElementById('doneStats').innerHTML = `
+      <div class="done-stat">
+        <div class="done-stat-val" style="color:var(--safe)">${throughput}</div>
+        <div class="done-stat-lbl">rec / sec</div>
+      </div>
+      <div class="done-stat">
+        <div class="done-stat-val">${totalEnts}</div>
+        <div class="done-stat-lbl">Total entities</div>
+      </div>
+      ${fastCell}
+      ${claudeCell}
+      <div class="done-stat">
+        <div class="done-stat-val">${elapsed.toFixed(2)}s</div>
+        <div class="done-stat-lbl">Wall time${isLiveMode ? '' : ` (${speedMul}×)`}</div>
+      </div>
+      <div class="done-stat">
+        <div class="done-stat-val">${avgMs}ms</div>
+        <div class="done-stat-lbl">Avg per record</div>
+      </div>`;
+    document.getElementById('donePanel').style.display = 'block';
+  }
+
+  // ── Gate screen ───────────────────────────────────────────────────────
+
+  function showGate(errorMsg) {
+    const overlay = document.getElementById('gateOverlay');
+    overlay.style.display = 'flex';
+    const errEl = document.getElementById('gateError');
+    if (errorMsg) { errEl.textContent = errorMsg; errEl.style.display = 'block'; }
+    else { errEl.style.display = 'none'; }
+    setTimeout(() => document.getElementById('tokenInput').focus(), 50);
+  }
+
+  function connectWithToken() {
+    const token = document.getElementById('tokenInput').value.trim();
+    if (!token) return;
+    localStorage.setItem('phi_access_token', token);
+    document.getElementById('gateOverlay').style.display = 'none';
+    applyLiveMode();
+  }
+
+  function disconnect() {
+    localStorage.removeItem('phi_access_token');
+    applySimMode();
+    showGate();
+  }
+
+  function requestAccess() {
+    const sub = encodeURIComponent('PHI Pipeline Access Request');
+    const body = encodeURIComponent('Hi,\n\nI would like access to the PHI de-identification batch demo on bganguly.github.io.\n\nThanks');
+    window.open(`mailto:gangulybikramjit@gmail.com?subject=${sub}&body=${body}`);
+  }
+
+  function switchToSim() {
+    simForced = true;
+    document.getElementById('gateOverlay').style.display = 'none';
+    applySimMode();
+  }
+
+  // ── Mode application ──────────────────────────────────────────────────
+
+  function applyLiveMode() {
+    document.getElementById('modeBadge').textContent = '';
+    document.getElementById('modeBadge').innerHTML = '<span class="dot"></span>Live';
+    document.getElementById('modeBadge').className = 'mode-badge live';
+    document.getElementById('pageDesc').textContent =
+      '50 synthetic clinical records submitted to the real PHI pipeline on Cloud Run — ' +
+      'spaCy tier-1 NER + Claude Haiku 4.5 tier-2 fallback. Watch completions stream back.';
+    document.getElementById('speedControls').style.display = 'none';
+    document.getElementById('workerControls').style.display = 'none';
+    document.getElementById('runBtnLabel').textContent = 'Run 50 Records (Live)';
+    document.getElementById('disconnectBtn').style.display = 'inline';
+  }
+
+  function applySimMode() {
+    document.getElementById('modeBadge').innerHTML = '<span class="dot"></span>Simulation';
+    document.getElementById('modeBadge').className = 'mode-badge';
+    document.getElementById('pageDesc').textContent =
+      '50 synthetic clinical records processed by simulated Celery workers. Each record runs through ' +
+      'the two-tier detection pipeline: spaCy fast path (~12ms) or Claude Haiku 4.5 fallback (~820ms). ' +
+      'Adjust speed and worker count, then watch the queue drain.';
+    document.getElementById('speedControls').style.display = '';
+    document.getElementById('workerControls').style.display = '';
+    document.getElementById('runBtnLabel').textContent = 'Run 50 Records';
+    document.getElementById('disconnectBtn').style.display = 'none';
+  }
+
+  // ── Page init ─────────────────────────────────────────────────────────
+
+  (function init() {
+    if (!isLive) return; // simulation mode by default
+    const token = localStorage.getItem('phi_access_token');
+    if (!token) {
+      showGate();
+    } else {
+      applyLiveMode();
+    }
+  })();
+
+  // ── startBatch — routes to sim or live ───────────────────────────────
 
   async function startBatch() {
-    // Reset UI
+    const token = localStorage.getItem('phi_access_token');
+    if (isLive && !simForced && token) {
+      await startLiveBatch(token);
+    } else {
+      await startSimBatch();
+    }
+  }
+
+  // ── Simulation batch (original logic) ────────────────────────────────
+
+  async function startSimBatch() {
     RECORDS.forEach(r => {
       const c = document.getElementById(`card-${r.idx}`);
       c.className = 'rec-card pending';
@@ -642,49 +911,137 @@
         ((Date.now() - startTime) / 1000).toFixed(1) + 's';
     }, 100);
 
-    // Launch workers
     const workers = Array.from({length: workerCount}, () => workerLoop());
     await Promise.all(workers);
 
     clearInterval(timerHandle);
     btn.disabled = false;
-    showDone();
+    showDone(false);
   }
 
-  // ── Completion ────────────────────────────────────────────────────────
+  // ── Live batch ────────────────────────────────────────────────────────
 
-  function showDone() {
-    const elapsed = (Date.now() - startTime) / 1000;
-    const fastCount = 50 - claudeHits;
-    const avgMs = elapsed > 0 ? Math.round((elapsed * 1000) / 50) : 0;
-    const throughput = elapsed > 0 ? (50 / elapsed).toFixed(1) : '—';
+  function buildRecordText(r) {
+    return `Patient: ${r.patient}, MRN: ${r.mrn}
+Attending: Dr. ${r.doctor}
+Facility: ${r.hosp}
+Date of service: ${r.date}
 
-    document.getElementById('doneStats').innerHTML = `
-      <div class="done-stat">
-        <div class="done-stat-val" style="color:var(--safe)">${throughput}</div>
-        <div class="done-stat-lbl">rec / sec</div>
+Clinical note: ${r.patient} presented for follow-up. Dr. ${r.doctor} at ${r.hosp} evaluated the patient on ${r.date}. MRN ${r.mrn} verified. Patient is stable; follow-up in 3 months.`;
+  }
+
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function showLiveTrace(rec, deidentText) {
+    document.getElementById('traceIdle').style.display = 'none';
+    const body = document.getElementById('traceBody');
+    body.style.display = 'block';
+    body.innerHTML = `
+      <div class="trace-rec-hd">
+        <span class="trace-rec-id">${escHtml(rec.idStr)}</span>
+        <span class="trace-rec-name">${escHtml(rec.patient)}</span>
       </div>
-      <div class="done-stat">
-        <div class="done-stat-val">${totalEnts}</div>
-        <div class="done-stat-lbl">Total entities</div>
-      </div>
-      <div class="done-stat">
-        <div class="done-stat-val" style="color:var(--accent)">${fastCount}</div>
-        <div class="done-stat-lbl">Fast path</div>
-      </div>
-      <div class="done-stat">
-        <div class="done-stat-val" style="color:var(--violet)">${claudeHits}</div>
-        <div class="done-stat-lbl">Claude fallback</div>
-      </div>
-      <div class="done-stat">
-        <div class="done-stat-val">${elapsed.toFixed(2)}s</div>
-        <div class="done-stat-lbl">Wall time (${speedMul}× speed)</div>
-      </div>
-      <div class="done-stat">
-        <div class="done-stat-val">${avgMs}ms</div>
-        <div class="done-stat-lbl">Avg per record</div>
+      <div style="margin-top:8px">
+        <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px">De-identified output</div>
+        <div style="font-size:0.7rem;color:var(--safe);font-family:ui-monospace,monospace;white-space:pre-wrap;line-height:1.5">${escHtml(deidentText || '')}</div>
       </div>`;
-    document.getElementById('donePanel').style.display = 'block';
+  }
+
+  async function startLiveBatch(token) {
+    // Reset grid
+    RECORDS.forEach(r => {
+      const c = document.getElementById(`card-${r.idx}`);
+      c.className = 'rec-card pending';
+      c.innerHTML = `<span class="rec-id">${String(r.idx+1).padStart(2,'0')}</span>`;
+    });
+    document.getElementById('donePanel').style.display = 'none';
+    document.getElementById('traceIdle').style.display = 'flex';
+    document.getElementById('traceBody').style.display = 'none';
+    document.getElementById('progBar').style.width = '0%';
+    doneCount = 0; totalEnts = 0; claudeHits = 0;
+    ['sRecords','sThroughput','sEntities','sClaude'].forEach(id => {
+      document.getElementById(id).textContent = id === 'sRecords' ? '0 / 50' : '—';
+    });
+    document.getElementById('sElapsed').textContent = '0.0s';
+
+    const btn = document.getElementById('runBtn');
+    btn.disabled = true;
+
+    // Submit all 50 records
+    let jobId;
+    try {
+      const resp = await fetch(`${BACKEND_URL}/ingest`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ records: RECORDS.map(r => ({ id: r.idStr, text: buildRecordText(r) })) }),
+      });
+      if (resp.status === 401 || resp.status === 403) {
+        localStorage.removeItem('phi_access_token');
+        btn.disabled = false;
+        applySimMode();
+        showGate('Token invalid or expired — please re-enter.');
+        return;
+      }
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      ({ job_id: jobId } = await resp.json());
+    } catch (err) {
+      document.getElementById('traceIdle').style.display = 'flex';
+      document.getElementById('traceIdle').textContent = `Error: ${err.message}`;
+      btn.disabled = false;
+      return;
+    }
+
+    startTime = Date.now();
+    clearInterval(timerHandle);
+    timerHandle = setInterval(() => {
+      document.getElementById('sElapsed').textContent =
+        ((Date.now() - startTime) / 1000).toFixed(1) + 's';
+    }, 100);
+
+    // Poll for completions
+    const seen = new Set();
+    while (seen.size < 50) {
+      await new Promise(r => setTimeout(r, 600));
+      try {
+        const resp = await fetch(`${BACKEND_URL}/records/${jobId}`, {
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+        if (resp.status === 401 || resp.status === 403) {
+          localStorage.removeItem('phi_access_token');
+          clearInterval(timerHandle);
+          btn.disabled = false;
+          applySimMode();
+          showGate('Session expired — please re-enter your token.');
+          return;
+        }
+        if (!resp.ok) break;
+        const data = await resp.json();
+
+        for (const r of data.records) {
+          if (r.status === 'completed' && !seen.has(r.original_id)) {
+            seen.add(r.original_id);
+            const match = RECORDS.find(rec => rec.idStr === r.original_id);
+            if (match) {
+              const card = document.getElementById(`card-${match.idx}`);
+              card.className = 'rec-card done-fast';
+              card.innerHTML = `<span class="rec-id">${String(match.idx+1).padStart(2,'0')}</span><span class="rec-info">✓</span>`;
+              totalEnts += match.entity_count;
+              showLiveTrace(match, r.deidentified_text);
+            }
+          }
+        }
+
+        doneCount = seen.size;
+        updateStats();
+        if (data.status === 'completed') break;
+      } catch { break; }
+    }
+
+    clearInterval(timerHandle);
+    btn.disabled = false;
+    showDone(true);
   }
 </script>
 </body>

@@ -5,4 +5,5 @@ window._deployLive = {
   nextjs:     { frontend: true,  backend: true  },
   fargate:    { frontend: false,  backend: false  },
   serverless: { frontend: true,  backend: true  },
+  phiBackendUrl: '',
 };

@@ -98,41 +98,6 @@
     }
     .run-btn:hover { background: rgba(45,212,191,0.18); }
     .run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-    .speed-row {
-      display: flex; align-items: center; gap: 4px;
-      font-size: 0.7rem; color: var(--text-dim);
-    }
-    .spd-btn {
-      padding: 4px 9px; border-radius: var(--radius);
-      border: 1px solid var(--border-2);
-      background: transparent; color: var(--text-dim);
-      font-size: 0.68rem; font-weight: 600;
-      cursor: pointer; font-family: inherit;
-      transition: background 0.12s, color 0.12s, border-color 0.12s;
-    }
-    .spd-btn.active {
-      background: var(--accent-dim);
-      border-color: var(--accent-border);
-      color: var(--accent);
-    }
-    .workers-row {
-      display: flex; align-items: center; gap: 4px;
-      font-size: 0.7rem; color: var(--text-dim); margin-left: 4px;
-    }
-    .wrk-btn {
-      padding: 4px 9px; border-radius: var(--radius);
-      border: 1px solid var(--border-2);
-      background: transparent; color: var(--text-dim);
-      font-size: 0.68rem; font-weight: 600;
-      cursor: pointer; font-family: inherit;
-      transition: background 0.12s, color 0.12s, border-color 0.12s;
-    }
-    .wrk-btn.active {
-      background: var(--amber-dim);
-      border-color: var(--amber-border);
-      color: var(--amber);
-    }
-
     /* ── Progress bar ────────────────────────────────────────────────── */
     .prog-wrap {
       height: 3px; background: var(--surface-2);
@@ -333,22 +298,6 @@
       color: var(--text-dim); margin-top: 3px;
     }
 
-    /* ── Mode badge ───────────────────────────────────────────────── */
-    .mode-badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      font-size: 0.62rem; font-weight: 700;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      padding: 3px 8px; border-radius: 999px;
-      border: 1px solid var(--border-2);
-      color: var(--text-dim);
-    }
-    .mode-badge.live {
-      background: var(--safe-dim);
-      border-color: var(--safe-border);
-      color: var(--safe);
-    }
-    .mode-badge .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
-
     /* ── Token row ───────────────────────────────────────────────── */
     .token-row {
       display: flex; align-items: center; gap: 10px;
@@ -369,6 +318,8 @@
       font-size: 0.78rem; outline: none; min-width: 0;
     }
     .token-input::placeholder { color: var(--text-dim); }
+    .token-row.error { border-color: rgba(248,113,113,0.6); }
+    .token-row.error .token-input { color: #f87171; }
     .token-save-btn {
       background: var(--accent-dim);
       border: 1px solid var(--accent-border);
@@ -422,22 +373,18 @@
 <div class="page-wrap">
 
   <div class="page-hd">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
-      <h1 class="page-title" style="margin-bottom:0">Batch Processing</h1>
-      <span class="mode-badge" id="modeBadge"><span class="dot"></span>Simulation</span>
-    </div>
-    <p class="page-desc" id="pageDesc">
-      50 synthetic clinical records processed by simulated Celery workers. Each record runs through
-      the two-tier detection pipeline: spaCy fast path (~12ms) or Claude Haiku 4.5 fallback (~820ms).
-      Adjust speed and worker count, then watch the queue drain.
+    <h1 class="page-title">Batch Processing — Live Pipeline</h1>
+    <p class="page-desc">
+      50 synthetic clinical records submitted to the real PHI pipeline on Cloud Run.
+      spaCy tier-1 NER + Claude Haiku 4.5 tier-2 fallback. Watch completions stream back in real time.
     </p>
   </div>
 
   <!-- Inline token field -->
-  <div class="token-row">
+  <div class="token-row" id="tokenRow">
     <span class="token-lbl">Access Token</span>
     <input type="password" id="tokenInput" class="token-input"
-           placeholder="Paste token to run against live pipeline…"
+           placeholder="Paste your token…"
            onkeydown="if(event.key==='Enter')saveToken()" />
     <div id="tokenStatus"></div>
     <button class="token-req-link" id="reqLink" onclick="requestAccess()">Request Access</button>
@@ -447,20 +394,8 @@
   <div class="controls">
     <button class="run-btn" id="runBtn" onclick="startBatch()">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
-      <span id="runBtnLabel">Run 50 Records</span>
+      Run 50 Records
     </button>
-    <div class="speed-row" id="speedControls">
-      Speed:
-      <button class="spd-btn active" data-spd="1" onclick="setSpeed(this,1)">1×</button>
-      <button class="spd-btn" data-spd="5" onclick="setSpeed(this,5)">5×</button>
-      <button class="spd-btn" data-spd="10" onclick="setSpeed(this,10)">10×</button>
-    </div>
-    <div class="workers-row" id="workerControls">
-      Workers:
-      <button class="wrk-btn" data-w="1" onclick="setWorkers(this,1)">1</button>
-      <button class="wrk-btn active" data-w="3" onclick="setWorkers(this,3)">3</button>
-      <button class="wrk-btn" data-w="6" onclick="setWorkers(this,6)">6</button>
-    </div>
   </div>
 
   <div class="prog-wrap"><div class="prog-bar" id="progBar"></div></div>
@@ -522,7 +457,6 @@
   // ── Credentials ───────────────────────────────────────────────────────
   const BACKEND_URL = (window._deployLive?.phiBackendUrl || '').replace(/\/$/, '');
   function getToken() { return localStorage.getItem('phi_access_token') || ''; }
-  function isConnected() { return !!getToken(); }
 
   // ── Data generation ───────────────────────────────────────────────────
 
@@ -547,30 +481,14 @@
     const mon = rnd(s+6, 12);
     const day = rnd(s+7, 27) + 1;
     const yr  = 2023 + rnd(s+8, 2);
-    const spacy_e = 3 + rnd(s+9, 3);   // 3-5
-    const regex_e = 1 + rnd(s+10, 3);  // 1-3
+    const spacy_e = 3 + rnd(s+9, 3);
+    const regex_e = 1 + rnd(s+10, 3);
     const total_e = spacy_e + regex_e;
-    const usesClaude = idx % 3 === 2;   // every 3rd record
-    const spacy_ms   = 8 + rnd(s+11, 8);
-    const claude_ms  = usesClaude ? 780 + rnd(s+12, 80) : 0;
-
-    const steps = [
-      { name: 'spaCy NER',         ms: spacy_ms,  result: `${spacy_e} entities found` },
-      { name: 'Regex scan',        ms: 1,         result: `${regex_e} matches` },
-      { name: 'Merge & dedup',     ms: 1,         result: `${total_e} entities` },
-      { name: 'Confidence gate',   ms: 1,         result: `${total_e - (usesClaude?1:0)} high · ${usesClaude?1:0} low` },
-      ...(usesClaude ? [{ name: 'Claude Haiku 4.5', ms: claude_ms, result: 'reclassified ORG', isClaude: true }] : []),
-      { name: 'Faker synthesis',   ms: 2,         result: `${total_e} replaced` },
-      { name: 'SHA-256 + DB write',ms: 6,         result: 'committed' },
-    ];
-
     return {
       idx, idStr: `REC-${String(idx+1).padStart(3,'0')}`,
       patient: `${fn} ${ln}`, doctor: `Dr. ${doc}`, hosp,
       date: `${MONTHS[mon]} ${day}, ${yr}`, mrn,
-      usesClaude, entity_count: total_e,
-      total_ms: spacy_ms + claude_ms + 12,
-      steps,
+      entity_count: total_e,
     };
   }
 
@@ -588,161 +506,17 @@
     grid.appendChild(el);
   });
 
-  // ── Simulation state ──────────────────────────────────────────────────
+  // ── Shared state ──────────────────────────────────────────────────────
 
-  let speedMul = 1;
-  let workerCount = 3;
-  let nextRec = 0;
-  let doneCount = 0;
-  let totalEnts = 0;
-  let claudeHits = 0;
-  let startTime = null;
-  let timerHandle = null;
-  let activeTraceId = -1;
+  let doneCount = 0, totalEnts = 0, startTime = null, timerHandle = null;
 
-  function setSpeed(btn, spd) {
-    speedMul = spd;
-    document.querySelectorAll('.spd-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  }
-
-  function setWorkers(btn, n) {
-    workerCount = n;
-    document.querySelectorAll('.wrk-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  }
-
-  function delay(ms) {
-    return new Promise(r => setTimeout(r, Math.max(1, ms / speedMul)));
-  }
-
-  // ── Trace panel ───────────────────────────────────────────────────────
-
-  function showTrace(rec) {
-    activeTraceId = rec.idx;
-    document.getElementById('traceIdle').style.display = 'none';
-    const body = document.getElementById('traceBody');
-    body.style.display = 'block';
-    body.innerHTML = `
-      <div class="trace-rec-hd">
-        <span class="trace-rec-id">${rec.idStr}</span>
-        <span class="trace-rec-name">${rec.patient}</span>
-      </div>
-      <div class="trace-steps">
-        ${rec.steps.map((s, i) => `
-          <div class="t-step" id="ts-${rec.idx}-${i}">
-            <div class="t-step-icon"><div class="dot"></div></div>
-            <div class="t-step-body">
-              <div class="t-step-name">${s.name}</div>
-              <div class="t-step-result" id="tr-${rec.idx}-${i}"></div>
-            </div>
-          </div>`).join('')}
-      </div>`;
-  }
-
-  function markStepActive(recIdx, stepIdx, isClaude) {
-    if (activeTraceId !== recIdx) return;
-    const el = document.getElementById(`ts-${recIdx}-${stepIdx}`);
-    if (el) el.className = `t-step ${isClaude ? 'claude' : 'active'}`;
-  }
-
-  function markStepDone(recIdx, stepIdx, result) {
-    if (activeTraceId !== recIdx) return;
-    const el = document.getElementById(`ts-${recIdx}-${stepIdx}`);
-    const re = document.getElementById(`tr-${recIdx}-${stepIdx}`);
-    if (el) el.className = 't-step done';
-    if (re) re.textContent = result;
-  }
-
-  // ── Per-record processing ─────────────────────────────────────────────
-
-  async function processRecord(rec) {
-    const card = document.getElementById(`card-${rec.idx}`);
-    card.className = 'rec-card active';
-    showTrace(rec);
-
-    for (let i = 0; i < rec.steps.length; i++) {
-      const s = rec.steps[i];
-      markStepActive(rec.idx, i, !!s.isClaude);
-      await delay(s.ms);
-      markStepDone(rec.idx, i, s.result);
-    }
-
-    card.className = rec.usesClaude ? 'rec-card done-claude' : 'rec-card done-fast';
-    card.innerHTML = `
-      <span class="rec-id">${String(rec.idx+1).padStart(2,'0')}</span>
-      <span class="rec-info">${rec.total_ms}ms</span>`;
-
-    doneCount++;
-    totalEnts += rec.entity_count;
-    if (rec.usesClaude) claudeHits++;
-    updateStats();
-  }
-
-  // ── Worker loop ───────────────────────────────────────────────────────
-
-  async function workerLoop() {
-    while (nextRec < RECORDS.length) {
-      const idx = nextRec++;
-      if (idx >= RECORDS.length) break;
-      await processRecord(RECORDS[idx]);
-    }
-  }
-
-  // ── Stats ─────────────────────────────────────────────────────────────
-
-  function updateStats() {
-    const elapsed = (Date.now() - startTime) / 1000;
-    document.getElementById('sRecords').textContent = `${doneCount} / 50`;
-    document.getElementById('sThroughput').textContent = elapsed > 0.1 ? (doneCount / elapsed).toFixed(1) : '—';
-    document.getElementById('sEntities').textContent = totalEnts > 0 ? totalEnts : '—';
-    document.getElementById('sClaude').textContent = claudeHits > 0 ? claudeHits : '—';
-    document.getElementById('progBar').style.width = `${(doneCount / 50) * 100}%`;
-  }
-
-  // ── Completion ────────────────────────────────────────────────────────
-
-  function showDone(isLiveMode) {
-    const elapsed = (Date.now() - startTime) / 1000;
-    const fastCount = 50 - claudeHits;
-    const avgMs = elapsed > 0 ? Math.round((elapsed * 1000) / 50) : 0;
-    const throughput = elapsed > 0 ? (50 / elapsed).toFixed(1) : '—';
-
-    const claudeCell = isLiveMode
-      ? `<div class="done-stat"><div class="done-stat-val">Real</div><div class="done-stat-lbl">Pipeline mode</div></div>`
-      : `<div class="done-stat"><div class="done-stat-val" style="color:var(--violet)">${claudeHits}</div><div class="done-stat-lbl">Claude fallback</div></div>`;
-
-    const fastCell = isLiveMode
-      ? `<div class="done-stat"><div class="done-stat-val" style="color:var(--accent)">50</div><div class="done-stat-lbl">Processed</div></div>`
-      : `<div class="done-stat"><div class="done-stat-val" style="color:var(--accent)">${fastCount}</div><div class="done-stat-lbl">Fast path</div></div>`;
-
-    document.getElementById('doneStats').innerHTML = `
-      <div class="done-stat">
-        <div class="done-stat-val" style="color:var(--safe)">${throughput}</div>
-        <div class="done-stat-lbl">rec / sec</div>
-      </div>
-      <div class="done-stat">
-        <div class="done-stat-val">${totalEnts}</div>
-        <div class="done-stat-lbl">Total entities</div>
-      </div>
-      ${fastCell}
-      ${claudeCell}
-      <div class="done-stat">
-        <div class="done-stat-val">${elapsed.toFixed(2)}s</div>
-        <div class="done-stat-lbl">Wall time${isLiveMode ? '' : ` (${speedMul}×)`}</div>
-      </div>
-      <div class="done-stat">
-        <div class="done-stat-val">${avgMs}ms</div>
-        <div class="done-stat-lbl">Avg per record</div>
-      </div>`;
-    document.getElementById('donePanel').style.display = 'block';
-  }
-
-  // ── Gate screen ───────────────────────────────────────────────────────
+  // ── Token field ───────────────────────────────────────────────────────
 
   function showTokenError(msg) {
     const el = document.getElementById('tokenError');
+    const row = document.getElementById('tokenRow');
     el.textContent = msg; el.style.display = msg ? 'block' : 'none';
+    row.classList.toggle('error', !!msg);
   }
 
   function renderTokenState() {
@@ -760,11 +534,14 @@
 
   function saveToken() {
     const token = document.getElementById('tokenInput').value.trim();
-    if (!token) { document.getElementById('tokenInput').focus(); return; }
+    if (!token) {
+      showTokenError('Paste your access token first.');
+      document.getElementById('tokenInput').focus();
+      return;
+    }
     localStorage.setItem('phi_access_token', token);
     showTokenError('');
     renderTokenState();
-    applyLiveMode();
   }
 
   function clearToken() {
@@ -772,7 +549,6 @@
     document.getElementById('tokenInput').value = '';
     showTokenError('');
     renderTokenState();
-    applySimMode();
   }
 
   function requestAccess() {
@@ -781,87 +557,36 @@
     window.open(`mailto:gangulybikramjit@gmail.com?subject=${sub}&body=${body}`);
   }
 
-  // ── Mode application ──────────────────────────────────────────────────
+  // ── Init ──────────────────────────────────────────────────────────────
 
-  function applyLiveMode() {
-    document.getElementById('modeBadge').innerHTML = '<span class="dot"></span>Live';
-    document.getElementById('modeBadge').className = 'mode-badge live';
-    document.getElementById('pageDesc').textContent =
-      '50 synthetic clinical records submitted to the real PHI pipeline on Cloud Run — ' +
-      'spaCy tier-1 NER + Claude Haiku 4.5 tier-2 fallback. Watch completions stream back.';
-    document.getElementById('speedControls').style.display = 'none';
-    document.getElementById('workerControls').style.display = 'none';
-    document.getElementById('runBtnLabel').textContent = 'Run 50 Records (Live)';
+  (function init() { renderTokenState(); })();
+
+  // ── Stats ─────────────────────────────────────────────────────────────
+
+  function updateStats() {
+    const elapsed = (Date.now() - startTime) / 1000;
+    document.getElementById('sRecords').textContent = `${doneCount} / 50`;
+    document.getElementById('sThroughput').textContent = elapsed > 0.1 ? (doneCount / elapsed).toFixed(1) : '—';
+    document.getElementById('sEntities').textContent = totalEnts > 0 ? totalEnts : '—';
+    document.getElementById('sClaude').textContent = '—';
+    document.getElementById('progBar').style.width = `${(doneCount / 50) * 100}%`;
   }
 
-  function applySimMode() {
-    document.getElementById('modeBadge').innerHTML = '<span class="dot"></span>Simulation';
-    document.getElementById('modeBadge').className = 'mode-badge';
-    document.getElementById('pageDesc').textContent =
-      '50 synthetic clinical records processed by simulated Celery workers. Each record runs through ' +
-      'the two-tier detection pipeline: spaCy fast path (~12ms) or Claude Haiku 4.5 fallback (~820ms). ' +
-      'Adjust speed and worker count, then watch the queue drain.';
-    document.getElementById('speedControls').style.display = '';
-    document.getElementById('workerControls').style.display = '';
-    document.getElementById('runBtnLabel').textContent = 'Run 50 Records';
-  }
-
-  // ── Page init ─────────────────────────────────────────────────────────
-
-  (function init() {
-    renderTokenState();
-    if (isConnected()) applyLiveMode();
-  })();
-
-  // ── startBatch — routes to sim or live ───────────────────────────────
+  // ── startBatch ────────────────────────────────────────────────────────
 
   async function startBatch() {
     const token = getToken();
-    if (BACKEND_URL && token) {
-      await startLiveBatch(token);
-    } else if (!BACKEND_URL && token) {
-      showTokenError('Backend not deployed yet — pipeline URL not configured.');
-    } else {
-      await startSimBatch();
+    if (!token) {
+      showTokenError('Access token required — paste your token above or request access.');
+      document.getElementById('tokenInput').focus();
+      return;
     }
-  }
-
-  // ── Simulation batch (original logic) ────────────────────────────────
-
-  async function startSimBatch() {
-    RECORDS.forEach(r => {
-      const c = document.getElementById(`card-${r.idx}`);
-      c.className = 'rec-card pending';
-      c.innerHTML = `<span class="rec-id">${String(r.idx+1).padStart(2,'0')}</span>`;
-    });
-    document.getElementById('donePanel').style.display = 'none';
-    document.getElementById('traceIdle').style.display = 'flex';
-    document.getElementById('traceBody').style.display = 'none';
-    document.getElementById('progBar').style.width = '0%';
-
-    nextRec = 0; doneCount = 0; totalEnts = 0; claudeHits = 0;
-    startTime = Date.now();
-    activeTraceId = -1;
-    ['sRecords','sThroughput','sEntities','sClaude'].forEach(id => {
-      document.getElementById(id).textContent = id === 'sRecords' ? '0 / 50' : '—';
-    });
-    document.getElementById('sElapsed').textContent = '0.0s';
-
-    const btn = document.getElementById('runBtn');
-    btn.disabled = true;
-
-    clearInterval(timerHandle);
-    timerHandle = setInterval(() => {
-      document.getElementById('sElapsed').textContent =
-        ((Date.now() - startTime) / 1000).toFixed(1) + 's';
-    }, 100);
-
-    const workers = Array.from({length: workerCount}, () => workerLoop());
-    await Promise.all(workers);
-
-    clearInterval(timerHandle);
-    btn.disabled = false;
-    showDone(false);
+    if (!BACKEND_URL) {
+      showTokenError('Pipeline not deployed yet — backend URL not configured.');
+      return;
+    }
+    showTokenError('');
+    await runLiveBatch(token);
   }
 
   // ── Live batch ────────────────────────────────────────────────────────
@@ -879,7 +604,7 @@ Clinical note: ${r.patient} presented for follow-up. Dr. ${r.doctor} at ${r.hosp
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
-  function showLiveTrace(rec, deidentText) {
+  function showLastTrace(rec, deidentText) {
     document.getElementById('traceIdle').style.display = 'none';
     const body = document.getElementById('traceBody');
     body.style.display = 'block';
@@ -894,8 +619,16 @@ Clinical note: ${r.patient} presented for follow-up. Dr. ${r.doctor} at ${r.hosp
       </div>`;
   }
 
-  async function startLiveBatch(token) {
-    // Reset grid
+  function onTokenRejected(btn) {
+    localStorage.removeItem('phi_access_token');
+    clearInterval(timerHandle);
+    btn.disabled = false;
+    renderTokenState();
+    showTokenError('Token invalid or expired — please re-enter.');
+    document.getElementById('tokenInput').focus();
+  }
+
+  async function runLiveBatch(token) {
     RECORDS.forEach(r => {
       const c = document.getElementById(`card-${r.idx}`);
       c.className = 'rec-card pending';
@@ -905,7 +638,7 @@ Clinical note: ${r.patient} presented for follow-up. Dr. ${r.doctor} at ${r.hosp
     document.getElementById('traceIdle').style.display = 'flex';
     document.getElementById('traceBody').style.display = 'none';
     document.getElementById('progBar').style.width = '0%';
-    doneCount = 0; totalEnts = 0; claudeHits = 0;
+    doneCount = 0; totalEnts = 0;
     ['sRecords','sThroughput','sEntities','sClaude'].forEach(id => {
       document.getElementById(id).textContent = id === 'sRecords' ? '0 / 50' : '—';
     });
@@ -914,7 +647,6 @@ Clinical note: ${r.patient} presented for follow-up. Dr. ${r.doctor} at ${r.hosp
     const btn = document.getElementById('runBtn');
     btn.disabled = true;
 
-    // Submit all 50 records
     let jobId;
     try {
       const resp = await fetch(`${BACKEND_URL}/ingest`, {
@@ -922,33 +654,21 @@ Clinical note: ${r.patient} presented for follow-up. Dr. ${r.doctor} at ${r.hosp
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ records: RECORDS.map(r => ({ id: r.idStr, text: buildRecordText(r) })) }),
       });
-      if (resp.status === 401 || resp.status === 403) {
-        localStorage.removeItem('phi_access_token');
-        btn.disabled = false;
-        renderTokenState();
-        applySimMode();
-        showTokenError('Token invalid or expired — please re-enter.');
-        document.getElementById('tokenInput').focus();
-        return;
-      }
+      if (resp.status === 401 || resp.status === 403) { onTokenRejected(btn); return; }
       if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
       ({ job_id: jobId } = await resp.json());
     } catch (err) {
-      const idle = document.getElementById('traceIdle');
-      idle.style.display = 'flex';
-      idle.textContent = `Error: ${err.message}`;
+      document.getElementById('traceIdle').textContent = `Error: ${err.message}`;
       btn.disabled = false;
       return;
     }
 
     startTime = Date.now();
-    clearInterval(timerHandle);
     timerHandle = setInterval(() => {
       document.getElementById('sElapsed').textContent =
         ((Date.now() - startTime) / 1000).toFixed(1) + 's';
     }, 100);
 
-    // Poll for completions
     const seen = new Set();
     while (seen.size < 50) {
       await new Promise(r => setTimeout(r, 600));
@@ -956,19 +676,9 @@ Clinical note: ${r.patient} presented for follow-up. Dr. ${r.doctor} at ${r.hosp
         const resp = await fetch(`${BACKEND_URL}/records/${jobId}`, {
           headers: { 'Authorization': `Bearer ${token}` },
         });
-        if (resp.status === 401 || resp.status === 403) {
-          localStorage.removeItem('phi_access_token');
-          clearInterval(timerHandle);
-          btn.disabled = false;
-          renderTokenState();
-          applySimMode();
-          showTokenError('Session expired — please re-enter your token.');
-          document.getElementById('tokenInput').focus();
-          return;
-        }
+        if (resp.status === 401 || resp.status === 403) { onTokenRejected(btn); return; }
         if (!resp.ok) break;
         const data = await resp.json();
-
         for (const r of data.records) {
           if (r.status === 'completed' && !seen.has(r.original_id)) {
             seen.add(r.original_id);
@@ -978,11 +688,10 @@ Clinical note: ${r.patient} presented for follow-up. Dr. ${r.doctor} at ${r.hosp
               card.className = 'rec-card done-fast';
               card.innerHTML = `<span class="rec-id">${String(match.idx+1).padStart(2,'0')}</span><span class="rec-info">✓</span>`;
               totalEnts += match.entity_count;
-              showLiveTrace(match, r.deidentified_text);
+              showLastTrace(match, r.deidentified_text);
             }
           }
         }
-
         doneCount = seen.size;
         updateStats();
         if (data.status === 'completed') break;
@@ -991,7 +700,17 @@ Clinical note: ${r.patient} presented for follow-up. Dr. ${r.doctor} at ${r.hosp
 
     clearInterval(timerHandle);
     btn.disabled = false;
-    showDone(true);
+
+    const elapsed = (Date.now() - startTime) / 1000;
+    const throughput = elapsed > 0 ? (50 / elapsed).toFixed(1) : '—';
+    const avgMs = elapsed > 0 ? Math.round((elapsed * 1000) / 50) : 0;
+    document.getElementById('doneStats').innerHTML = `
+      <div class="done-stat"><div class="done-stat-val" style="color:var(--safe)">${throughput}</div><div class="done-stat-lbl">rec / sec</div></div>
+      <div class="done-stat"><div class="done-stat-val">${totalEnts}</div><div class="done-stat-lbl">Total entities</div></div>
+      <div class="done-stat"><div class="done-stat-val" style="color:var(--accent)">${seen.size}</div><div class="done-stat-lbl">Processed</div></div>
+      <div class="done-stat"><div class="done-stat-val">${elapsed.toFixed(2)}s</div><div class="done-stat-lbl">Wall time</div></div>
+      <div class="done-stat"><div class="done-stat-val">${avgMs}ms</div><div class="done-stat-lbl">Avg per record</div></div>`;
+    document.getElementById('donePanel').style.display = 'block';
   }
 </script>
 </body>

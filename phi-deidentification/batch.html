@@ -425,17 +425,6 @@
       transition: border-color 0.15s, color 0.15s;
     }
     .gate-request-btn:hover { border-color: var(--accent-border); color: var(--accent); }
-    .gate-sim-note {
-      font-size: 0.68rem; color: var(--text-dim);
-      text-align: center; margin-top: 16px;
-    }
-    .gate-sim-link {
-      background: none; border: none; padding: 0;
-      color: var(--text-muted); font-size: inherit;
-      cursor: pointer; text-decoration: underline;
-      font-family: inherit;
-    }
-    .gate-sim-link:hover { color: var(--text); }
     .disconnect-btn {
       font-size: 0.62rem; color: var(--text-dim);
       background: none; border: none; cursor: pointer;
@@ -476,9 +465,6 @@
     </div>
     <div class="gate-divider">or</div>
     <button class="gate-request-btn" onclick="requestAccess()">Request Access →</button>
-    <div class="gate-sim-note">
-      No token? <button class="gate-sim-link" onclick="switchToSim()">Run local simulation instead</button>
-    </div>
   </div>
 </div>
 
@@ -577,7 +563,6 @@
   // ── Mode detection ────────────────────────────────────────────────────
   const BACKEND_URL = (window._deployLive?.phiBackendUrl || '').replace(/\/$/, '');
   const isLive = !!BACKEND_URL;
-  let simForced = false; // user chose sim even though live is available
 
   // ── Data generation ───────────────────────────────────────────────────
 
@@ -824,12 +809,6 @@
     window.open(`mailto:gangulybikramjit@gmail.com?subject=${sub}&body=${body}`);
   }
 
-  function switchToSim() {
-    simForced = true;
-    document.getElementById('gateOverlay').style.display = 'none';
-    applySimMode();
-  }
-
   // ── Mode application ──────────────────────────────────────────────────
 
   function applyLiveMode() {
@@ -874,7 +853,7 @@
 
   async function startBatch() {
     const token = localStorage.getItem('phi_access_token');
-    if (isLive && !simForced && token) {
+    if (isLive && token) {
       await startLiveBatch(token);
     } else {
       await startSimBatch();

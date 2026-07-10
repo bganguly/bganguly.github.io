@@ -349,88 +349,59 @@
     }
     .mode-badge .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
 
-    /* ── Gate screen ─────────────────────────────────────────────── */
-    .gate-overlay {
-      position: fixed; inset: 0; z-index: 100;
-      background: rgba(13,17,23,0.88);
-      backdrop-filter: blur(8px);
-      display: none; align-items: center; justify-content: center;
-      padding: 24px;
-    }
-    .gate-card {
+    /* ── Token row ───────────────────────────────────────────────── */
+    .token-row {
+      display: flex; align-items: center; gap: 10px;
       background: var(--surface);
-      border: 1px solid var(--border-2);
-      border-radius: var(--radius-lg);
-      padding: 28px 32px;
-      max-width: 420px; width: 100%;
-    }
-    .gate-title {
-      font-size: 0.95rem; font-weight: 700;
-      margin-bottom: 8px;
-    }
-    .gate-desc {
-      font-size: 0.78rem; color: var(--text-muted);
-      line-height: 1.6; margin-bottom: 20px;
-    }
-    .gate-error {
-      font-size: 0.72rem; color: #f87171;
-      background: rgba(248,113,113,0.08);
-      border: 1px solid rgba(248,113,113,0.25);
+      border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 7px 10px; margin-bottom: 14px;
+      padding: 7px 12px;
+      margin-bottom: 6px;
     }
-    .gate-label {
+    .token-lbl {
       font-size: 0.65rem; font-weight: 700;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      color: var(--text-dim); margin-bottom: 6px;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      color: var(--text-dim); white-space: nowrap; flex-shrink: 0;
     }
-    .gate-row { display: flex; gap: 8px; margin-bottom: 14px; }
-    .gate-input {
-      flex: 1; background: var(--bg);
-      border: 1px solid var(--border-2);
-      border-radius: var(--radius);
+    .token-input {
+      flex: 1; background: transparent; border: none;
       color: var(--text); font-family: ui-monospace, monospace;
-      font-size: 0.78rem; padding: 7px 10px;
-      outline: none;
+      font-size: 0.78rem; outline: none; min-width: 0;
     }
-    .gate-input:focus { border-color: var(--accent); }
-    .gate-connect-btn {
+    .token-input::placeholder { color: var(--text-dim); }
+    .token-save-btn {
       background: var(--accent-dim);
       border: 1px solid var(--accent-border);
       border-radius: var(--radius);
       color: var(--accent);
-      font-size: 0.78rem; font-weight: 700;
-      padding: 7px 14px; cursor: pointer;
-      font-family: inherit;
-      transition: background 0.15s;
+      font-size: 0.7rem; font-weight: 700;
+      padding: 3px 10px; cursor: pointer;
+      font-family: inherit; white-space: nowrap;
+      transition: background 0.12s;
     }
-    .gate-connect-btn:hover { background: rgba(45,212,191,0.18); }
-    .gate-divider {
-      font-size: 0.68rem; color: var(--text-dim);
-      text-align: center; margin: 14px 0;
-      display: flex; align-items: center; gap: 8px;
+    .token-save-btn:hover { background: rgba(45,212,191,0.18); }
+    .token-connected {
+      font-size: 0.7rem; color: var(--safe);
+      display: flex; align-items: center; gap: 5px;
+      white-space: nowrap;
     }
-    .gate-divider::before, .gate-divider::after {
-      content: ''; flex: 1; height: 1px; background: var(--border);
-    }
-    .gate-request-btn {
-      width: 100%;
-      background: transparent;
-      border: 1px solid var(--border-2);
-      border-radius: var(--radius);
-      color: var(--text-muted);
-      font-size: 0.78rem; font-weight: 600;
-      padding: 8px; cursor: pointer;
-      font-family: inherit;
-      transition: border-color 0.15s, color 0.15s;
-    }
-    .gate-request-btn:hover { border-color: var(--accent-border); color: var(--accent); }
-    .disconnect-btn {
-      font-size: 0.62rem; color: var(--text-dim);
+    .token-clear {
       background: none; border: none; cursor: pointer;
-      font-family: inherit; padding: 0;
+      color: var(--text-dim); font-size: 0.7rem; padding: 0 2px;
+      font-family: inherit; line-height: 1;
     }
-    .disconnect-btn:hover { color: #f87171; }
+    .token-clear:hover { color: #f87171; }
+    .token-req-link {
+      background: none; border: none; cursor: pointer;
+      font-size: 0.68rem; color: var(--text-dim);
+      font-family: inherit; text-decoration: underline;
+      white-space: nowrap; padding: 0; flex-shrink: 0;
+    }
+    .token-req-link:hover { color: var(--text-muted); }
+    .token-error {
+      font-size: 0.7rem; color: #f87171;
+      margin-bottom: 10px; display: none;
+    }
   </style>
 </head>
 <body>
@@ -443,37 +414,16 @@
   <span class="nav-sep">›</span>
   <span class="nav-title">Batch Run</span>
   <div class="nav-right">
-    <button class="nav-btn" id="navConnectBtn" onclick="showGate()" style="cursor:pointer">⚙ Connect</button>
     <a href="pipeline.html" class="nav-btn">Pipeline →</a>
     <a href="index.html" class="nav-btn">Open Demo →</a>
   </div>
 </nav>
 
-<!-- Gate screen overlay -->
-<div class="gate-overlay" id="gateOverlay">
-  <div class="gate-card">
-    <div class="gate-title">Live Pipeline — Access Required</div>
-    <p class="gate-desc">
-      Run 50 records through the real spaCy + Claude Haiku 4.5 pipeline on Cloud Run.
-      Paste your access token below, or request one.
-    </p>
-    <div class="gate-error" id="gateError" style="display:none"></div>
-    <div class="gate-label">Access Token</div>
-    <div class="gate-row">
-      <input type="password" id="tokenInput" class="gate-input" placeholder="Paste your token…"
-             onkeydown="if(event.key==='Enter')connectWithToken()" />
-      <button class="gate-connect-btn" onclick="connectWithToken()">Connect</button>
-    </div>
-    <div class="gate-divider">or</div>
-    <button class="gate-request-btn" onclick="requestAccess()">Request Access →</button>
-  </div>
-</div>
-
 <div class="page-wrap">
 
   <div class="page-hd">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
-      <h1 class="page-title" id="pageTitle" style="margin-bottom:0">Batch Processing</h1>
+      <h1 class="page-title" style="margin-bottom:0">Batch Processing</h1>
       <span class="mode-badge" id="modeBadge"><span class="dot"></span>Simulation</span>
     </div>
     <p class="page-desc" id="pageDesc">
@@ -482,6 +432,17 @@
       Adjust speed and worker count, then watch the queue drain.
     </p>
   </div>
+
+  <!-- Inline token field -->
+  <div class="token-row">
+    <span class="token-lbl">Access Token</span>
+    <input type="password" id="tokenInput" class="token-input"
+           placeholder="Paste token to run against live pipeline…"
+           onkeydown="if(event.key==='Enter')saveToken()" />
+    <div id="tokenStatus"></div>
+    <button class="token-req-link" id="reqLink" onclick="requestAccess()">Request Access</button>
+  </div>
+  <div class="token-error" id="tokenError"></div>
 
   <div class="controls">
     <button class="run-btn" id="runBtn" onclick="startBatch()">
@@ -500,9 +461,6 @@
       <button class="wrk-btn active" data-w="3" onclick="setWorkers(this,3)">3</button>
       <button class="wrk-btn" data-w="6" onclick="setWorkers(this,6)">6</button>
     </div>
-    <button class="disconnect-btn" id="disconnectBtn" style="display:none" onclick="disconnect()">
-      Disconnect token ×
-    </button>
   </div>
 
   <div class="prog-wrap"><div class="prog-bar" id="progBar"></div></div>
@@ -782,26 +740,39 @@
 
   // ── Gate screen ───────────────────────────────────────────────────────
 
-  function showGate(errorMsg) {
-    document.getElementById('gateOverlay').style.display = 'flex';
-    const errEl = document.getElementById('gateError');
-    if (errorMsg) { errEl.textContent = errorMsg; errEl.style.display = 'block'; }
-    else { errEl.style.display = 'none'; }
-    setTimeout(() => document.getElementById('tokenInput').focus(), 50);
+  function showTokenError(msg) {
+    const el = document.getElementById('tokenError');
+    el.textContent = msg; el.style.display = msg ? 'block' : 'none';
   }
 
-  function connectWithToken() {
+  function renderTokenState() {
+    const token = getToken();
+    const status = document.getElementById('tokenStatus');
+    const reqLink = document.getElementById('reqLink');
+    if (token) {
+      status.innerHTML = `<span class="token-connected">✓ Connected <button class="token-clear" onclick="clearToken()" title="Disconnect">×</button></span>`;
+      reqLink.style.display = 'none';
+    } else {
+      status.innerHTML = `<button class="token-save-btn" onclick="saveToken()">Save</button>`;
+      reqLink.style.display = '';
+    }
+  }
+
+  function saveToken() {
     const token = document.getElementById('tokenInput').value.trim();
     if (!token) { document.getElementById('tokenInput').focus(); return; }
     localStorage.setItem('phi_access_token', token);
-    document.getElementById('gateOverlay').style.display = 'none';
+    showTokenError('');
+    renderTokenState();
     applyLiveMode();
   }
 
-  function disconnect() {
+  function clearToken() {
     localStorage.removeItem('phi_access_token');
+    document.getElementById('tokenInput').value = '';
+    showTokenError('');
+    renderTokenState();
     applySimMode();
-    showGate();
   }
 
   function requestAccess() {
@@ -821,8 +792,6 @@
     document.getElementById('speedControls').style.display = 'none';
     document.getElementById('workerControls').style.display = 'none';
     document.getElementById('runBtnLabel').textContent = 'Run 50 Records (Live)';
-    document.getElementById('disconnectBtn').style.display = 'inline';
-    document.getElementById('navConnectBtn').textContent = '⚙ Reconnect';
   }
 
   function applySimMode() {
@@ -835,18 +804,13 @@
     document.getElementById('speedControls').style.display = '';
     document.getElementById('workerControls').style.display = '';
     document.getElementById('runBtnLabel').textContent = 'Run 50 Records';
-    document.getElementById('disconnectBtn').style.display = 'none';
-    document.getElementById('navConnectBtn').textContent = '⚙ Connect';
   }
 
   // ── Page init ─────────────────────────────────────────────────────────
 
   (function init() {
-    if (isConnected()) {
-      applyLiveMode();
-    } else {
-      showGate(); // always show gate on first visit / when no token stored
-    }
+    renderTokenState();
+    if (isConnected()) applyLiveMode();
   })();
 
   // ── startBatch — routes to sim or live ───────────────────────────────
@@ -856,8 +820,7 @@
     if (BACKEND_URL && token) {
       await startLiveBatch(token);
     } else if (!BACKEND_URL && token) {
-      // token present but backend not deployed yet — show gate error
-      showGate('Backend not deployed yet — the pipeline URL is not configured.');
+      showTokenError('Backend not deployed yet — pipeline URL not configured.');
     } else {
       await startSimBatch();
     }
@@ -962,8 +925,10 @@ Clinical note: ${r.patient} presented for follow-up. Dr. ${r.doctor} at ${r.hosp
       if (resp.status === 401 || resp.status === 403) {
         localStorage.removeItem('phi_access_token');
         btn.disabled = false;
+        renderTokenState();
         applySimMode();
-        showGate('Token invalid or expired — please re-enter.');
+        showTokenError('Token invalid or expired — please re-enter.');
+        document.getElementById('tokenInput').focus();
         return;
       }
       if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
@@ -995,8 +960,10 @@ Clinical note: ${r.patient} presented for follow-up. Dr. ${r.doctor} at ${r.hosp
           localStorage.removeItem('phi_access_token');
           clearInterval(timerHandle);
           btn.disabled = false;
+          renderTokenState();
           applySimMode();
-          showGate('Session expired — please re-enter your token.');
+          showTokenError('Session expired — please re-enter your token.');
+          document.getElementById('tokenInput').focus();
           return;
         }
         if (!resp.ok) break;

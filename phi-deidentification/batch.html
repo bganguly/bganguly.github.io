@@ -320,28 +320,6 @@
     .token-input::placeholder { color: var(--text-dim); }
     .token-row.error { border-color: rgba(248,113,113,0.6); }
     .token-row.error .token-input { color: #f87171; }
-    .token-save-btn {
-      background: var(--accent-dim);
-      border: 1px solid var(--accent-border);
-      border-radius: var(--radius);
-      color: var(--accent);
-      font-size: 0.7rem; font-weight: 700;
-      padding: 3px 10px; cursor: pointer;
-      font-family: inherit; white-space: nowrap;
-      transition: background 0.12s;
-    }
-    .token-save-btn:hover { background: rgba(45,212,191,0.18); }
-    .token-connected {
-      font-size: 0.7rem; color: var(--safe);
-      display: flex; align-items: center; gap: 5px;
-      white-space: nowrap;
-    }
-    .token-clear {
-      background: none; border: none; cursor: pointer;
-      color: var(--text-dim); font-size: 0.7rem; padding: 0 2px;
-      font-family: inherit; line-height: 1;
-    }
-    .token-clear:hover { color: #f87171; }
     .token-req-link {
       background: none; border: none; cursor: pointer;
       font-size: 0.68rem; color: var(--text-dim);
@@ -384,10 +362,8 @@
   <div class="token-row" id="tokenRow">
     <span class="token-lbl">Access Token</span>
     <input type="password" id="tokenInput" class="token-input"
-           placeholder="Paste your token…"
-           onkeydown="if(event.key==='Enter')saveToken()" />
-    <div id="tokenStatus"></div>
-    <button class="token-req-link" id="reqLink" onclick="requestAccess()">Request Access</button>
+           placeholder="Paste your token…" />
+    <button class="token-req-link" onclick="requestAccess()">Request Access</button>
   </div>
   <div class="token-error" id="tokenError"></div>
 
@@ -456,7 +432,10 @@
 <script>
   // ── Credentials ───────────────────────────────────────────────────────
   const BACKEND_URL = (window._deployLive?.phiBackendUrl || '').replace(/\/$/, '');
-  function getToken() { return localStorage.getItem('phi_access_token') || ''; }
+  function getToken() {
+    return document.getElementById('tokenInput').value.trim()
+        || localStorage.getItem('phi_access_token') || '';
+  }
 
   // ── Data generation ───────────────────────────────────────────────────
 
@@ -519,47 +498,18 @@
     row.classList.toggle('error', !!msg);
   }
 
-  function renderTokenState() {
-    const token = getToken();
-    const status = document.getElementById('tokenStatus');
-    const reqLink = document.getElementById('reqLink');
-    if (token) {
-      status.innerHTML = `<span class="token-connected">✓ Connected <button class="token-clear" onclick="clearToken()" title="Disconnect">×</button></span>`;
-      reqLink.style.display = 'none';
-    } else {
-      status.innerHTML = `<button class="token-save-btn" onclick="saveToken()">Save</button>`;
-      reqLink.style.display = '';
-    }
-  }
-
-  function saveToken() {
-    const token = document.getElementById('tokenInput').value.trim();
-    if (!token) {
-      showTokenError('Paste your access token first.');
-      document.getElementById('tokenInput').focus();
-      return;
-    }
-    localStorage.setItem('phi_access_token', token);
-    showTokenError('');
-    renderTokenState();
-  }
-
-  function clearToken() {
-    localStorage.removeItem('phi_access_token');
-    document.getElementById('tokenInput').value = '';
-    showTokenError('');
-    renderTokenState();
-  }
-
   function requestAccess() {
     const sub  = encodeURIComponent('PHI Pipeline Access Request');
     const body = encodeURIComponent('Hi,\n\nI would like access to the PHI de-identification batch demo on bganguly.github.io.\n\nThanks');
     window.open(`mailto:gangulybikramjit@gmail.com?subject=${sub}&body=${body}`);
   }
 
-  // ── Init ──────────────────────────────────────────────────────────────
+  // ── Init — pre-fill from localStorage ────────────────────────────────
 
-  (function init() { renderTokenState(); })();
+  (function init() {
+    const saved = localStorage.getItem('phi_access_token');
+    if (saved) document.getElementById('tokenInput').value = saved;
+  })();
 
   // ── Stats ─────────────────────────────────────────────────────────────
 
@@ -575,12 +525,6 @@
   // ── startBatch ────────────────────────────────────────────────────────
 
   async function startBatch() {
-    // auto-save if the field has a value but hasn't been saved yet
-    const inputVal = document.getElementById('tokenInput').value.trim();
-    if (inputVal && !getToken()) {
-      localStorage.setItem('phi_access_token', inputVal);
-      renderTokenState();
-    }
     const token = getToken();
     if (!token) {
       showTokenError('Paste your access token above, then click Run.');
@@ -591,6 +535,7 @@
       showTokenError('Pipeline not yet deployed — backend URL not configured.');
       return;
     }
+    localStorage.setItem('phi_access_token', token); // persist for next visit
     showTokenError('');
     await runLiveBatch(token);
   }
@@ -627,10 +572,10 @@ Clinical note: ${r.patient} presented for follow-up. Dr. ${r.doctor} at ${r.hosp
 
   function onTokenRejected(btn) {
     localStorage.removeItem('phi_access_token');
+    document.getElementById('tokenInput').value = '';
     clearInterval(timerHandle);
     btn.disabled = false;
-    renderTokenState();
-    showTokenError('Token invalid or expired — please re-enter.');
+    showTokenError('Token invalid or expired — paste a new one and click Run.');
     document.getElementById('tokenInput').focus();
   }
 

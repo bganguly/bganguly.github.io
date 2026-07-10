@@ -443,18 +443,19 @@
   <span class="nav-sep">›</span>
   <span class="nav-title">Batch Run</span>
   <div class="nav-right">
+    <button class="nav-btn" id="navConnectBtn" onclick="showGate()" style="cursor:pointer">⚙ Connect</button>
     <a href="pipeline.html" class="nav-btn">Pipeline →</a>
     <a href="index.html" class="nav-btn">Open Demo →</a>
   </div>
 </nav>
 
-<!-- Gate screen overlay (live mode, no token) -->
+<!-- Gate screen overlay -->
 <div class="gate-overlay" id="gateOverlay">
   <div class="gate-card">
     <div class="gate-title">Live Pipeline — Access Required</div>
     <p class="gate-desc">
-      This batch run connects to the real PHI de-identification backend (Cloud Run).
-      spaCy tier-1 + Claude Haiku 4.5 tier-2, running on actual infrastructure.
+      Run 50 records through the real spaCy + Claude Haiku 4.5 pipeline on Cloud Run.
+      Paste your access token below, or request one.
     </p>
     <div class="gate-error" id="gateError" style="display:none"></div>
     <div class="gate-label">Access Token</div>
@@ -560,9 +561,10 @@
 </div>
 
 <script>
-  // ── Mode detection ────────────────────────────────────────────────────
+  // ── Credentials ───────────────────────────────────────────────────────
   const BACKEND_URL = (window._deployLive?.phiBackendUrl || '').replace(/\/$/, '');
-  const isLive = !!BACKEND_URL;
+  function getToken() { return localStorage.getItem('phi_access_token') || ''; }
+  function isConnected() { return !!getToken(); }
 
   // ── Data generation ───────────────────────────────────────────────────
 
@@ -781,8 +783,7 @@
   // ── Gate screen ───────────────────────────────────────────────────────
 
   function showGate(errorMsg) {
-    const overlay = document.getElementById('gateOverlay');
-    overlay.style.display = 'flex';
+    document.getElementById('gateOverlay').style.display = 'flex';
     const errEl = document.getElementById('gateError');
     if (errorMsg) { errEl.textContent = errorMsg; errEl.style.display = 'block'; }
     else { errEl.style.display = 'none'; }
@@ -791,7 +792,7 @@
 
   function connectWithToken() {
     const token = document.getElementById('tokenInput').value.trim();
-    if (!token) return;
+    if (!token) { document.getElementById('tokenInput').focus(); return; }
     localStorage.setItem('phi_access_token', token);
     document.getElementById('gateOverlay').style.display = 'none';
     applyLiveMode();
@@ -804,7 +805,7 @@
   }
 
   function requestAccess() {
-    const sub = encodeURIComponent('PHI Pipeline Access Request');
+    const sub  = encodeURIComponent('PHI Pipeline Access Request');
     const body = encodeURIComponent('Hi,\n\nI would like access to the PHI de-identification batch demo on bganguly.github.io.\n\nThanks');
     window.open(`mailto:gangulybikramjit@gmail.com?subject=${sub}&body=${body}`);
   }
@@ -812,7 +813,6 @@
   // ── Mode application ──────────────────────────────────────────────────
 
   function applyLiveMode() {
-    document.getElementById('modeBadge').textContent = '';
     document.getElementById('modeBadge').innerHTML = '<span class="dot"></span>Live';
     document.getElementById('modeBadge').className = 'mode-badge live';
     document.getElementById('pageDesc').textContent =
@@ -822,6 +822,7 @@
     document.getElementById('workerControls').style.display = 'none';
     document.getElementById('runBtnLabel').textContent = 'Run 50 Records (Live)';
     document.getElementById('disconnectBtn').style.display = 'inline';
+    document.getElementById('navConnectBtn').textContent = '⚙ Reconnect';
   }
 
   function applySimMode() {
@@ -835,26 +836,28 @@
     document.getElementById('workerControls').style.display = '';
     document.getElementById('runBtnLabel').textContent = 'Run 50 Records';
     document.getElementById('disconnectBtn').style.display = 'none';
+    document.getElementById('navConnectBtn').textContent = '⚙ Connect';
   }
 
   // ── Page init ─────────────────────────────────────────────────────────
 
   (function init() {
-    if (!isLive) return; // simulation mode by default
-    const token = localStorage.getItem('phi_access_token');
-    if (!token) {
-      showGate();
-    } else {
+    if (isConnected()) {
       applyLiveMode();
+    } else {
+      showGate(); // always show gate on first visit / when no token stored
     }
   })();
 
   // ── startBatch — routes to sim or live ───────────────────────────────
 
   async function startBatch() {
-    const token = localStorage.getItem('phi_access_token');
-    if (isLive && token) {
+    const token = getToken();
+    if (BACKEND_URL && token) {
       await startLiveBatch(token);
+    } else if (!BACKEND_URL && token) {
+      // token present but backend not deployed yet — show gate error
+      showGate('Backend not deployed yet — the pipeline URL is not configured.');
     } else {
       await startSimBatch();
     }
@@ -966,8 +969,9 @@ Clinical note: ${r.patient} presented for follow-up. Dr. ${r.doctor} at ${r.hosp
       if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
       ({ job_id: jobId } = await resp.json());
     } catch (err) {
-      document.getElementById('traceIdle').style.display = 'flex';
-      document.getElementById('traceIdle').textContent = `Error: ${err.message}`;
+      const idle = document.getElementById('traceIdle');
+      idle.style.display = 'flex';
+      idle.textContent = `Error: ${err.message}`;
       btn.disabled = false;
       return;
     }

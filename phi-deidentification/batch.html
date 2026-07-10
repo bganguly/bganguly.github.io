@@ -575,14 +575,20 @@
   // ── startBatch ────────────────────────────────────────────────────────
 
   async function startBatch() {
+    // auto-save if the field has a value but hasn't been saved yet
+    const inputVal = document.getElementById('tokenInput').value.trim();
+    if (inputVal && !getToken()) {
+      localStorage.setItem('phi_access_token', inputVal);
+      renderTokenState();
+    }
     const token = getToken();
     if (!token) {
-      showTokenError('Access token required — paste your token above or request access.');
+      showTokenError('Paste your access token above, then click Run.');
       document.getElementById('tokenInput').focus();
       return;
     }
     if (!BACKEND_URL) {
-      showTokenError('Pipeline not deployed yet — backend URL not configured.');
+      showTokenError('Pipeline not yet deployed — backend URL not configured.');
       return;
     }
     showTokenError('');

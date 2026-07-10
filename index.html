@@ -661,6 +661,15 @@
           githubUrl: GH + '/phi-deidentification-pipeline',
           apiKeyNote: 'Requires Anthropic API key',
         },
+        extra: {
+          label: 'Batch Run',
+          color: 'amber',
+          title: '50 Records · 3 Workers · Live',
+          chips: ['real-time progress', 'parallel workers', 'fast vs Claude trace'],
+          liveUrl: 'phi-deidentification/batch.html',
+          liveLabel: 'Run Batch',
+          githubUrl: GH + '/phi-deidentification-pipeline',
+        },
         githubUrl: GH + '/phi-deidentification-pipeline',
       },
     };
@@ -839,6 +848,7 @@
           <div class="flex gap-3 mb-4">
             ${p.frontend ? smallPanelHtml(p.frontend, key + '-frontend') : ''}
             ${p.backend  ? smallPanelHtml(p.backend,  key + '-backend')  : ''}
+            ${p.extra    ? smallPanelHtml(p.extra,    key + '-extra')    : ''}
           </div>
           ${p.cloud ? cloudPanelHtml(p.cloud) : ''}
         </div>`;

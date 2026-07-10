@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PHI De-identification — Batch Run</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%232dd4bf'/><text x='50%25' y='56%25' dominant-baseline='middle' text-anchor='middle' fill='%230d1117' font-family='monospace' font-size='16' font-weight='700'>Φ</text></svg>" />
+  <style>
+    :root {
+      --bg:          #0d1117;
+      --surface:     #161b22;
+      --surface-2:   #1c2128;
+      --border:      #21262d;
+      --border-2:    #30363d;
+      --text:        #e6edf3;
+      --text-muted:  #8b949e;
+      --text-dim:    #484f58;
+      --accent:      #2dd4bf;
+      --accent-dim:  rgba(45,212,191,0.10);
+      --accent-border: rgba(45,212,191,0.35);
+      --amber:       #f59e0b;
+      --amber-dim:   rgba(245,158,11,0.10);
+      --amber-border:rgba(245,158,11,0.35);
+      --violet:      #a78bfa;
+      --violet-dim:  rgba(167,139,250,0.10);
+      --violet-border:rgba(167,139,250,0.35);
+      --safe:        #34d399;
+      --safe-dim:    rgba(52,211,153,0.10);
+      --safe-border: rgba(52,211,153,0.35);
+      --radius:      6px;
+      --radius-lg:   10px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 14px; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 2px; }
+
+    /* ── Nav ─────────────────────────────────────────────────────────── */
+    nav {
+      position: sticky; top: 0; z-index: 40;
+      background: rgba(13,17,23,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      height: 48px;
+      display: flex; align-items: center;
+      padding: 0 24px; gap: 12px;
+    }
+    .nav-back {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.8rem; color: var(--text-muted);
+      transition: color 0.15s; text-decoration: none;
+    }
+    .nav-back:hover { color: var(--text); }
+    .nav-sep { color: var(--text-dim); font-size: 0.75rem; }
+    .nav-title { font-size: 0.85rem; font-weight: 600; }
+    .nav-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+    .nav-btn {
+      font-size: 0.72rem; font-weight: 500;
+      padding: 4px 10px; border-radius: var(--radius);
+      border: 1px solid var(--border-2);
+      background: transparent; color: var(--text-muted);
+      text-decoration: none; transition: color 0.15s, border-color 0.15s;
+    }
+    .nav-btn:hover { color: var(--text); border-color: var(--border-2); }
+
+    /* ── Page ─────────────────────────────────────────────────────────── */
+    .page-wrap { max-width: 960px; margin: 0 auto; padding: 24px 24px 64px; }
+
+    .page-hd { margin-bottom: 20px; }
+    .page-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; }
+    .page-desc { font-size: 0.8rem; color: var(--text-muted); max-width: 620px; line-height: 1.6; }
+
+    /* ── Controls ────────────────────────────────────────────────────── */
+    .controls {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 16px; flex-wrap: wrap;
+    }
+    .run-btn {
+      display: flex; align-items: center; gap: 7px;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-border);
+      border-radius: var(--radius);
+      padding: 8px 18px;
+      font-size: 0.83rem; font-weight: 700;
+      color: var(--accent); cursor: pointer;
+      transition: background 0.15s, opacity 0.15s;
+      font-family: inherit;
+    }
+    .run-btn:hover { background: rgba(45,212,191,0.18); }
+    .run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .speed-row {
+      display: flex; align-items: center; gap: 4px;
+      font-size: 0.7rem; color: var(--text-dim);
+    }
+    .spd-btn {
+      padding: 4px 9px; border-radius: var(--radius);
+      border: 1px solid var(--border-2);
+      background: transparent; color: var(--text-dim);
+      font-size: 0.68rem; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+      transition: background 0.12s, color 0.12s, border-color 0.12s;
+    }
+    .spd-btn.active {
+      background: var(--accent-dim);
+      border-color: var(--accent-border);
+      color: var(--accent);
+    }
+    .workers-row {
+      display: flex; align-items: center; gap: 4px;
+      font-size: 0.7rem; color: var(--text-dim); margin-left: 4px;
+    }
+    .wrk-btn {
+      padding: 4px 9px; border-radius: var(--radius);
+      border: 1px solid var(--border-2);
+      background: transparent; color: var(--text-dim);
+      font-size: 0.68rem; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+      transition: background 0.12s, color 0.12s, border-color 0.12s;
+    }
+    .wrk-btn.active {
+      background: var(--amber-dim);
+      border-color: var(--amber-border);
+      color: var(--amber);
+    }
+
+    /* ── Progress bar ────────────────────────────────────────────────── */
+    .prog-wrap {
+      height: 3px; background: var(--surface-2);
+      border-radius: 9999px; margin-bottom: 14px;
+      overflow: hidden;
+    }
+    .prog-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--violet));
+      border-radius: 9999px;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* ── Stats ───────────────────────────────────────────────────────── */
+    .stats-row {
+      display: flex; gap: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .stat {
+      flex: 1; padding: 10px 14px;
+      border-right: 1px solid var(--border);
+      min-width: 0;
+    }
+    .stat:last-child { border-right: none; }
+    .stat-val {
+      font-size: 1.05rem; font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      font-family: ui-monospace, monospace;
+      color: var(--text); white-space: nowrap;
+    }
+    .stat-lbl {
+      font-size: 0.6rem; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text-dim); margin-top: 2px;
+    }
+
+    /* ── Main layout ─────────────────────────────────────────────────── */
+    .main-layout {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 12px;
+      align-items: start;
+    }
+    @media (max-width: 780px) { .main-layout { grid-template-columns: 1fr; } }
+
+    /* ── Record grid ─────────────────────────────────────────────────── */
+    .grid-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 14px;
+    }
+    .grid-legend {
+      display: flex; gap: 12px; margin-bottom: 12px;
+      font-size: 0.6rem; color: var(--text-dim);
+    }
+    .leg-item { display: flex; align-items: center; gap: 4px; }
+    .leg-dot { width: 7px; height: 7px; border-radius: 2px; }
+    .rec-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 4px;
+    }
+    .rec-card {
+      aspect-ratio: 1;
+      border-radius: 4px;
+      border: 1px solid;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.5rem;
+      font-family: ui-monospace, monospace;
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.25s, border-color 0.25s, color 0.25s;
+      user-select: none;
+    }
+    .rec-card .rec-id    { font-weight: 600; line-height: 1; }
+    .rec-card .rec-info  { margin-top: 2px; opacity: 0.7; }
+    .rec-card.pending  { background: var(--surface-2); border-color: var(--border); color: var(--text-dim); }
+    .rec-card.active   { background: rgba(251,191,36,0.10); border-color: rgba(251,191,36,0.55); color: #fbbf24; }
+    .rec-card.done-fast  { background: var(--accent-dim);  border-color: var(--accent-border); color: var(--accent); }
+    .rec-card.done-claude{ background: var(--violet-dim);  border-color: var(--violet-border); color: var(--violet); }
+    .rec-card.active::after {
+      content: '';
+      position: absolute; inset: 0; border-radius: 3px;
+      animation: pulse-glow 1.1s ease-in-out infinite;
+    }
+    @keyframes pulse-glow {
+      0%,100% { box-shadow: inset 0 0 0 1px rgba(251,191,36,0.0); }
+      50%      { box-shadow: inset 0 0 0 1px rgba(251,191,36,0.4); }
+    }
+
+    /* ── Trace panel ─────────────────────────────────────────────────── */
+    .trace-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+    }
+    .trace-panel-hd {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.6rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .trace-idle-msg {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      color: var(--text-dim); font-size: 0.75rem;
+    }
+    .trace-body { padding: 12px 14px; flex: 1; }
+    .trace-rec-hd {
+      display: flex; align-items: baseline; gap: 8px;
+      margin-bottom: 12px;
+    }
+    .trace-rec-id {
+      font-family: ui-monospace, monospace;
+      font-size: 0.7rem; font-weight: 700;
+      color: var(--text-muted);
+    }
+    .trace-rec-name {
+      font-size: 0.78rem; font-weight: 600;
+      color: var(--text);
+    }
+    .trace-steps { display: flex; flex-direction: column; gap: 6px; }
+    .t-step {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 0.73rem;
+    }
+    .t-step-icon {
+      width: 14px; height: 14px; flex-shrink: 0;
+      margin-top: 1px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .t-step-icon .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--border-2);
+      transition: background 0.2s;
+    }
+    .t-step.done .dot   { background: var(--safe); }
+    .t-step.active .dot { background: var(--amber); animation: blink 0.8s ease infinite; }
+    .t-step.claude .dot { background: var(--violet); animation: blink 0.8s ease infinite; }
+    @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+    .t-step-body { flex: 1; }
+    .t-step-name { color: var(--text-muted); font-weight: 500; }
+    .t-step.done .t-step-name   { color: var(--text); }
+    .t-step.active .t-step-name { color: #fbbf24; }
+    .t-step.claude .t-step-name { color: var(--violet); }
+    .t-step-result {
+      font-family: ui-monospace, monospace;
+      font-size: 0.65rem; color: var(--text-dim);
+      margin-top: 1px;
+    }
+    .t-step.done .t-step-result { color: var(--safe); }
+
+    /* ── Completion ──────────────────────────────────────────────────── */
+    .done-panel {
+      display: none;
+      background: var(--surface);
+      border: 1px solid var(--safe-border);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      margin-top: 14px;
+    }
+    .done-title {
+      font-size: 0.95rem; font-weight: 700;
+      color: var(--safe); margin-bottom: 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .done-stats {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+    }
+    .done-stat {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+    }
+    .done-stat-val {
+      font-size: 1.2rem; font-weight: 700;
+      font-family: ui-monospace, monospace;
+      font-variant-numeric: tabular-nums;
+    }
+    .done-stat-lbl {
+      font-size: 0.62rem; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text-dim); margin-top: 3px;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="../index.html?open=phi" class="nav-back">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    Portfolio
+  </a>
+  <span class="nav-sep">›</span>
+  <span class="nav-title">Batch Run</span>
+  <div class="nav-right">
+    <a href="pipeline.html" class="nav-btn">Pipeline →</a>
+    <a href="index.html" class="nav-btn">Open Demo →</a>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="page-hd">
+    <h1 class="page-title">Batch Processing — Real-time Simulation</h1>
+    <p class="page-desc">
+      50 synthetic clinical records processed by simulated Celery workers. Each record runs through
+      the two-tier detection pipeline: spaCy fast path (~12ms) or Claude Haiku 4.5 fallback (~820ms).
+      Adjust speed and worker count, then watch the queue drain.
+    </p>
+  </div>
+
+  <div class="controls">
+    <button class="run-btn" id="runBtn" onclick="startBatch()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+      Run 50 Records
+    </button>
+    <div class="speed-row">
+      Speed:
+      <button class="spd-btn active" data-spd="1" onclick="setSpeed(this,1)">1×</button>
+      <button class="spd-btn" data-spd="5" onclick="setSpeed(this,5)">5×</button>
+      <button class="spd-btn" data-spd="10" onclick="setSpeed(this,10)">10×</button>
+    </div>
+    <div class="workers-row">
+      Workers:
+      <button class="wrk-btn" data-w="1" onclick="setWorkers(this,1)">1</button>
+      <button class="wrk-btn active" data-w="3" onclick="setWorkers(this,3)">3</button>
+      <button class="wrk-btn" data-w="6" onclick="setWorkers(this,6)">6</button>
+    </div>
+  </div>
+
+  <div class="prog-wrap"><div class="prog-bar" id="progBar"></div></div>
+
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-val" id="sRecords">0 / 50</div>
+      <div class="stat-lbl">Records</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="sThroughput">—</div>
+      <div class="stat-lbl">rec / sec</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="sEntities">—</div>
+      <div class="stat-lbl">Entities found</div>
+    </div>
+    <div class="stat" style="--text:#a78bfa">
+      <div class="stat-val" id="sClaude" style="color:var(--violet)">—</div>
+      <div class="stat-lbl">Claude hits</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="sElapsed">0.0s</div>
+      <div class="stat-lbl">Elapsed</div>
+    </div>
+  </div>
+
+  <div class="main-layout">
+
+    <div class="grid-card">
+      <div class="grid-legend">
+        <div class="leg-item"><div class="leg-dot" style="background:var(--border-2)"></div> Pending</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#fbbf24"></div> Processing</div>
+        <div class="leg-item"><div class="leg-dot" style="background:var(--accent)"></div> Fast path</div>
+        <div class="leg-item"><div class="leg-dot" style="background:var(--violet)"></div> Claude fallback</div>
+      </div>
+      <div class="rec-grid" id="recGrid"></div>
+    </div>
+
+    <div class="trace-panel" id="tracePanel">
+      <div class="trace-panel-hd">Active Record Trace</div>
+      <div class="trace-idle-msg" id="traceIdle">Waiting for batch…</div>
+      <div class="trace-body" id="traceBody" style="display:none"></div>
+    </div>
+
+  </div>
+
+  <div class="done-panel" id="donePanel">
+    <div class="done-title">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      Batch complete
+    </div>
+    <div class="done-stats" id="doneStats"></div>
+  </div>
+
+</div>
+
+<script>
+  // ── Data generation ───────────────────────────────────────────────────
+
+  const FIRST  = ['Alice','Barbara','Carol','Diana','Elena','Frances','Grace','Helen','Iris','Janet','Karen','Laura','Maria','Nancy','Olivia','Patricia','Quinn','Rachel','Susan','Teresa'];
+  const MNAMES = ['Adam','Brian','Carlos','David','Eric','Frank','George','Henry','Ivan','James','Kevin','Leo','Michael','Nathan','Oscar','Peter','Quinn','Robert','Steve','Thomas'];
+  const LAST   = ['Johnson','Smith','Williams','Brown','Jones','Davis','Miller','Wilson','Moore','Taylor','Anderson','Thomas','Jackson','White','Harris','Martin','Thompson','Garcia','Martinez','Robinson'];
+  const DOCS   = ['Chen','Patel','Rodriguez','Kim','Nguyen','Park','Martinez','Lee','Johnson','Hernandez','Okafor','Yamamoto'];
+  const HOSPS  = ['Mass General','Brigham & Women\'s','Cleveland Clinic','Mayo Clinic','Johns Hopkins','Stanford Medical','UCLA Health','NYU Langone','Vanderbilt Medical','Duke University Medical'];
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  function lcg(s) { return (Math.imul(1664525, s) + 1013904223) >>> 0; }
+  function rnd(s, n) { return lcg(s) % n; }
+
+  function genRecord(idx) {
+    const s = idx * 37 + 19;
+    const isFemale = rnd(s, 2) === 0;
+    const fn = isFemale ? FIRST[rnd(s, FIRST.length)] : MNAMES[rnd(s+1, MNAMES.length)];
+    const ln = LAST[rnd(s+2, LAST.length)];
+    const doc = DOCS[rnd(s+3, DOCS.length)];
+    const hosp = HOSPS[rnd(s+4, HOSPS.length)];
+    const mrn = String(1000000 + rnd(s+5, 9000000));
+    const mon = rnd(s+6, 12);
+    const day = rnd(s+7, 27) + 1;
+    const yr  = 2023 + rnd(s+8, 2);
+    const spacy_e = 3 + rnd(s+9, 3);   // 3-5
+    const regex_e = 1 + rnd(s+10, 3);  // 1-3
+    const total_e = spacy_e + regex_e;
+    const usesClaude = idx % 3 === 2;   // every 3rd record
+    const spacy_ms   = 8 + rnd(s+11, 8);
+    const claude_ms  = usesClaude ? 780 + rnd(s+12, 80) : 0;
+
+    const steps = [
+      { name: 'spaCy NER',         ms: spacy_ms,  result: `${spacy_e} entities found` },
+      { name: 'Regex scan',        ms: 1,         result: `${regex_e} matches` },
+      { name: 'Merge & dedup',     ms: 1,         result: `${total_e} entities` },
+      { name: 'Confidence gate',   ms: 1,         result: `${total_e - (usesClaude?1:0)} high · ${usesClaude?1:0} low` },
+      ...(usesClaude ? [{ name: 'Claude Haiku 4.5', ms: claude_ms, result: 'reclassified ORG', isClaude: true }] : []),
+      { name: 'Faker synthesis',   ms: 2,         result: `${total_e} replaced` },
+      { name: 'SHA-256 + DB write',ms: 6,         result: 'committed' },
+    ];
+
+    return {
+      idx, idStr: `REC-${String(idx+1).padStart(3,'0')}`,
+      patient: `${fn} ${ln}`, doctor: `Dr. ${doc}`, hosp,
+      date: `${MONTHS[mon]} ${day}, ${yr}`, mrn,
+      usesClaude, entity_count: total_e,
+      total_ms: spacy_ms + claude_ms + 12,
+      steps,
+    };
+  }
+
+  const RECORDS = Array.from({length: 50}, (_, i) => genRecord(i));
+
+  // ── Render grid ───────────────────────────────────────────────────────
+
+  const grid = document.getElementById('recGrid');
+  RECORDS.forEach(r => {
+    const el = document.createElement('div');
+    el.className = 'rec-card pending';
+    el.id = `card-${r.idx}`;
+    el.title = r.patient;
+    el.innerHTML = `<span class="rec-id">${String(r.idx+1).padStart(2,'0')}</span>`;
+    grid.appendChild(el);
+  });
+
+  // ── Simulation state ──────────────────────────────────────────────────
+
+  let speedMul = 1;
+  let workerCount = 3;
+  let nextRec = 0;
+  let doneCount = 0;
+  let totalEnts = 0;
+  let claudeHits = 0;
+  let startTime = null;
+  let timerHandle = null;
+  let activeTraceId = -1;
+
+  function setSpeed(btn, spd) {
+    speedMul = spd;
+    document.querySelectorAll('.spd-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function setWorkers(btn, n) {
+    workerCount = n;
+    document.querySelectorAll('.wrk-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function delay(ms) {
+    return new Promise(r => setTimeout(r, Math.max(1, ms / speedMul)));
+  }
+
+  // ── Trace panel ───────────────────────────────────────────────────────
+
+  function showTrace(rec) {
+    activeTraceId = rec.idx;
+    document.getElementById('traceIdle').style.display = 'none';
+    const body = document.getElementById('traceBody');
+    body.style.display = 'block';
+    body.innerHTML = `
+      <div class="trace-rec-hd">
+        <span class="trace-rec-id">${rec.idStr}</span>
+        <span class="trace-rec-name">${rec.patient}</span>
+      </div>
+      <div class="trace-steps">
+        ${rec.steps.map((s, i) => `
+          <div class="t-step" id="ts-${rec.idx}-${i}">
+            <div class="t-step-icon"><div class="dot"></div></div>
+            <div class="t-step-body">
+              <div class="t-step-name">${s.name}</div>
+              <div class="t-step-result" id="tr-${rec.idx}-${i}"></div>
+            </div>
+          </div>`).join('')}
+      </div>`;
+  }
+
+  function markStepActive(recIdx, stepIdx, isClaude) {
+    if (activeTraceId !== recIdx) return;
+    const el = document.getElementById(`ts-${recIdx}-${stepIdx}`);
+    if (el) el.className = `t-step ${isClaude ? 'claude' : 'active'}`;
+  }
+
+  function markStepDone(recIdx, stepIdx, result) {
+    if (activeTraceId !== recIdx) return;
+    const el = document.getElementById(`ts-${recIdx}-${stepIdx}`);
+    const re = document.getElementById(`tr-${recIdx}-${stepIdx}`);
+    if (el) el.className = 't-step done';
+    if (re) re.textContent = result;
+  }
+
+  // ── Per-record processing ─────────────────────────────────────────────
+
+  async function processRecord(rec) {
+    const card = document.getElementById(`card-${rec.idx}`);
+    card.className = 'rec-card active';
+    showTrace(rec);
+
+    for (let i = 0; i < rec.steps.length; i++) {
+      const s = rec.steps[i];
+      markStepActive(rec.idx, i, !!s.isClaude);
+      await delay(s.ms);
+      markStepDone(rec.idx, i, s.result);
+    }
+
+    card.className = rec.usesClaude ? 'rec-card done-claude' : 'rec-card done-fast';
+    card.innerHTML = `
+      <span class="rec-id">${String(rec.idx+1).padStart(2,'0')}</span>
+      <span class="rec-info">${rec.total_ms}ms</span>`;
+
+    doneCount++;
+    totalEnts += rec.entity_count;
+    if (rec.usesClaude) claudeHits++;
+    updateStats();
+  }
+
+  // ── Worker loop ───────────────────────────────────────────────────────
+
+  async function workerLoop() {
+    while (nextRec < RECORDS.length) {
+      const idx = nextRec++;
+      if (idx >= RECORDS.length) break;
+      await processRecord(RECORDS[idx]);
+    }
+  }
+
+  // ── Stats ─────────────────────────────────────────────────────────────
+
+  function updateStats() {
+    const elapsed = (Date.now() - startTime) / 1000;
+    document.getElementById('sRecords').textContent = `${doneCount} / 50`;
+    document.getElementById('sThroughput').textContent = elapsed > 0.1 ? (doneCount / elapsed).toFixed(1) : '—';
+    document.getElementById('sEntities').textContent = totalEnts > 0 ? totalEnts : '—';
+    document.getElementById('sClaude').textContent = claudeHits > 0 ? claudeHits : '—';
+    document.getElementById('progBar').style.width = `${(doneCount / 50) * 100}%`;
+  }
+
+  // ── Start ─────────────────────────────────────────────────────────────
+
+  async function startBatch() {
+    // Reset UI
+    RECORDS.forEach(r => {
+      const c = document.getElementById(`card-${r.idx}`);
+      c.className = 'rec-card pending';
+      c.innerHTML = `<span class="rec-id">${String(r.idx+1).padStart(2,'0')}</span>`;
+    });
+    document.getElementById('donePanel').style.display = 'none';
+    document.getElementById('traceIdle').style.display = 'flex';
+    document.getElementById('traceBody').style.display = 'none';
+    document.getElementById('progBar').style.width = '0%';
+
+    nextRec = 0; doneCount = 0; totalEnts = 0; claudeHits = 0;
+    startTime = Date.now();
+    activeTraceId = -1;
+    ['sRecords','sThroughput','sEntities','sClaude'].forEach(id => {
+      document.getElementById(id).textContent = id === 'sRecords' ? '0 / 50' : '—';
+    });
+    document.getElementById('sElapsed').textContent = '0.0s';
+
+    const btn = document.getElementById('runBtn');
+    btn.disabled = true;
+
+    clearInterval(timerHandle);
+    timerHandle = setInterval(() => {
+      document.getElementById('sElapsed').textContent =
+        ((Date.now() - startTime) / 1000).toFixed(1) + 's';
+    }, 100);
+
+    // Launch workers
+    const workers = Array.from({length: workerCount}, () => workerLoop());
+    await Promise.all(workers);
+
+    clearInterval(timerHandle);
+    btn.disabled = false;
+    showDone();
+  }
+
+  // ── Completion ────────────────────────────────────────────────────────
+
+  function showDone() {
+    const elapsed = (Date.now() - startTime) / 1000;
+    const fastCount = 50 - claudeHits;
+    const avgMs = elapsed > 0 ? Math.round((elapsed * 1000) / 50) : 0;
+    const throughput = elapsed > 0 ? (50 / elapsed).toFixed(1) : '—';
+
+    document.getElementById('doneStats').innerHTML = `
+      <div class="done-stat">
+        <div class="done-stat-val" style="color:var(--safe)">${throughput}</div>
+        <div class="done-stat-lbl">rec / sec</div>
+      </div>
+      <div class="done-stat">
+        <div class="done-stat-val">${totalEnts}</div>
+        <div class="done-stat-lbl">Total entities</div>
+      </div>
+      <div class="done-stat">
+        <div class="done-stat-val" style="color:var(--accent)">${fastCount}</div>
+        <div class="done-stat-lbl">Fast path</div>
+      </div>
+      <div class="done-stat">
+        <div class="done-stat-val" style="color:var(--violet)">${claudeHits}</div>
+        <div class="done-stat-lbl">Claude fallback</div>
+      </div>
+      <div class="done-stat">
+        <div class="done-stat-val">${elapsed.toFixed(2)}s</div>
+        <div class="done-stat-lbl">Wall time (${speedMul}× speed)</div>
+      </div>
+      <div class="done-stat">
+        <div class="done-stat-val">${avgMs}ms</div>
+        <div class="done-stat-lbl">Avg per record</div>
+      </div>`;
+    document.getElementById('donePanel').style.display = 'block';
+  }
+</script>
+</body>
+</html>

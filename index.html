@@ -928,12 +928,8 @@
         { key: 'full',  label: 'FULL'  },
       ];
       const tabs = defs.map(({ key, label }) => {
-        const available = _mht[key];
-        const selected  = _mt === key;
+        const selected = _mt === key;
         const ts = _tierStyles[key] || _tierStyles.full;
-        if (!available) {
-          return `<span style="display:inline-flex;align-items:center;gap:5px;padding:5px 14px;border-radius:6px;font-size:0.65rem;font-weight:700;letter-spacing:0.08em;color:#3f3f46;border:1px solid #27272f;cursor:default;user-select:none">${label}<span style="font-size:0.55rem;font-weight:500">n/a</span></span>`;
-        }
         const bg  = selected ? ts.bg     : 'transparent';
         const bdr = selected ? ts.border  : 'rgba(255,255,255,0.1)';
         const clr = selected ? ts.text    : '#71717a';
@@ -941,6 +937,30 @@
         return `<button onclick="switchModalTier('${key}')" style="display:inline-flex;align-items:center;gap:5px;padding:5px 14px;border-radius:6px;font-size:0.65rem;font-weight:700;letter-spacing:0.08em;background:${bg};border:1px solid ${bdr};color:${clr};cursor:pointer;transition:all 0.12s"><span style="width:5px;height:5px;border-radius:50%;background:${dot};flex-shrink:0"></span>${label}</button>`;
       }).join('');
       return `<div style="display:flex;gap:6px;margin-bottom:14px;padding:5px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;flex-wrap:wrap">${tabs}</div>`;
+    }
+
+    function _tierFallbackHtml(tier) {
+      if (tier === 'local') {
+        return `<div style="padding:20px 0;color:#52525b;font-size:0.8rem">No local ports configured for this project.</div>`;
+      }
+      const isFull = tier === 'full';
+      const label  = isFull ? 'Full Infra' : 'Lite Deploy';
+      const ts     = _tierStyles[tier] || _tierStyles.full;
+      const hs = `font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${ts.text};opacity:0.7;margin-bottom:2px`;
+      const is = `background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#e4e4e7;border-radius:6px;padding:5px 9px;font-size:0.75rem;outline:none;min-width:0;flex:1`;
+      const ss = `background:${ts.bg};border:1px solid ${ts.border};color:${ts.text};border-radius:6px;padding:5px 11px;font-size:0.72rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0`;
+      return `<div class="flex-1 rounded-xl p-4 flex flex-col" style="background:${ts.bg};border:1px solid ${ts.border}">
+        <p style="${hs}">Request ${tier.toUpperCase()} Access</p>
+        <p class="font-semibold text-sm text-zinc-100 mb-2">${label}</p>
+        <p style="font-size:0.75rem;color:#71717a;margin-bottom:12px;line-height:1.5">Not currently deployed — request access and I'll spin it up.</p>
+        <form onsubmit="requestAccess(event,'${_mk}','${label}')" style="display:flex;flex-direction:column;gap:4px;margin-top:auto">
+          <div style="display:flex;gap:6px;align-items:center">
+            <input type="email" placeholder="your@company.com" required style="${is}"
+              onfocus="this.style.borderColor='${ts.border}'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" />
+            <button type="submit" style="${ss}">${arrowIcon}</button>
+          </div>
+        </form>
+      </div>`;
     }
 
     function _panelsHtml(p) {
@@ -955,10 +975,10 @@
         ? all.filter(({ c }) => !!c.localUrl)
         : all.filter(({ c }) => (c.tier || 'full') === _mt);
 
-      if (!visible.length) {
-        return `<div style="padding:20px;text-align:center;color:#52525b;font-size:0.8rem">No ${_mt} configuration for this project.</div>`;
-      }
-      return `<div class="flex gap-3 mb-4">${visible.map(({ c, id }) => smallPanelHtml(c, id, localMode)).join('')}</div>`;
+      const inner = visible.length
+        ? visible.map(({ c, id }) => smallPanelHtml(c, id, localMode)).join('')
+        : _tierFallbackHtml(_mt);
+      return `<div class="flex gap-3 mb-4">${inner}</div>`;
     }
 
     function switchModalTier(tier) {

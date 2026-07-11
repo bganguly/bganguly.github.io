@@ -719,7 +719,7 @@
       },
 
       rag: {
-        title: 'RAG + pgvector Demo',
+        title: 'RAG + pgvector Demo (GCP)',
         subtitle: 'LangChain · pgvector · Vercel AI SDK · NVIDIA NIM',
         description: 'Ingest any unstructured text → chunk via LangChain RecursiveCharacterTextSplitter → embed via OpenAI → store in pgvector. Questions trigger cosine-similarity retrieval; answers stream token-by-token via Vercel AI SDK streamText. Provider toggle in the UI switches between Anthropic, OpenAI, and NVIDIA NIM (Nemotron) — same interface, just a base_url swap. FastAPI handles all vector operations; Next.js API routes handle LLM streaming.',
         accentClass: 'text-blue-400',
@@ -743,7 +743,7 @@
       },
 
       agent: {
-        title: 'Multi-Agent Orchestration',
+        title: 'Multi-Agent Orchestration (GCP)',
         subtitle: 'LangGraph · MCP server · parallel routing · FastAPI SSE',
         description: 'LangGraph StateGraph classifies each query and routes it: simple queries go direct to retrieval; complex queries decompose into parallel sub-queries via LangGraph\'s Send API, each handled by a specialist retrieve node. Agent reasoning steps (classify → decompose → retrieve → synthesize) stream to the browser as SSE events — pending / active / done — before the final answer appears. The same Wikipedia and DuckDuckGo tools are also exposed as an MCP server over stdio, connectable from Claude Desktop or any MCP client.',
         accentClass: 'text-amber-400',

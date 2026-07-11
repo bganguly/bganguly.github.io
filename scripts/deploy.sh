@@ -10,100 +10,96 @@ _seed_url() {
   echo "http://localhost:9090?s=$(_encode "$EJS_S")&t=$(_encode "$EJS_T")&k=$(_encode "$EJS_K")&e=$(_encode "$EJS_E")"
 }
 
-case "${1:-}" in
-  dev)
-    if [[ ! -f "$CREDS" ]]; then
-      printf '\nNo .emailjs creds found — starting one-time setup to configure the contact form.\n'
-      exec "$0" setup
-    fi
-    open "$(_seed_url)" &
-    echo "Serving at http://localhost:9090"
-    python3 -m http.server 9090 --directory "$REPO_DIR"
-    ;;
-  setup)
-    printf '\n╔══════════════════════════════════════════════╗\n'
-    printf '║           EmailJS One-Time Setup             ║\n'
-    printf '╚══════════════════════════════════════════════╝\n'
-    printf '\nThe contact form sends email via EmailJS.\n'
-    printf 'Log in or create a free account at: https://www.emailjs.com\n'
-    printf '\n── Where to find each value ──────────────────────────────────\n'
-    printf '  Service ID   Left nav → Email Services → your service row\n'
-    printf '  Template ID  Left nav → Email Templates → your template row\n'
-    printf '  Public Key   Top-right avatar → Account → API Keys\n'
-    printf '\n── Template variables (paste these into your EmailJS template body) ─\n'
-    printf '  {{from_email}}  the email address the visitor types in the form\n'
-    printf '  {{project}}     auto-filled: which project was clicked\n'
-    printf '  {{requested}}   auto-filled: which artifact was requested\n'
-    printf '\n── Contact email ─────────────────────────────────────────────\n'
-    printf '  The address EmailJS will deliver to (your inbox).\n'
-    printf '─────────────────────────────────────────────────────────────\n\n'
-    read -rp 'Service ID    : ' EJS_S
-    read -rp 'Template ID   : ' EJS_T
-    read -rp 'Public Key    : ' EJS_K
-    read -rp 'Contact email : ' EJS_E
-    printf 'EJS_S=%s\nEJS_T=%s\nEJS_K=%s\nEJS_E=%s\n' "$EJS_S" "$EJS_T" "$EJS_K" "$EJS_E" > "$CREDS"
-    echo "Saved to .emailjs"
-    python3 -m http.server 9090 --directory "$REPO_DIR" &>/dev/null &
-    SERVER_PID=$!
-    sleep 0.4
-    open "$(_seed_url)"
-    printf '\nBrowser localStorage seeded. Press Enter to stop the server...'
-    read -r
-    kill "$SERVER_PID" 2>/dev/null || true
-    ;;
-  ""|deploy)
-    cd "$REPO_DIR"
+_ensure_creds() {
+  [[ -f "$CREDS" ]] && return
+  printf '\n╔══════════════════════════════════════════════╗\n'
+  printf '║           EmailJS One-Time Setup             ║\n'
+  printf '╚══════════════════════════════════════════════╝\n'
+  printf '\nThe contact form sends email via EmailJS.\n'
+  printf 'Log in or create a free account at: https://www.emailjs.com\n'
+  printf '\n── Where to find each value ──────────────────────────────────\n'
+  printf '  Service ID   Left nav → Email Services → your service row\n'
+  printf '  Template ID  Left nav → Email Templates → your template row\n'
+  printf '  Public Key   Top-right avatar → Account → API Keys\n'
+  printf '\n── Template variables (paste into your EmailJS template body) ─\n'
+  printf '  {{from_email}}  the email address the visitor types in the form\n'
+  printf '  {{project}}     auto-filled: which project was clicked\n'
+  printf '  {{requested}}   auto-filled: which artifact was requested\n'
+  printf '\n── Contact email ─────────────────────────────────────────────\n'
+  printf '  The address EmailJS will deliver to (your inbox).\n'
+  printf '─────────────────────────────────────────────────────────────\n\n'
+  read -rp 'Service ID    : ' EJS_S
+  read -rp 'Template ID   : ' EJS_T
+  read -rp 'Public Key    : ' EJS_K
+  read -rp 'Contact email : ' EJS_E
+  printf 'EJS_S=%s\nEJS_T=%s\nEJS_K=%s\nEJS_E=%s\n' "$EJS_S" "$EJS_T" "$EJS_K" "$EJS_E" > "$CREDS"
+  echo "Saved to .emailjs"
+}
 
-    # Asks y/n; default is "y" or "n"; returns "true"/"false".
-    _yn() {
-      local prompt="$1" default="${2:-y}" ans
-      read -rp "  $prompt (y/n) [$default]: " ans
-      ans="${ans:-$default}"
-      [[ "$ans" =~ ^[Yy] ]] && echo "true" || echo "false"
-    }
+printf '\n  [1] Local  — serve on :9090, seed contact-form localStorage\n'
+printf '  [2] Publish — probe live endpoints, update deploy-live.js, push to Pages\n\n'
+read -rp 'Choose [1]: ' _MODE
 
-    # Probe a URL: returns "y" if HTTP 2xx, "n" otherwise.
-    _probe() {
-      local url="$1" code
-      code=$(curl -s -o /dev/null -w '%{http_code}' --connect-timeout 10 --max-time 30 "$url" 2>/dev/null || echo "000")
-      [[ "$code" =~ ^2 ]] && echo "y" || echo "n"
-    }
+# ── Local dev ─────────────────────────────────────────────────────────────────
+if [[ "${_MODE:-1}" != "2" ]]; then
+  _ensure_creds
+  open "$(_seed_url)" &
+  echo "Serving at http://localhost:9090"
+  python3 -m http.server 9090 --directory "$REPO_DIR"
+  exit 0
+fi
 
-    _label() { [[ "$1" == "y" ]] && echo "UP" || echo "DOWN"; }
+# ── Publish ───────────────────────────────────────────────────────────────────
+cd "$REPO_DIR"
 
-    printf '\n━━━ Probing live endpoints (up to 30s each)…\n'
-    _P_DASH_FE=$(_probe "https://dash-frontend-7u2hpcwtmq-uc.a.run.app/")
-    _P_NEXT_FE=$(_probe "https://d2c7wi0kgxiq2f.cloudfront.net/")
-    _P_NEXT_BE=$(_probe "https://d2c7wi0kgxiq2f.cloudfront.net/api-explorer")
-    _P_SRVL_FE=$(_probe "https://d281doisqbuiu2.cloudfront.net/")
-    _P_SRVL_BE=$(_probe "https://d281doisqbuiu2.cloudfront.net/api-explorer.html")
-    printf 'Done.\n'
+_yn() {
+  local prompt="$1" default="${2:-y}" ans
+  read -rp "  $prompt (y/n) [$default]: " ans
+  ans="${ans:-$default}"
+  [[ "$ans" =~ ^[Yy] ]] && echo "true" || echo "false"
+}
 
-    printf '\n━━━ Live endpoint selection (Enter = accept probe, y/n = override) ━━━\n\n'
-    printf 'GCP dashboard\n'
-    DASH_FE=$(_yn "  frontend       probe: $(_label "$_P_DASH_FE")" "$_P_DASH_FE")
-    DASH_BE=$(_yn "  API explorer   static file, always available" y)
-    printf '\nNext.js dashboard (AWS)\n'
-    NEXT_FE=$(_yn "  frontend       probe: $(_label "$_P_NEXT_FE")" "$_P_NEXT_FE")
-    NEXT_BE=$(_yn "  API explorer   probe: $(_label "$_P_NEXT_BE")" "$_P_NEXT_BE")
-    printf '\nEvent Pipeline (serverless)\n'
-    SRVL_FE=$(_yn "  frontend       probe: $(_label "$_P_SRVL_FE")" "$_P_SRVL_FE")
-    SRVL_BE=$(_yn "  API explorer   probe: $(_label "$_P_SRVL_BE")" "$_P_SRVL_BE")
-    printf '\n'
+_probe() {
+  local url="$1" code
+  code=$(curl -s -o /dev/null -w '%{http_code}' --connect-timeout 10 --max-time 30 "$url" 2>/dev/null || echo "000")
+  [[ "$code" =~ ^2 ]] && echo "y" || echo "n"
+}
 
-    FARG_FE=false; FARG_BE=false
+_label() { [[ "$1" == "y" ]] && echo "UP" || echo "DOWN"; }
 
-    printf '\nAI / LLM section\n'
-    LLM_SECTION=$(_yn "  show on live site? (hidden by default)" n)
+printf '\n━━━ Probing live endpoints (up to 30s each)…\n'
+_P_DASH_FE=$(_probe "https://dash-frontend-7u2hpcwtmq-uc.a.run.app/")
+_P_NEXT_FE=$(_probe "https://d2c7wi0kgxiq2f.cloudfront.net/")
+_P_NEXT_BE=$(_probe "https://d2c7wi0kgxiq2f.cloudfront.net/api-explorer")
+_P_SRVL_FE=$(_probe "https://d281doisqbuiu2.cloudfront.net/")
+_P_SRVL_BE=$(_probe "https://d281doisqbuiu2.cloudfront.net/api-explorer.html")
+printf 'Done.\n'
 
-    if [[ "$LLM_SECTION" == "true" ]]; then
-      printf '\nRebuilding nl-to-sql app...\n'
-      npm --prefix /Users/bikram/Personal/interview-prep/grouped-projects/llm-implementations/natural-language-to-llm-query-comparison run build -- --base=/nl-to-sql/ 2>&1 | tail -5
-      rm -rf "$REPO_DIR/nl-to-sql"
-      cp -r /Users/bikram/Personal/interview-prep/grouped-projects/llm-implementations/natural-language-to-llm-query-comparison/dist "$REPO_DIR/nl-to-sql"
-    fi
+printf '\n━━━ Live endpoint selection (Enter = accept probe, y/n = override) ━━━\n\n'
+printf 'GCP dashboard\n'
+DASH_FE=$(_yn "  frontend       probe: $(_label "$_P_DASH_FE")" "$_P_DASH_FE")
+DASH_BE=$(_yn "  API explorer   static file, always available" y)
+printf '\nNext.js dashboard (AWS)\n'
+NEXT_FE=$(_yn "  frontend       probe: $(_label "$_P_NEXT_FE")" "$_P_NEXT_FE")
+NEXT_BE=$(_yn "  API explorer   probe: $(_label "$_P_NEXT_BE")" "$_P_NEXT_BE")
+printf '\nEvent Pipeline (serverless)\n'
+SRVL_FE=$(_yn "  frontend       probe: $(_label "$_P_SRVL_FE")" "$_P_SRVL_FE")
+SRVL_BE=$(_yn "  API explorer   probe: $(_label "$_P_SRVL_BE")" "$_P_SRVL_BE")
+printf '\n'
 
-    cat > "$REPO_DIR/deploy-live.js" <<EOF
+FARG_FE=false; FARG_BE=false
+
+printf '\nAI / LLM section\n'
+LLM_SECTION=$(_yn "  show on live site? (hidden by default)" n)
+
+if [[ "$LLM_SECTION" == "true" ]]; then
+  printf '\nRebuilding nl-to-sql app...\n'
+  npm --prefix /Users/bikram/Personal/interview-prep/grouped-projects/llm-implementations/natural-language-to-llm-query-comparison run build -- --base=/nl-to-sql/ 2>&1 | tail -5
+  rm -rf "$REPO_DIR/nl-to-sql"
+  cp -r /Users/bikram/Personal/interview-prep/grouped-projects/llm-implementations/natural-language-to-llm-query-comparison/dist "$REPO_DIR/nl-to-sql"
+fi
+
+cat > "$REPO_DIR/deploy-live.js" <<EOF
 // Generated by deploy.sh — do not edit manually.
 window._deployLive = {
   showLlmSection: $LLM_SECTION,
@@ -114,15 +110,9 @@ window._deployLive = {
 };
 EOF
 
-    git add index.html deploy-live.js scripts/deploy.sh nl-to-sql/
-    if ! git diff --cached --quiet; then
-      git commit -m "deploy: update live endpoint selection"
-    fi
-    git push origin HEAD:main
-    echo "Published. Pages rebuilds in ~30s."
-    ;;
-  *)
-    echo "Usage: $0 [dev|setup|deploy]"
-    exit 1
-    ;;
-esac
+git add index.html deploy-live.js scripts/deploy.sh nl-to-sql/
+if ! git diff --cached --quiet; then
+  git commit -m "deploy: update live endpoint selection"
+fi
+git push origin HEAD:main
+echo "Published. Pages rebuilds in ~30s."

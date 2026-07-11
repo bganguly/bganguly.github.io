@@ -353,8 +353,10 @@
   <div class="page-hd">
     <h1 class="page-title">Batch Processing — Live Pipeline</h1>
     <p class="page-desc">
-      50 synthetic clinical records submitted to the real PHI pipeline on Cloud Run.
-      spaCy tier-1 NER + Claude Haiku 4.5 tier-2 fallback. Watch completions stream back in real time.
+      50 clinical records generated on the fly in your browser using randomised names, SSNs, MRNs,
+      dates, addresses, and phone numbers — no pre-existing files. Each record is submitted live
+      to the PHI pipeline on Cloud Run: spaCy tier-1 NER handles ~90%, Claude Haiku 4.5 covers
+      ambiguous fallbacks. Watch completions stream back in real time.
     </p>
   </div>
 

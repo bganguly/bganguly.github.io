@@ -915,9 +915,8 @@
     }
 
     function _defaultTier(hasTier) {
-      if (isLocal && hasTier.local) return 'local';
-      if (hasTier.full)  return 'full';
       if (hasTier.lite)  return 'lite';
+      if (hasTier.full)  return 'full';
       return 'local';
     }
 
@@ -943,16 +942,19 @@
       if (tier === 'local') {
         return `<div style="padding:20px 0;color:#52525b;font-size:0.8rem">No local ports configured for this project.</div>`;
       }
-      const isFull = tier === 'full';
-      const label  = isFull ? 'Full Infra' : 'Lite Deploy';
       const ts     = _tierStyles[tier] || _tierStyles.full;
+      const label  = tier === 'full' ? 'Full Infra' : 'Lite Deploy';
+      const isGcp  = projects[_mk]?.cloud?.color === 'gcp';
+      const costHint = (tier === 'full' && isGcp)
+        ? `<p style="font-size:0.60rem;color:#71717a;margin-bottom:4px;letter-spacing:0.01em">GCP spun down · code only · ~$80/mo at idle</p>`
+        : '';
       const hs = `font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${ts.text};opacity:0.7;margin-bottom:2px`;
       const is = `background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#e4e4e7;border-radius:6px;padding:5px 9px;font-size:0.75rem;outline:none;min-width:0;flex:1`;
       const ss = `background:${ts.bg};border:1px solid ${ts.border};color:${ts.text};border-radius:6px;padding:5px 11px;font-size:0.72rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0`;
       return `<div class="flex-1 rounded-xl p-4 flex flex-col" style="background:${ts.bg};border:1px solid ${ts.border}">
-        <p style="${hs}">Request ${tier.toUpperCase()} Access</p>
+        <p style="${hs}">Request Access</p>
         <p class="font-semibold text-sm text-zinc-100 mb-2">${label}</p>
-        <p style="font-size:0.75rem;color:#71717a;margin-bottom:12px;line-height:1.5">Not currently deployed — request access and I'll spin it up.</p>
+        ${costHint}<p style="font-size:0.75rem;color:#71717a;margin-bottom:12px;line-height:1.5">Not currently deployed — request access and I'll spin it up.</p>
         <form onsubmit="requestAccess(event,'${_mk}','${label}')" style="display:flex;flex-direction:column;gap:4px;margin-top:auto">
           <div style="display:flex;gap:6px;align-items:center">
             <input type="email" placeholder="your@company.com" required style="${is}"
@@ -991,7 +993,7 @@
       origins.forEach(origin => {
         const ctrl = new AbortController();
         const t = setTimeout(() => ctrl.abort(), 5000);
-        fetch(origin, { method: 'HEAD', mode: 'no-cors', signal: ctrl.signal })
+        fetch(origin + '/', { method: 'GET', mode: 'no-cors', signal: ctrl.signal })
           .then(() => { LOCAL_LIVE[origin] = true; })
           .catch(() => { LOCAL_LIVE[origin] = false; })
           .finally(() => { clearTimeout(t); if (--pending === 0) cb(); });
@@ -1027,8 +1029,7 @@
           const navAttrs = panelId.endsWith('-backend') ? '' : 'target="_blank" rel="noopener"';
           return `<a href="${c.localUrl}" ${navAttrs} class="${base} transition-opacity hover:opacity-90" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${addr}</a>`;
         }
-        const msg = isLocal ? `${addr} · offline` : `${addr} · local only`;
-        return `<span class="${base} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${msg}</span>`;
+        return `<span class="${base} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${addr}</span>`;
       }
 
       // ── Remote / production mode ────────────────────────────────────────────

@@ -563,9 +563,9 @@
           liveLabel: 'Open Live App',
         },
         // Local port assignments — all stored in project config, no CLI args needed:
-        //   frontend  → 3006  (Vite strictPort in dashboard-frontend/vite.config.ts)
+        //   frontend  → 3006  (Vite strictPort in dashboard-frontend-gcp/vite.config.ts)
         //   backend   → 3007  (application-local.yml; run: SPRING_PROFILES_ACTIVE=local ./gradlew bootRun)
-        //                       set BACKEND_URL=http://localhost:3007 when running dashboard-frontend dev
+        //                       set BACKEND_URL=http://localhost:3007 when running dashboard-frontend-gcp dev
         backend: {
           label: 'Backend',
           color: 'emerald',
@@ -574,7 +574,7 @@
           liveUrl: '#',
           liveLabel: 'View API',
           localUrl: 'http://localhost:3007',
-          githubUrl: GH + '/springboot-gcp-dashboard-backend',
+          githubUrl: GH + '/springboot-dashboard-backend-gcp',
         },
         frontend: {
           label: 'Frontend',
@@ -584,7 +584,7 @@
           liveUrl: '#',
           liveLabel: 'Open App',
           localUrl: 'http://localhost:3006',
-          githubUrl: GH + '/dashboard-frontend',
+          githubUrl: GH + '/dashboard-frontend-gcp',
         },
         githubUrl: GH,
       },
@@ -646,7 +646,7 @@
           color: 'amber',
           title: 'Spring Boot 4.1 · Java 21 · ECS Fargate',
           chips: ['Spring Boot 4.1', 'Java 21', 'ECS Fargate'],
-          githubUrl: GH + '/react-springboot-aws-fargate',
+          githubUrl: GH + '/react-springboot-fargate-aws',
         },
         frontend: {
           label: 'Frontend',
@@ -656,9 +656,9 @@
           liveUrl: '#',
           liveLabel: 'Open App',
           localUrl: 'http://localhost:3008',
-          githubUrl: GH + '/react-springboot-aws-fargate',
+          githubUrl: GH + '/react-springboot-fargate-aws',
         },
-        githubUrl: GH + '/react-springboot-aws-fargate',
+        githubUrl: GH + '/react-springboot-fargate-aws',
       },
       serverless: {
         title: 'Event Pipeline — AWS',
@@ -729,7 +729,7 @@
           title: 'Next.js 15 · Vercel AI SDK · Token SSE',
           chips: ['Next.js 15', 'Vercel AI SDK', 'streamText', 'Provider toggle', 'Tailwind'],
           localUrl: 'http://localhost:3010',
-          githubUrl: GH + '/rag-pgvector-demo',
+          githubUrl: GH + '/rag-pgvector-demo-gcp',
         },
         backend: {
           label: 'API',
@@ -737,9 +737,9 @@
           title: 'FastAPI · LangChain · pgvector · Redis',
           chips: ['FastAPI', 'LangChain', 'pgvector', 'OpenAI embeddings', 'Redis', 'Docker'],
           localUrl: 'http://localhost:8001/docs',
-          githubUrl: GH + '/rag-pgvector-demo',
+          githubUrl: GH + '/rag-pgvector-demo-gcp',
         },
-        githubUrl: GH + '/rag-pgvector-demo',
+        githubUrl: GH + '/rag-pgvector-demo-gcp',
       },
 
       agent: {
@@ -753,7 +753,7 @@
           title: 'Next.js 15 · live step tracker · SSE',
           chips: ['Next.js 15', 'SSE step events', 'StepTracker UI', 'TypeScript'],
           localUrl: 'http://localhost:3011',
-          githubUrl: GH + '/agent-orchestration-demo',
+          githubUrl: GH + '/agent-orchestration-demo-gcp',
         },
         backend: {
           label: 'API + MCP',
@@ -761,9 +761,9 @@
           title: 'FastAPI · LangGraph · MCP server',
           chips: ['FastAPI', 'LangGraph', 'MCP server', 'Wikipedia', 'DuckDuckGo', 'Anthropic'],
           localUrl: 'http://localhost:8002/docs',
-          githubUrl: GH + '/agent-orchestration-demo',
+          githubUrl: GH + '/agent-orchestration-demo-gcp',
         },
-        githubUrl: GH + '/agent-orchestration-demo',
+        githubUrl: GH + '/agent-orchestration-demo-gcp',
       },
 
       phi: {

@@ -92,17 +92,31 @@
     </div>
   </nav>
 
+  <!-- Offline banner -->
+  <div style="background:rgba(245,158,11,0.08);border-bottom:1px solid rgba(245,158,11,0.2)" class="pt-14">
+    <div class="max-w-5xl mx-auto px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-2 text-xs text-amber-400">
+        <span class="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block"></span>
+        GCP Cloud Run + Cloud SQL are spun down — live requests unavailable.
+      </div>
+      <a href="mailto:gangulybikramjit@gmail.com?subject=Orders Dashboard — request live demo access&body=Hi Bikram, I'd like to see the live API demo." class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-amber-300 transition-opacity hover:opacity-80" style="background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.3)">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        Request live demo access
+      </a>
+    </div>
+  </div>
+
   <!-- Hero -->
-  <section class="pt-28 pb-10 px-6 max-w-5xl mx-auto">
+  <section class="pt-10 pb-10 px-6 max-w-5xl mx-auto">
     <p class="text-xs font-medium text-violet-400 tracking-widest uppercase mb-3">API Explorer</p>
-    <h1 class="text-2xl font-bold text-zinc-100 mb-2">Live API — Orders Dashboard</h1>
+    <h1 class="text-2xl font-bold text-zinc-100 mb-2">API Reference — Orders Dashboard</h1>
     <p class="text-sm text-zinc-500 max-w-xl">
-      Run real requests against the Spring Boot 4.1 · Java 21 backend on GCP GKE. Each call hits Cloud SQL PostgreSQL 16 and returns live data.
+      Spring Boot 4.1 · Java 21 backend on GCP Cloud Run. Cloud SQL PostgreSQL 16 · 4 M rows · sub-second search via GIN trigram index. Endpoint structure shown below — spin up GCP infra to run live requests.
     </p>
     <div class="flex items-center gap-2 mt-4">
-      <div id="base-url-badge" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono text-zinc-500" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08)">
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
-        https://dash-frontend-7u2hpcwtmq-uc.a.run.app/api
+      <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono text-zinc-600 opacity-50" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08)">
+        <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 inline-block"></span>
+        GCP Cloud Run · offline
       </div>
     </div>
   </section>
@@ -255,7 +269,7 @@
   </section>
 
   <script>
-    const BASE = 'http://8.233.114.122/api';
+    const BASE = null; // GCP backend offline — request access to enable live requests
 
     // Default date range: seed data likely in 2024
     const DEFAULT_FROM = '2026-05-01';
@@ -372,6 +386,7 @@
     }
 
     async function fetchTimed(url) {
+      if (!BASE) throw new Error('Backend offline — request access for a live demo.');
       const t0 = performance.now();
       const res = await fetch(url);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -575,6 +590,14 @@
     cardIds.forEach(id => {
       document.getElementById('body-' + id).classList.add('hidden');
     });
+
+    // Disable all run buttons when backend is offline
+    if (!BASE) {
+      document.querySelectorAll('.run-btn').forEach(btn => {
+        btn.disabled = true;
+        btn.title = 'Backend offline — request access for a live demo';
+      });
+    }
 
     document.getElementById('search-q').addEventListener('keydown', e => { if (e.key === 'Enter') runSearch(); });
     document.getElementById('customer-q').addEventListener('keydown', e => { if (e.key === 'Enter') runCustomers(); });

@@ -852,7 +852,10 @@
             if (seen.has(origin)) return;
             seen.add(origin);
             LOCAL_LIVE[origin] = false;
-            probe(url, () => { LOCAL_LIVE[origin] = true; });
+            probe(url, () => {
+              LOCAL_LIVE[origin] = true;
+              if (_mt === 'local' && _mk) { const el = document.getElementById('modal-body'); if (el) el.innerHTML = _tierBarHtml() + _panelsHtml(projects[_mk]); }
+            });
           });
         });
       }
@@ -938,49 +941,14 @@
       return `<div style="display:flex;gap:6px;margin-bottom:14px;padding:5px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;flex-wrap:wrap">${tabs}</div>`;
     }
 
-    function _tierFallbackHtml(tier) {
-      if (tier === 'local') {
-        return `<div style="padding:20px 0;color:#52525b;font-size:0.8rem">No local ports configured for this project.</div>`;
-      }
-      const ts     = _tierStyles[tier] || _tierStyles.full;
-      const label  = tier === 'full' ? 'Full Infra' : 'Lite Deploy';
-      const isGcp  = projects[_mk]?.cloud?.color === 'gcp';
-      const costHint = (tier === 'full' && isGcp)
-        ? `<p style="font-size:0.60rem;color:#71717a;margin-bottom:4px;letter-spacing:0.01em">GCP spun down · code only · ~$80/mo at idle</p>`
-        : '';
-      const hs = `font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${ts.text};opacity:0.7;margin-bottom:2px`;
-      const is = `background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#e4e4e7;border-radius:6px;padding:5px 9px;font-size:0.75rem;outline:none;min-width:0;flex:1`;
-      const ss = `background:${ts.bg};border:1px solid ${ts.border};color:${ts.text};border-radius:6px;padding:5px 11px;font-size:0.72rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0`;
-      return `<div class="flex-1 rounded-xl p-4 flex flex-col" style="background:${ts.bg};border:1px solid ${ts.border}">
-        <p style="${hs}">Request Access</p>
-        <p class="font-semibold text-sm text-zinc-100 mb-2">${label}</p>
-        ${costHint}<p style="font-size:0.75rem;color:#71717a;margin-bottom:12px;line-height:1.5">Not currently deployed — request access and I'll spin it up.</p>
-        <form onsubmit="requestAccess(event,'${_mk}','${label}')" style="display:flex;flex-direction:column;gap:4px;margin-top:auto">
-          <div style="display:flex;gap:6px;align-items:center">
-            <input type="email" placeholder="your@company.com" required style="${is}"
-              onfocus="this.style.borderColor='${ts.border}'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" />
-            <button type="submit" style="${ss}">${arrowIcon}</button>
-          </div>
-        </form>
-      </div>`;
-    }
-
     function _panelsHtml(p) {
       const all = [
         p.frontend ? { c: p.frontend, id: _mk + '-frontend' } : null,
         p.backend  ? { c: p.backend,  id: _mk + '-backend'  } : null,
         p.extra    ? { c: p.extra,    id: _mk + '-extra'    } : null,
       ].filter(Boolean);
-
       const localMode = _mt === 'local';
-      const visible = localMode
-        ? all.filter(({ c }) => !!c.localUrl)
-        : all.filter(({ c }) => (c.tier || 'full') === _mt);
-
-      const inner = visible.length
-        ? visible.map(({ c, id }) => smallPanelHtml(c, id, localMode)).join('')
-        : _tierFallbackHtml(_mt);
-      return `<div class="flex gap-3 mb-4">${inner}</div>`;
+      return `<div class="flex gap-3 mb-4">${all.map(({ c, id }) => smallPanelHtml(c, id, localMode)).join('')}</div>`;
     }
 
     // Re-probe this project's local origins; calls cb() once all settle
@@ -1016,15 +984,16 @@
     // ─────────────────────────────────────────────────────────────────────────
 
     function liveBtn(c, col, panelId, localMode) {
-      const tier     = c.tier || 'full';
       const useLocal = localMode !== undefined ? localMode : isLocal;
 
       // ── Local / local-view mode ───────────────────────────────────────────
       if (useLocal) {
-        if (!c.localUrl) return '';
+        const base = 'flex items-center justify-center w-full py-2 rounded-lg text-xs font-mono mt-auto';
+        if (!c.localUrl) {
+          return `<span class="${base} opacity-20 cursor-default select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">no local port</span>`;
+        }
         const live = isLocal ? (LOCAL_LIVE[new URL(c.localUrl).origin] ?? false) : false;
         const addr = c.localUrl.replace('http://', '');
-        const base = 'flex items-center justify-center w-full py-2 rounded-lg text-xs font-mono mt-auto';
         if (live) {
           const navAttrs = panelId.endsWith('-backend') ? '' : 'target="_blank" rel="noopener"';
           return `<a href="${c.localUrl}" ${navAttrs} class="${base} transition-opacity hover:opacity-90" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${addr}</a>`;
@@ -1047,7 +1016,7 @@
       const headingStyle = `font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${col.btnText};opacity:0.7;margin-bottom:2px`;
 
       const isGcp   = projects[projectKey]?.cloud?.color === 'gcp';
-      const gcpHint = (isGcp && tier === 'full')
+      const gcpHint = (isGcp && _mt === 'full')
         ? `<p style="font-size:0.60rem;color:#71717a;margin-bottom:4px;letter-spacing:0.01em">GCP spun down · code only · ~$80/mo at idle</p>`
         : '';
 

@@ -1045,32 +1045,18 @@
       const submitStyle  = `background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText};border-radius:6px;padding:5px 11px;font-size:0.72rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0`;
       const headingStyle = `font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${col.btnText};opacity:0.7;margin-bottom:2px`;
 
-      const fullInfraForm = `<div style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,0.06)">
-        <form onsubmit="requestAccess(event,'${projectKey}','Full Infra')" style="display:flex;flex-direction:column;gap:3px">
-          <p style="${headingStyle}">Request Full Infra</p>
-          <div style="display:flex;gap:6px;align-items:center">
-            <input type="email" placeholder="your@company.com" required style="${inputStyle}"
-              onfocus="this.style.borderColor='${col.btnBorder}'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" />
-            <button type="submit" style="${submitStyle}">${arrowIcon}</button>
-          </div>
-        </form>
-      </div>`;
-
       const isGcp   = projects[projectKey]?.cloud?.color === 'gcp';
-      const gcpHint = isGcp
+      const gcpHint = (isGcp && tier === 'full')
         ? `<p style="font-size:0.60rem;color:#71717a;margin-bottom:4px;letter-spacing:0.01em">GCP spun down · code only · ~$80/mo at idle</p>`
-        : '';
-      const liteHint = (tier === 'lite' && !isGcp)
-        ? `<p style="font-size:0.60rem;color:#71717a;margin-bottom:4px;letter-spacing:0.01em">Lite deploy · full infra also available on request</p>`
         : '';
 
       // Backend: direct link when live, request-access form when not
       if (isBackend) {
         if (c.liveUrl && c.liveUrl !== '#') {
           if (_prodOffline(c.liveUrl)) {
-            return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · offline</span>${tier === 'lite' ? fullInfraForm : ''}`;
+            return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · offline</span>`;
           }
-          return `<a href="${c.liveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>${tier === 'lite' ? fullInfraForm : ''}`;
+          return `<a href="${c.liveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
         }
         // fall through to request-access form
       }
@@ -1078,14 +1064,14 @@
       // Frontend / extra: direct link when live, request access form when not
       if (c.liveUrl && c.liveUrl !== '#') {
         if (_prodOffline(c.liveUrl)) {
-          return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · offline</span>${tier === 'lite' ? fullInfraForm : ''}`;
+          return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · offline</span>`;
         }
-        return `<a href="${c.liveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>${tier === 'lite' ? fullInfraForm : ''}`;
+        return `<a href="${c.liveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
       }
 
       return `<form onsubmit="requestAccess(event,'${projectKey}','${c.liveLabel}')" style="display:flex;flex-direction:column;gap:4px;width:100%;margin-top:auto">
         <p style="${headingStyle}">Request Access</p>
-        ${gcpHint}${liteHint}
+        ${gcpHint}
         <div style="display:flex;gap:6px;align-items:center">
           <input type="email" placeholder="your@company.com" required style="${inputStyle}"
             onfocus="this.style.borderColor='${col.btnBorder}'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" />

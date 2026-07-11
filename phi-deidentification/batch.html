@@ -360,6 +360,20 @@
     </p>
   </div>
 
+  <!-- How it works -->
+  <div style="margin-bottom:20px;padding:14px 16px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;font-size:0.75rem;line-height:1.7;color:var(--text-muted);max-width:720px;">
+    <div style="font-size:0.7rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">How it works</div>
+    <ol style="margin:0;padding-left:1.4em;">
+      <li><strong style="color:var(--text);">Records generated in your browser</strong> — 50 clinical notes built from randomised Faker values (name, SSN, MRN, DOB, address, phone). No files. No uploads.</li>
+      <li><strong style="color:var(--text);">POST /ingest</strong> — all 50 sent as one batch. The API writes a Job + 50 Record rows to PostgreSQL, enqueues one Celery task per record onto Redis, and returns a <code style="font-size:0.72rem;color:var(--violet);">job_id</code> immediately.</li>
+      <li><strong style="color:var(--text);">3 Celery workers process in parallel</strong> — each reads its Record from PostgreSQL and runs spaCy biomedical NER + regex (SSN, MRN, PHONE, EMAIL).</li>
+      <li><strong style="color:var(--text);">Claude fallback (tier-2)</strong> — only triggered when spaCy finds nothing but the text contains PHI-indicator words. Mean entity confidence ≥ 0.85 → spaCy result used as-is. Below threshold → Claude Haiku 4.5 extracts entities as structured JSON and results are merged.</li>
+      <li><strong style="color:var(--text);">Synthetic substitution</strong> — each detected span is replaced with a Faker value matched to its type. Entities are processed right-to-left so replacements don't shift earlier character offsets.</li>
+      <li><strong style="color:var(--text);">Two writes, one commit</strong> — <code style="font-size:0.72rem;color:var(--violet);">deidentified_text</code> saved to the Record; one audit-log row per entity with a SHA-256 hash of the original value. Raw PHI is never stored.</li>
+      <li><strong style="color:var(--text);">Results stream back</strong> — the browser polls <code style="font-size:0.72rem;color:var(--violet);">GET /records/{job_id}</code> once per second until all 50 complete.</li>
+    </ol>
+  </div>
+
   <!-- Inline token field -->
   <div class="token-row" id="tokenRow">
     <span class="token-lbl">Access Token</span>

@@ -568,6 +568,7 @@
         //                       set BACKEND_URL=http://localhost:3007 when running dashboard-frontend-gcp dev
         backend: {
           label: 'Backend',
+          tier: 'lite',
           color: 'emerald',
           title: 'Spring Boot 4.1 · Java 21',
           chips: ['Spring Boot 4.1', 'Java 21', 'Flyway 12.4', 'REST API'],
@@ -578,6 +579,7 @@
         },
         frontend: {
           label: 'Frontend',
+          tier: 'lite',
           color: 'blue',
           title: 'React 19.2 + Vite 6.4',
           chips: ['React 19.2', 'TypeScript 5.9', 'Vite 6.4', 'Recharts 3.9'],
@@ -605,6 +607,7 @@
         // Backend (Prisma/PG) is internal to Next.js — no standalone local endpoint to probe.
         backend: {
           label: 'Backend',
+          tier: 'full',
           color: 'slate',
           title: 'PostgreSQL 16 · Prisma',
           chips: ['PostgreSQL 16', 'Prisma', 'SSE'],
@@ -615,6 +618,7 @@
         },
         frontend: {
           label: 'Frontend',
+          tier: 'full',
           color: 'indigo',
           title: 'Next.js 16.2 · TypeScript 5.9',
           chips: ['Next.js 16.2', 'TypeScript 5.9', 'Tailwind CSS 4.3', 'RSC'],
@@ -643,6 +647,7 @@
         // Backend has no directly testable HTTP artifact — no localUrl.
         backend: {
           label: 'Backend',
+          tier: 'full',
           color: 'amber',
           title: 'Spring Boot 4.1 · Java 21 · ECS Fargate',
           chips: ['Spring Boot 4.1', 'Java 21', 'ECS Fargate'],
@@ -650,6 +655,7 @@
         },
         frontend: {
           label: 'Frontend',
+          tier: 'full',
           color: 'blue',
           title: 'React 19.2 · CloudFront',
           chips: ['React 19.2', 'TypeScript 5.8', 'S3', 'CloudFront'],
@@ -678,6 +684,7 @@
         // Backend is event-driven (SNS→SQS→Lambda) — no directly testable HTTP artifact; no localUrl.
         backend: {
           label: 'Backend',
+          tier: 'lite',
           color: 'teal',
           title: 'Lambda · SNS/SQS',
           chips: ['AWS Lambda', 'SNS → SQS', 'Serverless 4.13'],
@@ -687,6 +694,7 @@
         },
         frontend: {
           label: 'Frontend',
+          tier: 'lite',
           color: 'blue',
           title: 'React 19.2 · Vite 5.4',
           chips: ['React 19.2', 'TypeScript 5.8', 'Vite 5.4', 'API Gateway', 'Job polling UI'],
@@ -706,6 +714,7 @@
         accentClass: 'text-violet-400',
         frontend: {
           label: 'App',
+          tier: 'lite',
           color: 'violet',
           title: 'React 19 · Vite · DuckDB-WASM',
           chips: ['React 19', 'Vite', 'DuckDB-WASM', 'Anthropic', 'OpenAI', 'Parquet'],
@@ -725,6 +734,7 @@
         accentClass: 'text-blue-400',
         frontend: {
           label: 'App',
+          tier: 'full',
           color: 'blue',
           title: 'Next.js 15 · Vercel AI SDK · Token SSE',
           chips: ['Next.js 15', 'Vercel AI SDK', 'streamText', 'Provider toggle', 'Tailwind'],
@@ -733,6 +743,7 @@
         },
         backend: {
           label: 'API',
+          tier: 'full',
           color: 'emerald',
           title: 'FastAPI · LangChain · pgvector · Redis',
           chips: ['FastAPI', 'LangChain', 'pgvector', 'OpenAI embeddings', 'Redis', 'Docker'],
@@ -749,6 +760,7 @@
         accentClass: 'text-amber-400',
         frontend: {
           label: 'App',
+          tier: 'full',
           color: 'amber',
           title: 'Next.js 15 · live step tracker · SSE',
           chips: ['Next.js 15', 'SSE step events', 'StepTracker UI', 'TypeScript'],
@@ -757,6 +769,7 @@
         },
         backend: {
           label: 'API + MCP',
+          tier: 'full',
           color: 'emerald',
           title: 'FastAPI · LangGraph · MCP server',
           chips: ['FastAPI', 'LangGraph', 'MCP server', 'Wikipedia', 'DuckDuckGo', 'Anthropic'],
@@ -773,6 +786,7 @@
         accentClass: 'text-teal-400',
         frontend: {
           label: 'Pipeline',
+          tier: 'lite',
           color: 'teal',
           title: 'Architecture · Trace · Example',
           chips: ['spaCy tier-1', 'Claude Haiku 4.5', 'OTel → Jaeger', 'Synthetic substitution'],
@@ -782,6 +796,7 @@
         },
         backend: {
           label: 'Demo',
+          tier: 'lite',
           color: 'emerald',
           title: 'Browser Demo — Claude Haiku 4.5',
           chips: ['claude-haiku-4-5', 'PHI detection', 'SHA-256 audit log'],
@@ -793,6 +808,7 @@
         },
         extra: {
           label: 'Batch Run',
+          tier: 'lite',
           color: 'amber',
           title: '50 Records · 3 Workers · Live',
           chips: ['real-time progress', 'parallel workers', 'fast vs Claude trace'],
@@ -878,60 +894,153 @@
     const githubIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>`;
     const arrowIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>`;
 
-    // panelId = "${projectKey}-frontend" or "${projectKey}-backend"
-    function liveBtn(c, col, panelId) {
-      // ── Local dev mode ─────────────────────────────────────────────────────
-      if (isLocal) {
+    const _tierStyles = {
+      lite:  { bg: 'rgba(14,165,233,0.12)',  border: 'rgba(14,165,233,0.3)',  text: '#38bdf8' },
+      full:  { bg: 'rgba(139,92,246,0.10)',  border: 'rgba(139,92,246,0.3)',  text: '#c4b5fd' },
+      local: { bg: 'rgba(100,116,139,0.12)', border: 'rgba(100,116,139,0.3)', text: '#94a3b8' },
+    };
+
+    // ── Modal tier state ──────────────────────────────────────────────────────
+    let _mk  = null;   // current modal project key
+    let _mt  = null;   // selected tier: 'local' | 'lite' | 'full'
+    let _mht = null;   // available tiers: { local, lite, full }
+
+    function _detectTiers(p) {
+      const panels = [p.frontend, p.backend, p.extra].filter(Boolean);
+      return {
+        local: panels.some(c => !!c.localUrl),
+        lite:  panels.some(c => (c.tier || 'full') === 'lite'),
+        full:  panels.some(c => (c.tier || 'full') === 'full'),
+      };
+    }
+
+    function _defaultTier(hasTier) {
+      if (isLocal && hasTier.local) return 'local';
+      if (hasTier.full)  return 'full';
+      if (hasTier.lite)  return 'lite';
+      return 'local';
+    }
+
+    function _tierBarHtml() {
+      const defs = [
+        { key: 'local', label: 'LOCAL' },
+        { key: 'lite',  label: 'LITE'  },
+        { key: 'full',  label: 'FULL'  },
+      ];
+      const tabs = defs.map(({ key, label }) => {
+        const available = _mht[key];
+        const selected  = _mt === key;
+        const ts = _tierStyles[key] || _tierStyles.full;
+        if (!available) {
+          return `<span style="display:inline-flex;align-items:center;gap:5px;padding:5px 14px;border-radius:6px;font-size:0.65rem;font-weight:700;letter-spacing:0.08em;color:#3f3f46;border:1px solid #27272f;cursor:default;user-select:none">${label}<span style="font-size:0.55rem;font-weight:500">n/a</span></span>`;
+        }
+        const bg  = selected ? ts.bg     : 'transparent';
+        const bdr = selected ? ts.border  : 'rgba(255,255,255,0.1)';
+        const clr = selected ? ts.text    : '#71717a';
+        const dot = selected ? ts.text    : '#3f3f46';
+        return `<button onclick="switchModalTier('${key}')" style="display:inline-flex;align-items:center;gap:5px;padding:5px 14px;border-radius:6px;font-size:0.65rem;font-weight:700;letter-spacing:0.08em;background:${bg};border:1px solid ${bdr};color:${clr};cursor:pointer;transition:all 0.12s"><span style="width:5px;height:5px;border-radius:50%;background:${dot};flex-shrink:0"></span>${label}</button>`;
+      }).join('');
+      return `<div style="display:flex;gap:6px;margin-bottom:14px;padding:5px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;flex-wrap:wrap">${tabs}</div>`;
+    }
+
+    function _panelsHtml(p) {
+      const all = [
+        p.frontend ? { c: p.frontend, id: _mk + '-frontend' } : null,
+        p.backend  ? { c: p.backend,  id: _mk + '-backend'  } : null,
+        p.extra    ? { c: p.extra,    id: _mk + '-extra'    } : null,
+      ].filter(Boolean);
+
+      const localMode = _mt === 'local';
+      const visible = localMode
+        ? all.filter(({ c }) => !!c.localUrl)
+        : all.filter(({ c }) => (c.tier || 'full') === _mt);
+
+      if (!visible.length) {
+        return `<div style="padding:20px;text-align:center;color:#52525b;font-size:0.8rem">No ${_mt} configuration for this project.</div>`;
+      }
+      return `<div class="flex gap-3 mb-4">${visible.map(({ c, id }) => smallPanelHtml(c, id, localMode)).join('')}</div>`;
+    }
+
+    function switchModalTier(tier) {
+      _mt = tier;
+      const el = document.getElementById('modal-body');
+      if (el) el.innerHTML = _tierBarHtml() + _panelsHtml(projects[_mk]);
+    }
+    // ─────────────────────────────────────────────────────────────────────────
+
+    function liveBtn(c, col, panelId, localMode) {
+      const tier     = c.tier || 'full';
+      const useLocal = localMode !== undefined ? localMode : isLocal;
+
+      // ── Local / local-view mode ───────────────────────────────────────────
+      if (useLocal) {
         if (!c.localUrl) return '';
-        const live = LOCAL_LIVE[new URL(c.localUrl).origin] ?? false;
+        const live = isLocal ? (LOCAL_LIVE[new URL(c.localUrl).origin] ?? false) : false;
         const addr = c.localUrl.replace('http://', '');
         const base = 'flex items-center justify-center w-full py-2 rounded-lg text-xs font-mono mt-auto';
         if (live) {
           const navAttrs = panelId.endsWith('-backend') ? '' : 'target="_blank" rel="noopener"';
           return `<a href="${c.localUrl}" ${navAttrs} class="${base} transition-opacity hover:opacity-90" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${addr}</a>`;
         }
-        return `<span class="${base} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${addr} · offline</span>`;
+        const msg = isLocal ? `${addr} · offline` : `${addr} · local only`;
+        return `<span class="${base} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${msg}</span>`;
       }
 
       // ── Remote / production mode ────────────────────────────────────────────
-      const isBackend = panelId.endsWith('-backend');
-      const projectKey = panelId.replace(/-(?:frontend|backend)$/, '');
+      const isBackend  = panelId.endsWith('-backend');
+      const projectKey = panelId.replace(/-(?:frontend|backend|extra)$/, '');
       const cls = 'flex items-center justify-center gap-1.5 w-full py-2 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90 mt-auto';
 
-      // Helper: check if a live URL's origin is confirmed unreachable by the page-load probe.
       const _prodOffline = (url) => {
         if (!url || url === '#' || !url.startsWith('http')) return false;
         return PROD_LIVE[new URL(url).origin] === false;
       };
 
+      const inputStyle   = `background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#e4e4e7;border-radius:6px;padding:5px 9px;font-size:0.75rem;outline:none;min-width:0;flex:1`;
+      const submitStyle  = `background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText};border-radius:6px;padding:5px 11px;font-size:0.72rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0`;
+      const headingStyle = `font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${col.btnText};opacity:0.7;margin-bottom:2px`;
+
+      const fullInfraForm = `<div style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,0.06)">
+        <form onsubmit="requestAccess(event,'${projectKey}','Full Infra')" style="display:flex;flex-direction:column;gap:3px">
+          <p style="${headingStyle}">Request Full Infra</p>
+          <div style="display:flex;gap:6px;align-items:center">
+            <input type="email" placeholder="your@company.com" required style="${inputStyle}"
+              onfocus="this.style.borderColor='${col.btnBorder}'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" />
+            <button type="submit" style="${submitStyle}">${arrowIcon}</button>
+          </div>
+        </form>
+      </div>`;
+
+      const isGcp   = projects[projectKey]?.cloud?.color === 'gcp';
+      const gcpHint = isGcp
+        ? `<p style="font-size:0.60rem;color:#71717a;margin-bottom:4px;letter-spacing:0.01em">GCP spun down · code only · ~$80/mo at idle</p>`
+        : '';
+      const liteHint = (tier === 'lite' && !isGcp)
+        ? `<p style="font-size:0.60rem;color:#71717a;margin-bottom:4px;letter-spacing:0.01em">Lite deploy · full infra also available on request</p>`
+        : '';
+
       // Backend: direct link when live, request-access form when not
       if (isBackend) {
         if (c.liveUrl && c.liveUrl !== '#') {
           if (_prodOffline(c.liveUrl)) {
-            return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · offline</span>`;
+            return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · offline</span>${tier === 'lite' ? fullInfraForm : ''}`;
           }
-          return `<a href="${c.liveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
+          return `<a href="${c.liveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>${tier === 'lite' ? fullInfraForm : ''}`;
         }
         // fall through to request-access form
       }
 
-      // Frontend: direct link when live (y), request access form when not (n / liveUrl='#')
+      // Frontend / extra: direct link when live, request access form when not
       if (c.liveUrl && c.liveUrl !== '#') {
         if (_prodOffline(c.liveUrl)) {
-          return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · offline</span>`;
+          return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · offline</span>${tier === 'lite' ? fullInfraForm : ''}`;
         }
-        return `<a href="${c.liveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
+        return `<a href="${c.liveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>${tier === 'lite' ? fullInfraForm : ''}`;
       }
-      const inputStyle = `background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#e4e4e7;border-radius:6px;padding:5px 9px;font-size:0.75rem;outline:none;min-width:0;flex:1`;
-      const submitStyle = `background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText};border-radius:6px;padding:5px 11px;font-size:0.72rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0`;
-      const headingStyle = `font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${col.btnText};opacity:0.7;margin-bottom:2px`;
-      const isGcp = projects[projectKey]?.cloud?.color === 'gcp';
-      const gcpHint = isGcp
-        ? `<p style="font-size:0.60rem;color:#71717a;margin-bottom:4px;letter-spacing:0.01em">GCP spun down · code only · ~$80/mo at idle</p>`
-        : '';
+
       return `<form onsubmit="requestAccess(event,'${projectKey}','${c.liveLabel}')" style="display:flex;flex-direction:column;gap:4px;width:100%;margin-top:auto">
         <p style="${headingStyle}">Request Access</p>
-        ${gcpHint}
+        ${gcpHint}${liteHint}
         <div style="display:flex;gap:6px;align-items:center">
           <input type="email" placeholder="your@company.com" required style="${inputStyle}"
             onfocus="this.style.borderColor='${col.btnBorder}'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" />
@@ -941,7 +1050,7 @@
     }
 
     function cloudPanelHtml(c) {
-      const col = colorMap[c.color];
+      const col   = colorMap[c.color];
       const chips = c.chips.map(t => `<span class="chip border ${col.chip}">${t}</span>`).join(' ');
       return `
         <div class="rounded-xl p-5 mb-3" style="background:${col.bg};border:1px solid ${col.border}">
@@ -951,10 +1060,10 @@
         </div>`;
     }
 
-    function smallPanelHtml(c, panelId) {
-      const col = colorMap[c.color];
-      const chips = c.chips.map(t => `<span class="chip border ${col.chip}">${t}</span>`).join(' ');
-      const hasGH = c.githubUrl && c.githubUrl !== '#';
+    function smallPanelHtml(c, panelId, localMode) {
+      const col    = colorMap[c.color];
+      const chips  = c.chips.map(t => `<span class="chip border ${col.chip}">${t}</span>`).join(' ');
+      const hasGH  = c.githubUrl && c.githubUrl !== '#';
       const ghLink = hasGH
         ? `<a href="${c.githubUrl}" target="_blank" rel="noopener" class="flex items-center justify-center gap-1.5 w-full py-1.5 rounded-lg text-[11px] font-medium text-zinc-500 hover:text-zinc-300 transition-colors mt-2" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07)">${githubIcon} GitHub</a>`
         : '';
@@ -963,7 +1072,7 @@
           <p class="text-[10px] font-semibold tracking-widest uppercase mb-1 ${col.label}">${c.label}</p>
           <p class="font-semibold text-sm text-zinc-100 mb-2">${c.title}</p>
           <div class="flex flex-wrap gap-1 mb-3">${chips}</div>
-          ${liveBtn(c, col, panelId)}
+          ${liveBtn(c, col, panelId, localMode)}
           ${c.apiKeyNote ? `<p class="text-[10px] mt-2 text-zinc-600" style="line-height:1.4">🔑 ${c.apiKeyNote}</p>` : ''}
           ${ghLink}
         </div>`;
@@ -971,6 +1080,10 @@
 
     function openModal(key) {
       const p = projects[key];
+      _mk  = key;
+      _mht = _detectTiers(p);
+      _mt  = _defaultTier(_mht);
+
       const content = document.getElementById('modal-content');
       content.innerHTML = `
         <div class="p-6">
@@ -981,14 +1094,13 @@
             </button>
           </div>
           <p class="text-xs ${p.accentClass} mb-2">${p.subtitle}</p>
-          <p class="text-sm text-zinc-400 leading-relaxed mb-5">${p.description}</p>
-          <div class="flex gap-3 mb-4">
-            ${p.frontend ? smallPanelHtml(p.frontend, key + '-frontend') : ''}
-            ${p.backend  ? smallPanelHtml(p.backend,  key + '-backend')  : ''}
-            ${p.extra    ? smallPanelHtml(p.extra,    key + '-extra')    : ''}
+          <p class="text-sm text-zinc-400 leading-relaxed mb-4">${p.description}</p>
+          <div id="modal-body">
+            ${_tierBarHtml()}${_panelsHtml(p)}
           </div>
           ${p.cloud ? cloudPanelHtml(p.cloud) : ''}
         </div>`;
+
       const modal = document.getElementById('modal');
       modal.classList.remove('hidden');
       modal.classList.add('flex');

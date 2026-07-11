@@ -981,10 +981,35 @@
       return `<div class="flex gap-3 mb-4">${inner}</div>`;
     }
 
-    function switchModalTier(tier) {
-      _mt = tier;
+    // Re-probe this project's local origins; calls cb() once all settle
+    function _reprobe(key, cb) {
+      const p = projects[key];
+      const urls = [p.frontend?.localUrl, p.backend?.localUrl, p.extra?.localUrl].filter(Boolean);
+      const origins = [...new Set(urls.map(u => new URL(u).origin))];
+      if (!origins.length) return;
+      let pending = origins.length;
+      origins.forEach(origin => {
+        const ctrl = new AbortController();
+        const t = setTimeout(() => ctrl.abort(), 5000);
+        fetch(origin, { method: 'HEAD', mode: 'no-cors', signal: ctrl.signal })
+          .then(() => { LOCAL_LIVE[origin] = true; })
+          .catch(() => { LOCAL_LIVE[origin] = false; })
+          .finally(() => { clearTimeout(t); if (--pending === 0) cb(); });
+      });
+    }
+
+    function _renderModalBody() {
       const el = document.getElementById('modal-body');
       if (el) el.innerHTML = _tierBarHtml() + _panelsHtml(projects[_mk]);
+    }
+
+    function switchModalTier(tier) {
+      _mt = tier;
+      _renderModalBody();
+      // Re-probe on LOCAL select so link activates as soon as server is confirmed up
+      if (tier === 'local' && isLocal) {
+        _reprobe(_mk, () => { if (_mt === 'local') _renderModalBody(); });
+      }
     }
     // ─────────────────────────────────────────────────────────────────────────
 
@@ -1115,9 +1140,7 @@
           </div>
           <p class="text-xs ${p.accentClass} mb-2">${p.subtitle}</p>
           <p class="text-sm text-zinc-400 leading-relaxed mb-4">${p.description}</p>
-          <div id="modal-body">
-            ${_tierBarHtml()}${_panelsHtml(p)}
-          </div>
+          <div id="modal-body"></div>
           ${p.cloud ? cloudPanelHtml(p.cloud) : ''}
         </div>`;
 
@@ -1125,6 +1148,7 @@
       modal.classList.remove('hidden');
       modal.classList.add('flex');
       document.body.style.overflow = 'hidden';
+      switchModalTier(_mt);  // populates modal-body + re-probes if LOCAL
     }
 
     function closeModal() {

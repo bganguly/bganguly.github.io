@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e
-REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 CREDS="$REPO_DIR/.emailjs"
 
 _encode() { python3 -c "import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1], safe=''))" "$1"; }
@@ -114,7 +114,7 @@ window._deployLive = {
 };
 EOF
 
-    git add index.html deploy-live.js deploy.sh nl-to-sql/
+    git add index.html deploy-live.js scripts/deploy.sh nl-to-sql/
     if ! git diff --cached --quiet; then
       git commit -m "deploy: update live endpoint selection"
     fi

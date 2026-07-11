@@ -904,13 +904,15 @@
         return PROD_LIVE[new URL(url).origin] === false;
       };
 
-      // Backend: direct link when live, nothing when not (deploy.sh controls via deploy-live.js)
+      // Backend: direct link when live, request-access form when not
       if (isBackend) {
-        if (!c.liveUrl || c.liveUrl === '#') return '';
-        if (_prodOffline(c.liveUrl)) {
-          return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · offline</span>`;
+        if (c.liveUrl && c.liveUrl !== '#') {
+          if (_prodOffline(c.liveUrl)) {
+            return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · offline</span>`;
+          }
+          return `<a href="${c.liveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
         }
-        return `<a href="${c.liveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
+        // fall through to request-access form
       }
 
       // Frontend: direct link when live (y), request access form when not (n / liveUrl='#')

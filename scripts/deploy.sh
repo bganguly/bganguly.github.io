@@ -78,7 +78,9 @@ PYEOF
 }
 
 printf '\n━━━ Probing live endpoints (up to 30s each)…\n'
-_P_DASH_FE=$(_probe "https://dash-frontend-7u2hpcwtmq-uc.a.run.app/")
+_DASH_FE_URL=$(_read_live_url dashboardLiteFe)
+[[ -z "$_DASH_FE_URL" ]] && _DASH_FE_URL=$(_read_live_url dashboardFullFe)
+_P_DASH_FE=$( [[ -n "$_DASH_FE_URL" ]] && _probe "${_DASH_FE_URL%/}/" || echo "n" )
 _NEXT_FE_URL=$(_read_live_url nextjsFe)
 _NEXT_BE_URL=$(_read_live_url nextjsBe)
 _P_NEXT_FE=$( [[ -n "$_NEXT_FE_URL" ]] && _probe "${_NEXT_FE_URL%/}/" || echo "n" )

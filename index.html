@@ -575,6 +575,7 @@
           chips: ['Spring Boot 4.1', 'Java 21', 'Flyway 12.4', 'REST API'],
           liveUrl: '#',
           liveLabel: 'View API',
+          liveUrlByTier: { lite: 'orders-dashboard/api-explorer.html', full: 'orders-dashboard/api-explorer.html' },
           localUrl: 'http://localhost:3007',
           githubUrl: GH + '/springboot-dashboard-backend-gcp',
         },
@@ -826,12 +827,13 @@
     // Apply live URL overrides written by set-live-url.sh (each app's deploy writes its CDN URL here)
     const _lu = window._liveUrls || {};
     const _urlMap = {
-      dashFe:         ['dashboard',  'frontend', null],   dashBe:         ['dashboard',  'backend',  null],
-      nextjsFe:       ['nextjs',     'frontend', null],   nextjsBe:       ['nextjs',     'backend',  null],
-      nextjsLiteFe:   ['nextjs',     'frontend', 'lite'], nextjsLiteBe:   ['nextjs',     'backend',  'lite'],
-      nextjsFullFe:   ['nextjs',     'frontend', 'full'], nextjsFullBe:   ['nextjs',     'backend',  'full'],
-      fargateFe:      ['fargate',    'frontend', null],   fargateBe:      ['fargate',    'backend',  null],
-      serverlessFe:   ['serverless', 'frontend', null],   serverlessBe:   ['serverless', 'backend',  null],
+      dashboardLiteFe: ['dashboard',  'frontend', 'lite'], dashboardLiteBe: ['dashboard',  'backend',  'lite'],
+      dashboardFullFe: ['dashboard',  'frontend', 'full'], dashboardFullBe: ['dashboard',  'backend',  'full'],
+      nextjsFe:        ['nextjs',     'frontend', null],   nextjsBe:        ['nextjs',     'backend',  null],
+      nextjsLiteFe:    ['nextjs',     'frontend', 'lite'], nextjsLiteBe:    ['nextjs',     'backend',  'lite'],
+      nextjsFullFe:    ['nextjs',     'frontend', 'full'], nextjsFullBe:    ['nextjs',     'backend',  'full'],
+      fargateFe:       ['fargate',    'frontend', null],   fargateBe:       ['fargate',    'backend',  null],
+      serverlessFe:    ['serverless', 'frontend', null],   serverlessBe:    ['serverless', 'backend',  null],
     };
     for (const [luKey, [proj, panel, tier]] of Object.entries(_urlMap)) {
       if (!_lu[luKey] || !projects[proj]?.[panel]) continue;

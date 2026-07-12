@@ -968,7 +968,15 @@
         const dot = selected ? ts.text    : '#3f3f46';
         return `<button onclick="switchModalTier('${key}')" style="display:inline-flex;align-items:center;gap:5px;padding:5px 14px;border-radius:6px;font-size:0.65rem;font-weight:700;letter-spacing:0.08em;background:${bg};border:1px solid ${bdr};color:${clr};cursor:pointer;transition:all 0.12s"><span style="width:5px;height:5px;border-radius:50%;background:${dot};flex-shrink:0"></span>${label}</button>`;
       }).join('');
-      return `<div style="display:flex;gap:6px;margin-bottom:14px;padding:5px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;flex-wrap:wrap">${tabs}</div>`;
+      const p = projects[_mk];
+      const scaleText = p && _mt !== 'local' && (
+        p.frontend?.scaleByTier?.[_mt] || p.backend?.scaleByTier?.[_mt]
+      );
+      const ts = _tierStyles[_mt] || _tierStyles.full;
+      const scaleBadge = scaleText
+        ? `<span style="margin-left:auto;font-size:0.60rem;font-weight:600;letter-spacing:0.04em;padding:3px 9px;border-radius:5px;background:${ts.bg};border:1px solid ${ts.border};color:${ts.text};white-space:nowrap">${scaleText}</span>`
+        : '';
+      return `<div style="display:flex;align-items:center;gap:6px;margin-bottom:14px;padding:5px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;flex-wrap:wrap">${tabs}${scaleBadge}</div>`;
     }
 
     function _panelsHtml(p) {
@@ -1047,6 +1055,13 @@
         return `<a href="${effectiveLiveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
       }
 
+      // Suppress Request Access on non-frontend panels when the frontend is already live for this tier
+      if (!panelId.endsWith('-frontend')) {
+        const projFe = projects[projectKey]?.frontend;
+        const projFeUrl = projFe && (projFe.liveUrlByTier?.[_mt] ?? projFe.liveUrl);
+        if (projFeUrl && projFeUrl !== '#') return '';
+      }
+
       // No live URL — Request Access (FULL adds cloud cost hint)
       const cloudColor = projects[projectKey]?.cloud?.color;
       const costHintText = (_mt === 'full')
@@ -1089,17 +1104,12 @@
       const ghLink = hasGH
         ? `<a href="${c.githubUrl}" target="_blank" rel="noopener" class="flex items-center justify-center gap-1.5 w-full py-1.5 rounded-lg text-[11px] font-medium text-zinc-500 hover:text-zinc-300 transition-colors mt-2" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07)">${githubIcon} GitHub</a>`
         : '';
-      const effectiveUrl = !localMode ? (c.liveUrlByTier?.[_mt] ?? c.liveUrl) : null;
-      const scaleHint = !localMode && c.scaleByTier?.[_mt] && effectiveUrl && effectiveUrl !== '#'
-        ? `<p style="font-size:0.60rem;color:#52525b;margin-top:3px;text-align:center;letter-spacing:0.02em">${c.scaleByTier[_mt]}</p>`
-        : '';
       return `
         <div class="flex-1 min-w-0 rounded-xl p-4 flex flex-col" style="background:${col.bg};border:1px solid ${col.border}">
           <p class="text-[10px] font-semibold tracking-widest uppercase mb-1 ${col.label}">${c.label}</p>
           <p class="font-semibold text-sm text-zinc-100 mb-2 break-words">${c.title}</p>
           <div class="flex flex-wrap gap-1 mb-3">${chips}</div>
           ${liveBtn(c, col, panelId, localMode)}
-          ${scaleHint}
           ${(localMode && !isLocal && c.localUrl) ? `<p style="font-size:0.62rem;color:#52525b;margin-top:4px">if you have this running, try <a href="${c.localUrl}" target="_blank" rel="noopener" style="color:#71717a;text-decoration:underline">${c.localUrl.replace('http://', '')}</a></p>` : ''}
           ${c.apiKeyNote ? `<p class="text-[10px] mt-2 text-zinc-600" style="line-height:1.4">🔑 ${c.apiKeyNote}</p>` : ''}
           ${ghLink}

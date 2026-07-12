@@ -971,7 +971,11 @@
 
     function _renderModalBody() {
       const el = document.getElementById('modal-body');
-      if (el) el.innerHTML = _tierBarHtml() + _panelsHtml(projects[_mk]);
+      if (!el) return;
+      const localNote = (!isLocal && _mt === 'local')
+        ? `<p style="font-size:0.68rem;color:#52525b;margin-bottom:10px">If you already have this repo running locally, you can reach it at <a href="http://localhost:9090?open=${_mk}" style="color:#71717a;text-decoration:underline">localhost:9090</a></p>`
+        : '';
+      el.innerHTML = _tierBarHtml() + localNote + _panelsHtml(projects[_mk]);
     }
 
     function switchModalTier(tier) {

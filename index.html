@@ -1055,7 +1055,14 @@
       // Live URL known — show enabled or disabled button
       if (effectiveLiveUrl && effectiveLiveUrl !== '#') {
         const _absUrl = effectiveLiveUrl.startsWith('http');
-        const offline = _absUrl && PROD_LIVE[new URL(effectiveLiveUrl).origin] === false;
+        const panelType = panelId.endsWith('-frontend') ? 'frontend' : 'backend';
+        // Relative URLs are static files that are always accessible but only useful when the
+        // service is deployed. Gate on _deployLive if present so the button shows offline
+        // when deploy.sh hasn't marked this panel as live.
+        const notDeployed = !_absUrl
+          && window._deployLive != null
+          && window._deployLive[projectKey]?.[panelType] !== true;
+        const offline = notDeployed || (_absUrl && PROD_LIVE[new URL(effectiveLiveUrl).origin] === false);
         if (offline) {
           return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · offline</span>`;
         }

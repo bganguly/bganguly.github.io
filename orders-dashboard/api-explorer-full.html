@@ -8,7 +8,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -82,7 +81,7 @@
   <!-- Nav -->
   <nav class="fixed top-0 inset-x-0 z-40 border-b" style="border-color:rgba(255,255,255,0.06);background:rgba(15,15,19,0.9);backdrop-filter:blur(16px)">
     <div class="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
-      <a href="../index.html?open=dashboard" class="flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-100 transition-colors">
+      <a href="/?open=dashboard" class="flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-100 transition-colors">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M5 12l7-7M5 12l7 7"/></svg>
         Portfolio
       </a>
@@ -93,38 +92,17 @@
     </div>
   </nav>
 
-  <!-- Request Access banner -->
   <div class="pt-14">
     <div class="max-w-5xl mx-auto px-6 pt-10 pb-6">
       <p class="text-xs font-medium text-violet-400 tracking-widest uppercase mb-3">API Reference</p>
       <h1 class="text-2xl font-bold text-zinc-100 mb-2">Orders Dashboard — Live API</h1>
-      <p class="text-sm text-zinc-500 max-w-xl mb-6">
+      <p class="text-sm text-zinc-500 max-w-xl mb-4">
         Spring Boot 4.1 · Java 21 on GCP Cloud Run + Cloud SQL PostgreSQL 16 with 4 M rows and sub-second GIN trigram search.
-        GCP costs ~$80–90/month at idle, so the infrastructure is spun down when not in use.
-        A live environment can be provisioned in under 5 minutes — request access below and I'll spin it up for you.
       </p>
-
-      <!-- Request Access form -->
-      <div class="rounded-xl p-5 max-w-md" style="background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.2)">
-        <p class="text-[10px] font-semibold tracking-widest uppercase text-violet-400 mb-3">Request Access</p>
-        <form id="access-form" onsubmit="requestAccessExplorer(event)" style="display:flex;flex-direction:column;gap:8px">
-          <div style="display:flex;gap:8px;align-items:center">
-            <input type="email" placeholder="your@company.com" required
-              style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#e4e4e7;border-radius:6px;padding:7px 10px;font-size:0.78rem;outline:none;flex:1;min-width:0"
-              onfocus="this.style.borderColor='rgba(139,92,246,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" />
-            <button type="submit"
-              style="background:rgba(139,92,246,0.2);border:1px solid rgba(139,92,246,0.4);color:#c4b5fd;border-radius:6px;padding:7px 14px;font-size:0.75rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline;vertical-align:middle"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              Send
-            </button>
-          </div>
-        </form>
-      </div>
-
-      <div class="flex items-center gap-2 mt-6">
-        <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono text-zinc-600 opacity-50" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08)">
-          <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 inline-block"></span>
-          GCP Cloud Run · offline
+      <div class="flex items-center gap-2">
+        <div id="backend-status" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono text-zinc-600 opacity-50" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08)">
+          <span id="backend-status-dot" class="w-1.5 h-1.5 rounded-full bg-zinc-600 inline-block"></span>
+          <span id="backend-status-text">GCP Cloud Run · checking…</span>
         </div>
         <span id="demo-scale-badge" style="display:none;font-size:0.68rem;padding:3px 8px;border-radius:6px;font-weight:600;background:rgba(99,102,241,0.10);border:1px solid rgba(99,102,241,0.25);color:#818cf8"></span>
       </div>
@@ -280,47 +258,26 @@
   </section>
 
   <script>
-    // EmailJS — reuses the same localStorage keys set by portfolio/index.html
-    (function () {
-      const key = localStorage.getItem('ejs_key');
-      if (key) emailjs.init({ publicKey: key });
-    })();
-
-    async function requestAccessExplorer(event) {
-      event.preventDefault();
-      const form  = event.target;
-      const btn   = form.querySelector('button[type="submit"]');
-      const email = form.querySelector('input[type="email"]').value.trim();
-      const cfg   = {
-        service:  localStorage.getItem('ejs_service')  || '',
-        template: localStorage.getItem('ejs_template') || '',
-        key:      localStorage.getItem('ejs_key')      || '',
-        contact:  localStorage.getItem('ejs_contact')  || 'gangulybikramjit@gmail.com',
-      };
-      if (!cfg.service || !cfg.template || !cfg.key) {
-        form.innerHTML = `<p style="font-size:0.78rem;color:#6ee7b7;padding:4px 0">Email <a href="mailto:${cfg.contact}?subject=Orders Dashboard — request live demo access" style="color:#a78bfa;text-decoration:underline">${cfg.contact}</a> to request access.</p>`;
-        return;
-      }
-      btn.disabled = true;
-      btn.textContent = 'Sending…';
-      try {
-        await emailjs.send(cfg.service, cfg.template, {
-          from_email: email, project: 'orders-dashboard', requested: 'Live API demo',
-        });
-        form.innerHTML = `<p style="font-size:0.78rem;color:#6ee7b7;padding:4px 0">Request sent — I'll spin up GCP and reach out directly.</p>`;
-      } catch {
-        btn.disabled = false;
-        btn.textContent = 'Try again';
-        form.insertAdjacentHTML('beforeend',
-          `<p style="font-size:0.72rem;color:#f87171;margin-top:4px">Could not send — email <a href="mailto:${cfg.contact}" style="color:#a78bfa">${cfg.contact}</a> directly.</p>`);
-      }
-    }
-
     const BASE = 'https://dash-lite-frontend-77y7e2wykq-uc.a.run.app/api';
     const DEMO_SCALE = '';
     (function(){
       const el = document.getElementById('demo-scale-badge');
       if (el && DEMO_SCALE) { el.textContent = 'demo · ' + DEMO_SCALE; el.style.display = ''; }
+
+      // Probe backend status
+      const dot  = document.getElementById('backend-status-dot');
+      const text = document.getElementById('backend-status-text');
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 6000);
+      fetch(BASE + '/orders?pageSize=1', { signal: ctrl.signal })
+        .then(() => {
+          if (dot)  { dot.style.background  = '#34d399'; dot.parentElement.style.opacity = '1'; }
+          if (text) text.textContent = 'GCP Cloud Run · live';
+        })
+        .catch(() => {
+          if (text) text.textContent = 'GCP Cloud Run · offline';
+        })
+        .finally(() => clearTimeout(t));
     })();
 
     // Default date range: seed data likely in 2024
@@ -438,7 +395,7 @@
     }
 
     async function fetchTimed(url) {
-      if (!BASE) throw new Error('Backend offline — request access for a live demo.');
+      if (!BASE) throw new Error('Backend offline.');
       const t0 = performance.now();
       const res = await fetch(url);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);

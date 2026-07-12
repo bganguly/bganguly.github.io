@@ -972,16 +972,7 @@
     function _renderModalBody() {
       const el = document.getElementById('modal-body');
       if (!el) return;
-      const localNote = (() => {
-        if (isLocal || _mt !== 'local') return '';
-        const p = projects[_mk];
-        const urls = [p.frontend?.localUrl, p.backend?.localUrl, p.extra?.localUrl].filter(Boolean);
-        const origins = [...new Set(urls.map(u => new URL(u).origin))];
-        if (!origins.length) return '';
-        const links = origins.map(o => `<a href="${o}" target="_blank" rel="noopener" style="color:#71717a;text-decoration:underline">${o.replace('http://', '')}</a>`).join(', ');
-        return `<p style="font-size:0.68rem;color:#52525b;margin-bottom:10px">Port probing requires the portfolio running locally — if you have this project running, try ${links}</p>`;
-      })();
-      el.innerHTML = _tierBarHtml() + localNote + _panelsHtml(projects[_mk]);
+      el.innerHTML = _tierBarHtml() + _panelsHtml(projects[_mk]);
     }
 
     function switchModalTier(tier) {
@@ -1070,6 +1061,7 @@
           <p class="font-semibold text-sm text-zinc-100 mb-2 break-words">${c.title}</p>
           <div class="flex flex-wrap gap-1 mb-3">${chips}</div>
           ${liveBtn(c, col, panelId, localMode)}
+          ${(localMode && !isLocal && c.localUrl) ? `<p style="font-size:0.62rem;color:#52525b;margin-top:4px">if you have this running, try <a href="${c.localUrl}" target="_blank" rel="noopener" style="color:#71717a;text-decoration:underline">${c.localUrl.replace('http://', '')}</a></p>` : ''}
           ${c.apiKeyNote ? `<p class="text-[10px] mt-2 text-zinc-600" style="line-height:1.4">🔑 ${c.apiKeyNote}</p>` : ''}
           ${ghLink}
         </div>`;

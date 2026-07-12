@@ -1007,19 +1007,22 @@
       const projectKey = panelId.replace(/-(?:frontend|backend|extra)$/, '');
       const cls = 'flex items-center justify-center gap-1.5 w-full py-2 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90 mt-auto';
 
-      // LITE: show live URL if known, else "coming soon"
-      if (_mt === 'lite') {
-        if (c.liveUrl && c.liveUrl !== '#') {
-          return `<a href="${c.liveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
+      // Live URL known — show enabled or disabled button
+      if (c.liveUrl && c.liveUrl !== '#') {
+        const offline = PROD_LIVE[new URL(c.liveUrl).origin] === false;
+        if (offline) {
+          return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · offline</span>`;
         }
-        return `<span class="${cls} opacity-30 cursor-default select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">coming soon</span>`;
+        return `<a href="${c.liveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
       }
 
-      // FULL: always show request access form + cloud cost hint
+      // No live URL — Request Access (FULL adds cloud cost hint)
       const cloudColor = projects[projectKey]?.cloud?.color;
-      const costHintText = cloudColor === 'gcp' ? 'GCP spun down · code only · ~$80/mo at idle'
-                         : cloudColor === 'aws' ? 'AWS spun down · code only · ~$15/mo at idle'
-                         : null;
+      const costHintText = (_mt === 'full')
+        ? (cloudColor === 'gcp' ? 'GCP spun down · code only · ~$80/mo at idle'
+         : cloudColor === 'aws' ? 'AWS spun down · code only · ~$15/mo at idle'
+         : null)
+        : null;
       const gcpHint = costHintText
         ? `<p style="font-size:0.60rem;color:#71717a;margin-bottom:4px;letter-spacing:0.01em">${costHintText}</p>`
         : '';

@@ -565,8 +565,7 @@
         },
         // Local port assignments — all stored in project config, no CLI args needed:
         //   frontend  → 3006  (Vite strictPort in dashboard-frontend-gcp/vite.config.ts)
-        //   backend   → 3007  (application-local.yml; run: SPRING_PROFILES_ACTIVE=local ./gradlew bootRun)
-        //                       set BACKEND_URL=http://localhost:3007 when running dashboard-frontend-gcp dev
+        //   backend   → 8080  (deploy.sh; run: ./scripts/deploy.sh)
         backend: {
           label: 'Backend',
           tier: 'lite',
@@ -576,7 +575,7 @@
           liveUrl: '#',
           liveLabel: 'View API',
           liveUrlByTier: { lite: 'orders-dashboard/api-explorer-lite.html', full: 'orders-dashboard/api-explorer-full.html' },
-          localUrl: 'http://localhost:3007',
+          localUrl: 'http://localhost:8080/explorer.html',
           githubUrl: GH + '/springboot-dashboard-backend-gcp',
         },
         frontend: {

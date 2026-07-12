@@ -67,10 +67,22 @@ _probe() {
 
 _label() { [[ "$1" == "y" ]] && echo "UP" || echo "DOWN"; }
 
+_read_live_url() {
+  local _key="$1" _f="$REPO_DIR/live-urls.js"
+  [[ -f "$_f" ]] || { echo ""; return; }
+  python3 - "$_key" "$_f" <<'PYEOF'
+import re, sys
+m = re.search(re.escape(sys.argv[1]) + r":\s*'([^']+)'", open(sys.argv[2]).read())
+print(m.group(1) if m else '')
+PYEOF
+}
+
 printf '\n━━━ Probing live endpoints (up to 30s each)…\n'
 _P_DASH_FE=$(_probe "https://dash-frontend-7u2hpcwtmq-uc.a.run.app/")
-_P_NEXT_FE=$(_probe "https://d30vaq6r4kp2fu.cloudfront.net/")
-_P_NEXT_BE=$(_probe "https://d30vaq6r4kp2fu.cloudfront.net/api-explorer")
+_NEXT_FE_URL=$(_read_live_url nextjsFe)
+_NEXT_BE_URL=$(_read_live_url nextjsBe)
+_P_NEXT_FE=$( [[ -n "$_NEXT_FE_URL" ]] && _probe "${_NEXT_FE_URL%/}/" || echo "n" )
+_P_NEXT_BE=$( [[ -n "$_NEXT_BE_URL" ]] && _probe "$_NEXT_BE_URL"    || echo "n" )
 _P_SRVL_FE=$(_probe "https://d281doisqbuiu2.cloudfront.net/")
 _P_SRVL_BE=$(_probe "https://d281doisqbuiu2.cloudfront.net/api-explorer.html")
 printf 'Done.\n'

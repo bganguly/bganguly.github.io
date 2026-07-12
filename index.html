@@ -488,6 +488,7 @@
   </div>
 
   <script src="deploy-live.js"></script>
+  <script src="live-urls.js"></script>
   <script>
     // ── Access-gate config (EmailJS) ─────────────────────────────────────
     // IDs live in localStorage only — nothing is ever committed to source.
@@ -611,7 +612,7 @@
           color: 'slate',
           title: 'PostgreSQL 16 · Prisma',
           chips: ['PostgreSQL 16', 'Prisma', 'SSE'],
-          liveUrl: 'https://d30vaq6r4kp2fu.cloudfront.net/api-explorer',
+          liveUrl: '#',
           liveLabel: 'API Explorer',
           localUrl: 'http://localhost:3004/api-explorer',
           githubUrl: GH + '/nextjs-dashboard',
@@ -622,7 +623,7 @@
           color: 'indigo',
           title: 'Next.js 16.2 · TypeScript 5.9',
           chips: ['Next.js 16.2', 'TypeScript 5.9', 'Tailwind CSS 4.3', 'RSC'],
-          liveUrl: 'https://d30vaq6r4kp2fu.cloudfront.net',
+          liveUrl: '#',
           liveLabel: 'Open App',
           localUrl: 'http://localhost:3004',
           githubUrl: GH + '/nextjs-dashboard',
@@ -819,6 +820,18 @@
         githubUrl: GH + '/phi-deidentification-pipeline-gcp',
       },
     };
+
+    // Apply live URL overrides written by set-live-url.sh (each app's deploy writes its CDN URL here)
+    const _lu = window._liveUrls || {};
+    const _urlMap = {
+      dashFe: ['dashboard','frontend'], dashBe: ['dashboard','backend'],
+      nextjsFe: ['nextjs','frontend'],  nextjsBe: ['nextjs','backend'],
+      fargateFe: ['fargate','frontend'], fargateBe: ['fargate','backend'],
+      serverlessFe: ['serverless','frontend'], serverlessBe: ['serverless','backend'],
+    };
+    for (const [luKey, [proj, panel]] of Object.entries(_urlMap)) {
+      if (_lu[luKey] && projects[proj]?.[panel]) projects[proj][panel].liveUrl = _lu[luKey];
+    }
 
     // Apply deploy-time live overrides written by deploy.sh
     if (window._deployLive) {

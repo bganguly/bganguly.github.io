@@ -69,8 +69,8 @@ _label() { [[ "$1" == "y" ]] && echo "UP" || echo "DOWN"; }
 
 printf '\n━━━ Probing live endpoints (up to 30s each)…\n'
 _P_DASH_FE=$(_probe "https://dash-frontend-7u2hpcwtmq-uc.a.run.app/")
-_P_NEXT_FE=$(_probe "https://d2c7wi0kgxiq2f.cloudfront.net/")
-_P_NEXT_BE=$(_probe "https://d2c7wi0kgxiq2f.cloudfront.net/api-explorer")
+_P_NEXT_FE=$(_probe "https://d30vaq6r4kp2fu.cloudfront.net/")
+_P_NEXT_BE=$(_probe "https://d30vaq6r4kp2fu.cloudfront.net/api-explorer")
 _P_SRVL_FE=$(_probe "https://d281doisqbuiu2.cloudfront.net/")
 _P_SRVL_BE=$(_probe "https://d281doisqbuiu2.cloudfront.net/api-explorer.html")
 printf 'Done.\n'

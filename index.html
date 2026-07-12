@@ -972,9 +972,15 @@
     function _renderModalBody() {
       const el = document.getElementById('modal-body');
       if (!el) return;
-      const localNote = (!isLocal && _mt === 'local')
-        ? `<p style="font-size:0.68rem;color:#52525b;margin-bottom:10px">Ports are only probed when the portfolio itself is running locally — <a href="http://localhost:9090?open=${_mk}" style="color:#71717a;text-decoration:underline">open it at localhost:9090</a></p>`
-        : '';
+      const localNote = (() => {
+        if (isLocal || _mt !== 'local') return '';
+        const p = projects[_mk];
+        const urls = [p.frontend?.localUrl, p.backend?.localUrl, p.extra?.localUrl].filter(Boolean);
+        const origins = [...new Set(urls.map(u => new URL(u).origin))];
+        if (!origins.length) return '';
+        const links = origins.map(o => `<a href="${o}" target="_blank" rel="noopener" style="color:#71717a;text-decoration:underline">${o.replace('http://', '')}</a>`).join(', ');
+        return `<p style="font-size:0.68rem;color:#52525b;margin-bottom:10px">Port probing requires the portfolio running locally — if you have this project running, try ${links}</p>`;
+      })();
       el.innerHTML = _tierBarHtml() + localNote + _panelsHtml(projects[_mk]);
     }
 

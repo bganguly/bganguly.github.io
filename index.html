@@ -616,6 +616,7 @@
           liveLabel: 'API Explorer',
           localUrl: 'http://localhost:3004/api-explorer',
           githubUrl: GH + '/nextjs-dashboard',
+          scaleByTier: { lite: '~500K demo orders', full: '~4M demo orders' },
         },
         frontend: {
           label: 'Frontend',
@@ -627,6 +628,7 @@
           liveLabel: 'Open App',
           localUrl: 'http://localhost:3004',
           githubUrl: GH + '/nextjs-dashboard',
+          scaleByTier: { lite: '~500K demo orders', full: '~4M demo orders' },
         },
         githubUrl: GH + '/nextjs-dashboard',
       },
@@ -824,21 +826,30 @@
     // Apply live URL overrides written by set-live-url.sh (each app's deploy writes its CDN URL here)
     const _lu = window._liveUrls || {};
     const _urlMap = {
-      dashFe: ['dashboard','frontend'], dashBe: ['dashboard','backend'],
-      nextjsFe: ['nextjs','frontend'],  nextjsBe: ['nextjs','backend'],
-      fargateFe: ['fargate','frontend'], fargateBe: ['fargate','backend'],
-      serverlessFe: ['serverless','frontend'], serverlessBe: ['serverless','backend'],
+      dashFe:         ['dashboard',  'frontend', null],   dashBe:         ['dashboard',  'backend',  null],
+      nextjsFe:       ['nextjs',     'frontend', null],   nextjsBe:       ['nextjs',     'backend',  null],
+      nextjsLiteFe:   ['nextjs',     'frontend', 'lite'], nextjsLiteBe:   ['nextjs',     'backend',  'lite'],
+      nextjsFullFe:   ['nextjs',     'frontend', 'full'], nextjsFullBe:   ['nextjs',     'backend',  'full'],
+      fargateFe:      ['fargate',    'frontend', null],   fargateBe:      ['fargate',    'backend',  null],
+      serverlessFe:   ['serverless', 'frontend', null],   serverlessBe:   ['serverless', 'backend',  null],
     };
-    for (const [luKey, [proj, panel]] of Object.entries(_urlMap)) {
-      if (_lu[luKey] && projects[proj]?.[panel]) projects[proj][panel].liveUrl = _lu[luKey];
+    for (const [luKey, [proj, panel, tier]] of Object.entries(_urlMap)) {
+      if (!_lu[luKey] || !projects[proj]?.[panel]) continue;
+      if (tier) {
+        const p = projects[proj][panel];
+        p.liveUrlByTier = p.liveUrlByTier || {};
+        p.liveUrlByTier[tier] = _lu[luKey];
+      } else {
+        projects[proj][panel].liveUrl = _lu[luKey];
+      }
     }
 
     // Apply deploy-time live overrides written by deploy.sh
     if (window._deployLive) {
       for (const [key, flags] of Object.entries(window._deployLive)) {
         if (!projects[key]) continue;
-        if (!flags.frontend && projects[key].frontend) projects[key].frontend.liveUrl = '#';
-        if (!flags.backend  && projects[key].backend)  projects[key].backend.liveUrl  = '#';
+        if (!flags.frontend && projects[key].frontend) { projects[key].frontend.liveUrl = '#'; projects[key].frontend.liveUrlByTier = {}; }
+        if (!flags.backend  && projects[key].backend)  { projects[key].backend.liveUrl  = '#'; projects[key].backend.liveUrlByTier  = {}; }
       }
       if (!isLocal && window._deployLive.showLlmSection === false) {
         const s = document.getElementById('llm-section');
@@ -880,7 +891,10 @@
       if (!isLocal) {
         const seen = new Set();
         Object.values(projects).forEach(p => {
-          [p.frontend?.liveUrl, p.backend?.liveUrl].filter(u => u && u !== '#' && u.startsWith('http')).forEach(url => {
+          [p.frontend?.liveUrl, p.backend?.liveUrl,
+           ...Object.values(p.frontend?.liveUrlByTier || {}),
+           ...Object.values(p.backend?.liveUrlByTier  || {})
+          ].filter(u => u && u !== '#' && u.startsWith('http')).forEach(url => {
             const origin = new URL(url).origin;
             if (seen.has(origin)) return;
             seen.add(origin);
@@ -1019,14 +1033,15 @@
       // ── LITE / FULL mode ────────────────────────────────────────────────────
       const projectKey = panelId.replace(/-(?:frontend|backend|extra)$/, '');
       const cls = 'flex items-center justify-center gap-1.5 w-full py-2 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90 mt-auto';
+      const effectiveLiveUrl = c.liveUrlByTier?.[_mt] ?? c.liveUrl;
 
       // Live URL known — show enabled or disabled button
-      if (c.liveUrl && c.liveUrl !== '#') {
-        const offline = PROD_LIVE[new URL(c.liveUrl).origin] === false;
+      if (effectiveLiveUrl && effectiveLiveUrl !== '#') {
+        const offline = PROD_LIVE[new URL(effectiveLiveUrl).origin] === false;
         if (offline) {
           return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · offline</span>`;
         }
-        return `<a href="${c.liveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
+        return `<a href="${effectiveLiveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
       }
 
       // No live URL — Request Access (FULL adds cloud cost hint)
@@ -1071,12 +1086,17 @@
       const ghLink = hasGH
         ? `<a href="${c.githubUrl}" target="_blank" rel="noopener" class="flex items-center justify-center gap-1.5 w-full py-1.5 rounded-lg text-[11px] font-medium text-zinc-500 hover:text-zinc-300 transition-colors mt-2" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07)">${githubIcon} GitHub</a>`
         : '';
+      const effectiveUrl = !localMode ? (c.liveUrlByTier?.[_mt] ?? c.liveUrl) : null;
+      const scaleHint = !localMode && c.scaleByTier?.[_mt] && effectiveUrl && effectiveUrl !== '#'
+        ? `<p style="font-size:0.60rem;color:#52525b;margin-top:3px;text-align:center;letter-spacing:0.02em">${c.scaleByTier[_mt]}</p>`
+        : '';
       return `
         <div class="flex-1 min-w-0 rounded-xl p-4 flex flex-col" style="background:${col.bg};border:1px solid ${col.border}">
           <p class="text-[10px] font-semibold tracking-widest uppercase mb-1 ${col.label}">${c.label}</p>
           <p class="font-semibold text-sm text-zinc-100 mb-2 break-words">${c.title}</p>
           <div class="flex flex-wrap gap-1 mb-3">${chips}</div>
           ${liveBtn(c, col, panelId, localMode)}
+          ${scaleHint}
           ${(localMode && !isLocal && c.localUrl) ? `<p style="font-size:0.62rem;color:#52525b;margin-top:4px">if you have this running, try <a href="${c.localUrl}" target="_blank" rel="noopener" style="color:#71717a;text-decoration:underline">${c.localUrl.replace('http://', '')}</a></p>` : ''}
           ${c.apiKeyNote ? `<p class="text-[10px] mt-2 text-zinc-600" style="line-height:1.4">🔑 ${c.apiKeyNote}</p>` : ''}
           ${ghLink}

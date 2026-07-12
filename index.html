@@ -1013,10 +1013,13 @@
         return `<span class="${cls} opacity-30 cursor-default select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">coming soon</span>`;
       }
 
-      // FULL: always show request access form + GCP cost hint
-      const isGcp = projects[projectKey]?.cloud?.color === 'gcp';
-      const gcpHint = isGcp
-        ? `<p style="font-size:0.60rem;color:#71717a;margin-bottom:4px;letter-spacing:0.01em">GCP spun down · code only · ~$80/mo at idle</p>`
+      // FULL: always show request access form + cloud cost hint
+      const cloudColor = projects[projectKey]?.cloud?.color;
+      const costHintText = cloudColor === 'gcp' ? 'GCP spun down · code only · ~$80/mo at idle'
+                         : cloudColor === 'aws' ? 'AWS spun down · code only · ~$15/mo at idle'
+                         : null;
+      const gcpHint = costHintText
+        ? `<p style="font-size:0.60rem;color:#71717a;margin-bottom:4px;letter-spacing:0.01em">${costHintText}</p>`
         : '';
       const inputStyle  = `background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#e4e4e7;border-radius:6px;padding:5px 9px;font-size:0.75rem;outline:none;min-width:0;flex:1`;
       const submitStyle = `background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText};border-radius:6px;padding:5px 11px;font-size:0.72rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0`;

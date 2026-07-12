@@ -126,6 +126,7 @@
           <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 inline-block"></span>
           GCP Cloud Run · offline
         </div>
+        <span id="demo-scale-badge" style="display:none;font-size:0.68rem;padding:3px 8px;border-radius:6px;font-weight:600;background:rgba(99,102,241,0.10);border:1px solid rgba(99,102,241,0.25);color:#818cf8"></span>
       </div>
     </div>
     <div style="border-bottom:1px solid rgba(255,255,255,0.06)" class="max-w-5xl mx-auto"></div>
@@ -316,6 +317,11 @@
     }
 
     const BASE = 'https://dash-lite-frontend-77y7e2wykq-uc.a.run.app/api';
+    const DEMO_SCALE = '';
+    (function(){
+      const el = document.getElementById('demo-scale-badge');
+      if (el && DEMO_SCALE) { el.textContent = 'demo · ' + DEMO_SCALE; el.style.display = ''; }
+    })();
 
     // Default date range: seed data likely in 2024
     const DEFAULT_FROM = '2026-05-01';

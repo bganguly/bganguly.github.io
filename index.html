@@ -577,6 +577,7 @@
           liveUrlByTier: { lite: 'orders-dashboard/api-explorer-lite.html', full: 'orders-dashboard/api-explorer-full.html' },
           localUrl: 'http://localhost:8080/explorer.html',
           githubUrl: GH + '/springboot-dashboard-backend-gcp',
+          scaleByTier: { local: '~100K orders', lite: '~500K orders', full: '~4M orders' },
         },
         frontend: {
           label: 'Frontend',
@@ -588,6 +589,7 @@
           liveLabel: 'Open App',
           localUrl: 'http://localhost:3006',
           githubUrl: GH + '/dashboard-frontend-gcp',
+          scaleByTier: { local: '~100K orders', lite: '~500K orders', full: '~4M orders' },
         },
         githubUrl: GH,
       },
@@ -616,7 +618,7 @@
           liveLabel: 'API Explorer',
           localUrl: 'http://localhost:3004/api-explorer',
           githubUrl: GH + '/nextjs-dashboard',
-          scaleByTier: { lite: '~500K demo orders', full: '~4M demo orders' },
+          scaleByTier: { local: '~100K orders', lite: '~500K orders', full: '~4M orders' },
         },
         frontend: {
           label: 'Frontend',
@@ -628,7 +630,7 @@
           liveLabel: 'Open App',
           localUrl: 'http://localhost:3004',
           githubUrl: GH + '/nextjs-dashboard',
-          scaleByTier: { lite: '~500K demo orders', full: '~4M demo orders' },
+          scaleByTier: { local: '~100K orders', lite: '~500K orders', full: '~4M orders' },
         },
         githubUrl: GH + '/nextjs-dashboard',
       },
@@ -968,7 +970,7 @@
         return `<button onclick="switchModalTier('${key}')" style="display:inline-flex;align-items:center;gap:5px;padding:5px 14px;border-radius:6px;font-size:0.65rem;font-weight:700;letter-spacing:0.08em;background:${bg};border:1px solid ${bdr};color:${clr};cursor:pointer;transition:all 0.12s"><span style="width:5px;height:5px;border-radius:50%;background:${dot};flex-shrink:0"></span>${label}</button>`;
       }).join('');
       const p = projects[_mk];
-      const scaleText = p && _mt !== 'local' && (
+      const scaleText = p && (
         p.frontend?.scaleByTier?.[_mt] || p.backend?.scaleByTier?.[_mt]
       );
       const ts = _tierStyles[_mt] || _tierStyles.full;

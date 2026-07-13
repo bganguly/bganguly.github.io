@@ -1129,7 +1129,7 @@
           <p class="font-semibold text-sm text-zinc-100 mb-2 break-words">${c.title}</p>
           <div class="flex flex-wrap gap-1 mb-3">${chips}</div>
           ${liveBtn(c, col, panelId, localMode)}
-          ${(localMode && !isLocal && c.localUrl) ? `<p style="font-size:0.62rem;color:#52525b;margin-top:4px">if you have this running, try <a href="${c.localUrl}?back=${encodeURIComponent(location.origin + '/?open=dashboard')}" target="_blank" rel="noopener" style="color:#71717a;text-decoration:underline">${c.localUrl.replace('http://', '')}</a></p>` : ''}
+          ${(localMode && !isLocal && c.localUrl) ? `<p style="font-size:0.62rem;color:#52525b;margin-top:4px">if you have this running, try <a href="${c.localUrl}" target="_blank" rel="noopener" style="color:#71717a;text-decoration:underline">${c.localUrl.replace('http://', '')}</a></p>` : ''}
           ${c.apiKeyNote ? `<p class="text-[10px] mt-2 text-zinc-600" style="line-height:1.4">🔑 ${c.apiKeyNote}</p>` : ''}
           ${ghLink}
         </div>`;

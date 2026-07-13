@@ -8,18 +8,25 @@ PORTFOLIO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 LIVE_URLS_FILE="$PORTFOLIO_DIR/live-urls.js"
 
 TIER=""
+BACKEND_ONLY=""
 while [[ "${1:-}" == --* ]]; do
   case "$1" in
-    --tier) TIER="$2"; shift 2 ;;
+    --tier)         TIER="$2"; shift 2 ;;
+    --backend-only) BACKEND_ONLY=1; shift ;;
     *) shift ;;
   esac
 done
 
-PROJECT="${1:?Usage: set-live-url.sh [--tier lite|full] <project_key> <fe_url> [be_url]}"
-FE_URL="${2:?fe_url is required}"
+PROJECT="${1:?Usage: set-live-url.sh [--tier lite|full] [--backend-only] <project_key> [<fe_url> [<be_url>]]}"
+FE_URL="${2:-}"
 BE_URL="${3:-}"
 
-python3 - <<PYEOF
+DEPLOY_LIVE_FILE="$PORTFOLIO_DIR/deploy-live.js"
+
+if [[ -z "$BACKEND_ONLY" ]]; then
+  [[ -z "$FE_URL" ]] && { echo "fe_url is required unless --backend-only is set"; exit 1; }
+
+  python3 - <<PYEOF
 import re, os
 
 live_urls_file = "$LIVE_URLS_FILE"
@@ -49,13 +56,44 @@ open(live_urls_file, 'w').write('\n'.join(lines) + '\n')
 label = f"{project}/{tier}" if tier else project
 print(f"live-urls.js updated ({label}).")
 PYEOF
+fi
+
+# Also update deploy-live.js so the portfolio immediately reflects this deployment.
+if [[ -f "$DEPLOY_LIVE_FILE" ]]; then
+  python3 - <<PYEOF
+import re, sys
+
+f = "$DEPLOY_LIVE_FILE"
+project  = "$PROJECT"
+set_fe   = bool("$FE_URL" and not "$BACKEND_ONLY")
+set_be   = bool("$BE_URL" or "$BACKEND_ONLY")
+
+content = open(f).read()
+
+def _set_flag(text, proj, flag, val):
+    pattern = r'(\b' + re.escape(proj) + r'\b\s*:.*?' + flag + r'\s*:)\s*(true|false)'
+    replacement = r'\g<1> ' + ('true' if val else 'false')
+    return re.sub(pattern, replacement, text)
+
+if set_fe:
+    content = _set_flag(content, project, 'frontend', True)
+if set_be:
+    content = _set_flag(content, project, 'backend', True)
+
+open(f, 'w').write(content)
+updated = []
+if set_fe: updated.append('frontend=true')
+if set_be: updated.append('backend=true')
+print(f"deploy-live.js updated ({project}: {', '.join(updated)})." if updated else "deploy-live.js: no flags to update.")
+PYEOF
+fi
 
 cd "$PORTFOLIO_DIR"
-git add live-urls.js
+git add live-urls.js deploy-live.js
 if ! git diff --cached --quiet; then
-  git commit -m "deploy: update ${PROJECT}${TIER:+/${TIER}} live URL"
+  git commit -m "deploy: update ${PROJECT}${TIER:+/${TIER}} live URL + flags"
   git push origin HEAD:main
   echo "Portfolio pushed — Pages rebuilds in ~30s."
 else
-  echo "No change to live-urls.js."
+  echo "No change to portfolio files."
 fi

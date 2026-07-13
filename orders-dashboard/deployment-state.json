@@ -1,5 +1,5 @@
 {
-  "target": "gke",
+  "target": "cloud-run",
   "deployed_at": "2026-07-10T00:00:00Z",
   "image": ""
 }

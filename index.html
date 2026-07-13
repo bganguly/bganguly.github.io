@@ -101,8 +101,7 @@
         <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">React 19.2</span>
         <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">Next.js 16.2</span>
         <span class="chip bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Spring Boot 4.1</span>
-        <span id="deploy-target-hero-primary" class="chip bg-orange-500/10 text-orange-400 border border-orange-500/20">GCP · GKE</span>
-        <span id="deploy-target-hero-secondary" class="chip bg-zinc-500/10 text-zinc-500 border border-zinc-500/20">also Cloud Run</span>
+        <span id="deploy-target-hero-primary" class="chip bg-orange-500/10 text-orange-400 border border-orange-500/20">GCP · Cloud Run</span>
         <span class="chip bg-amber-500/10 text-amber-400 border border-amber-500/20">AWS Fargate</span>
         <span class="chip bg-sky-500/10 text-sky-400 border border-sky-500/20">TypeScript 5.9</span>
         <span class="chip bg-pink-500/10 text-pink-400 border border-pink-500/20">Java 21</span>
@@ -310,9 +309,7 @@
                   <span class="text-zinc-700 text-[10px]">·</span>
                   <span class="flex items-center gap-1 text-[11px] font-medium text-violet-400"><span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>Pulumi IaC · PostgreSQL 16</span>
                   <span class="text-zinc-700 text-[10px]">·</span>
-                  <span class="flex items-center gap-1 text-[11px] font-medium text-orange-400"><span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span><span id="deploy-target-card-label">GCP · GKE</span></span>
-                  <span class="text-zinc-700 text-[10px]">·</span>
-                  <span class="flex items-center gap-1 text-[11px] font-medium text-zinc-600"><span class="w-1.5 h-1.5 rounded-full bg-zinc-600"></span><span id="deploy-target-card-secondary">Cloud Run</span></span>
+                  <span class="flex items-center gap-1 text-[11px] font-medium text-orange-400"><span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span><span id="deploy-target-card-label">GCP · Cloud Run</span></span>
               </div>
             </div>
           </div>
@@ -324,7 +321,7 @@
         <p class="text-sm text-zinc-400 leading-relaxed mb-5">
           Production-grade analytics dashboard over millions of orders — sub-second full-text search via GIN trigram index,
           millisecond chart queries from pre-aggregated Cloud SQL tables. Deployed as two independent services
-          on GKE (Kubernetes) with Pulumi TypeScript IaC; also supports Cloud Run target via deploy.sh.
+          as two Cloud Run services with Pulumi TypeScript IaC — ~$1-2/month at demo traffic, 30s deploys via gcloud run deploy.
         </p>
         <div class="flex flex-wrap gap-3">
           <div class="flex items-center gap-2 px-3 py-2 rounded-lg" style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2)">
@@ -558,8 +555,8 @@
         cloud: {
           label: 'Cloud Provider',
           color: 'gcp',
-          title: 'GKE (Kubernetes)',
-          chips: ['GKE', 'Cloud SQL PG 16', 'Secret Manager', 'Artifact Registry', 'Pulumi IaC'],
+          title: 'GCP · Cloud Run',
+          chips: ['Cloud Run', 'GCE Postgres VM', 'Secret Manager', 'Artifact Registry', 'Pulumi IaC'],
           liveUrl: '#',
           liveLabel: 'Open Live App',
         },
@@ -1187,31 +1184,6 @@
       }
     })();
 
-  </script>
-  <script>
-    // Auto-sync Orders Dashboard deployment target from deploy.sh-written state file
-    (function () {
-      fetch('/orders-dashboard/deployment-state.json?_=' + Date.now())
-        .then(function (r) { return r.ok ? r.json() : null; })
-        .catch(function () { return null; })
-        .then(function (state) {
-          if (!state || !state.target) return;
-          var isGKE = state.target === 'gke';
-          var primary   = isGKE ? 'GCP · GKE'    : 'GCP · Cloud Run';
-          var secondary = isGKE ? 'also Cloud Run' : 'also GKE';
-          var cardPrimary   = isGKE ? 'GCP · GKE'    : 'GCP · Cloud Run';
-          var cardSecondary = isGKE ? 'Cloud Run'      : 'GKE';
-          var el;
-          el = document.getElementById('deploy-target-hero-primary');   if (el) el.textContent = primary;
-          el = document.getElementById('deploy-target-hero-secondary'); if (el) el.textContent = secondary;
-          el = document.getElementById('deploy-target-card-label');     if (el) el.textContent = cardPrimary;
-          el = document.getElementById('deploy-target-card-secondary'); if (el) el.textContent = cardSecondary;
-          if (window.projects && projects.dashboard && projects.dashboard.cloud) {
-            projects.dashboard.cloud.title    = isGKE ? 'GCP · GKE (Kubernetes)' : 'GCP · Cloud Run';
-            projects.dashboard.cloud.chips[0] = isGKE ? 'GKE' : 'Cloud Run';
-          }
-        });
-    })();
   </script>
 </body>
 </html>

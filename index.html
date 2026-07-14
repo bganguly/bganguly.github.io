@@ -1099,8 +1099,13 @@
             }
           }
         }
-        // GCP dashboard lite frontend: spinner button (Cloud Run cold-start can take several seconds)
+        // GCP dashboard lite frontend: gate on health check before enabling spinner button
         if (_mk === 'dashboard' && _mt === 'lite' && panelId && panelId.endsWith('-frontend')) {
+          const hUrl = c.healthPath ? (effectiveLiveUrl + c.healthPath) : null;
+          const hState = hUrl ? HEALTH[hUrl] : true;
+          if (hState !== true) {
+            return `<span class="${cls} opacity-40 cursor-default select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">Checking…</span>`;
+          }
           return `<button onclick="_gcpAppOpen(this,'${effectiveLiveUrl}')" class="${cls} cursor-pointer" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</button>`;
         }
         return `<a href="${effectiveLiveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;

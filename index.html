@@ -713,6 +713,7 @@
       // ── AI / LLM (local-only; hidden in production) ───────────────────────
       nlsql: {
         title: 'NL-to-SQL Comparison',
+        tierLabels: { lite: 'REMOTE' },
         subtitle: 'Anthropic · OpenAI · DuckDB-WASM · H1B LCA data',
         description: 'Compares natural-language-to-SQL generation across Anthropic and OpenAI models, executing generated SQL in-browser via DuckDB-WASM against a Parquet dataset of DOL H1B LCA disclosures. Schema is auto-detected from Parquet metadata; no backend required.',
         accentClass: 'text-violet-400',
@@ -827,6 +828,7 @@
     // Apply live URL overrides written by set-live-url.sh (each app's deploy writes its CDN URL here)
     const _lu = window._liveUrls || {};
     const _urlMap = {
+      nlsqlLiteFe:     ['nlsql',      'frontend', 'lite'],
       dashboardLiteFe: ['dashboard',  'frontend', 'lite'], dashboardLiteBe: ['dashboard',  'backend',  'lite'],
       dashboardFullFe: ['dashboard',  'frontend', 'full'], dashboardFullBe: ['dashboard',  'backend',  'full'],
       nextjsFe:        ['nextjs',     'frontend', null],   nextjsBe:        ['nextjs',     'backend',  null],
@@ -954,12 +956,14 @@
     }
 
     function _tierBarHtml() {
+      const _tierLabels = projects[_mk]?.tierLabels || {};
       const defs = [
         { key: 'local', label: 'LOCAL' },
         { key: 'lite',  label: 'LITE'  },
         { key: 'full',  label: 'FULL'  },
-      ];
+      ].filter(({ key }) => _mht[key]);
       const tabs = defs.map(({ key, label }) => {
+        label = _tierLabels[key] || label;
         const selected = _mt === key;
         const ts = _tierStyles[key] || _tierStyles.full;
         const bg  = selected ? ts.bg     : 'transparent';

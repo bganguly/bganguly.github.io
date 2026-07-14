@@ -1099,7 +1099,7 @@
             }
           }
         }
-        // GCP dashboard lite frontend: gate on health check before enabling spinner button
+        // GCP Orders Dashboard modal only — NOT AWS or any other modal
         if (_mk === 'dashboard' && _mt === 'lite' && panelId && panelId.endsWith('-frontend')) {
           const hUrl = c.healthPath ? (effectiveLiveUrl + c.healthPath) : null;
           const hState = hUrl ? HEALTH[hUrl] : true;

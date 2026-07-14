@@ -515,6 +515,7 @@
 
     const LOCAL_LIVE = {};
     const PROD_LIVE  = {}; // null=unknown, true=reachable, false=unreachable
+    const HEALTH     = {}; // keyed by full health-check URL: null=pending, true=ok, false=degraded
 
     async function requestAccess(event, projectKey, label) {
       event.preventDefault();
@@ -584,6 +585,7 @@
           chips: ['React 19.2', 'TypeScript 5.9', 'Vite 6.4', 'Recharts 3.9'],
           liveUrl: '#',
           liveLabel: 'Open App',
+          healthPath: '/api/orders?pageSize=1',
           localUrl: 'http://localhost:3006',
           githubUrl: GH + '/dashboard-frontend-gcp',
           scaleByTier: { local: '~100K orders', lite: '~500K orders', full: '~4M orders' },
@@ -1065,6 +1067,12 @@
         if (offline) {
           return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · offline</span>`;
         }
+        if (_absUrl && c.healthPath) {
+          const healthUrl = effectiveLiveUrl + c.healthPath;
+          if (HEALTH[healthUrl] === false) {
+            return `<span class="${cls} opacity-30 cursor-not-allowed select-none" title="API returning 5xx — service degraded" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · service unavailable</span>`;
+          }
+        }
         return `<a href="${effectiveLiveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
       }
 
@@ -1134,6 +1142,33 @@
         </div>`;
     }
 
+    function _healthCheck(key) {
+      const p = projects[key];
+      if (!p) return;
+      ['frontend', 'backend', 'extra'].forEach(function(panel) {
+        var c = p[panel];
+        if (!c || !c.healthPath) return;
+        var tiers = Object.keys(c.liveUrlByTier || {});
+        if (!tiers.length && c.liveUrl && c.liveUrl !== '#') tiers = [null];
+        tiers.forEach(function(tier) {
+          var baseUrl = tier ? (c.liveUrlByTier?.[tier] ?? c.liveUrl) : c.liveUrl;
+          if (!baseUrl || baseUrl === '#' || !baseUrl.startsWith('http')) return;
+          var healthUrl = baseUrl + c.healthPath;
+          if (HEALTH[healthUrl] !== undefined) {
+            if (_mk === key) _renderModalBody();
+            return;
+          }
+          HEALTH[healthUrl] = null;
+          var ctrl = new AbortController();
+          var t = setTimeout(function() { ctrl.abort(); }, 5000);
+          fetch(healthUrl, { credentials: 'omit', signal: ctrl.signal })
+            .then(function(r) { HEALTH[healthUrl] = r.ok; })
+            .catch(function() { HEALTH[healthUrl] = false; })
+            .finally(function() { clearTimeout(t); if (_mk === key) _renderModalBody(); });
+        });
+      });
+    }
+
     function openModal(key) {
       const p = projects[key];
       _mk  = key;
@@ -1160,6 +1195,7 @@
       modal.classList.add('flex');
       document.body.style.overflow = 'hidden';
       switchModalTier(_mt);  // populates modal-body + re-probes if LOCAL
+      if (!isLocal) _healthCheck(key);
     }
 
     function closeModal() {

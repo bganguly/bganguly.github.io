@@ -713,6 +713,7 @@
       // ── AI / LLM (local-only; hidden in production) ───────────────────────
       nlsql: {
         title: 'NL-to-SQL Comparison',
+        tiers: ['local', 'lite'],
         tierLabels: { lite: 'REMOTE' },
         subtitle: 'Anthropic · OpenAI · DuckDB-WASM · H1B LCA data',
         description: 'Compares natural-language-to-SQL generation across Anthropic and OpenAI models, executing generated SQL in-browser via DuckDB-WASM against a Parquet dataset of DOL H1B LCA disclosures. Schema is auto-detected from Parquet metadata; no backend required.',
@@ -734,12 +735,14 @@
 
       rag: {
         title: 'RAG + pgvector Demo (GCP)',
+        tiers: ['local', 'lite'],
+        tierLabels: { lite: 'REMOTE' },
         subtitle: 'LangChain · pgvector · Vercel AI SDK · NVIDIA NIM',
         description: 'Ingest any unstructured text → chunk via LangChain RecursiveCharacterTextSplitter → embed via OpenAI → store in pgvector. Questions trigger cosine-similarity retrieval; answers stream token-by-token via Vercel AI SDK streamText. Provider toggle in the UI switches between Anthropic, OpenAI, and NVIDIA NIM (Nemotron) — same interface, just a base_url swap. FastAPI handles all vector operations; Next.js API routes handle LLM streaming.',
         accentClass: 'text-blue-400',
         frontend: {
           label: 'App',
-          tier: 'full',
+          tier: 'lite',
           color: 'blue',
           title: 'Next.js 15 · Vercel AI SDK · Token SSE',
           chips: ['Next.js 15', 'Vercel AI SDK', 'streamText', 'Provider toggle', 'Tailwind'],
@@ -748,7 +751,7 @@
         },
         backend: {
           label: 'API',
-          tier: 'full',
+          tier: 'lite',
           color: 'emerald',
           title: 'FastAPI · LangChain · pgvector · Redis',
           chips: ['FastAPI', 'LangChain', 'pgvector', 'OpenAI embeddings', 'Redis', 'Docker'],
@@ -760,12 +763,14 @@
 
       agent: {
         title: 'Multi-Agent Orchestration (GCP)',
+        tiers: ['local', 'lite'],
+        tierLabels: { lite: 'REMOTE' },
         subtitle: 'LangGraph · MCP server · parallel routing · FastAPI SSE',
         description: 'LangGraph StateGraph classifies each query and routes it: simple queries go direct to retrieval; complex queries decompose into parallel sub-queries via LangGraph\'s Send API, each handled by a specialist retrieve node. Agent reasoning steps (classify → decompose → retrieve → synthesize) stream to the browser as SSE events — pending / active / done — before the final answer appears. The same Wikipedia and DuckDuckGo tools are also exposed as an MCP server over stdio, connectable from Claude Desktop or any MCP client.',
         accentClass: 'text-amber-400',
         frontend: {
           label: 'App',
-          tier: 'full',
+          tier: 'lite',
           color: 'amber',
           title: 'Next.js 15 · live step tracker · SSE',
           chips: ['Next.js 15', 'SSE step events', 'StepTracker UI', 'TypeScript'],
@@ -774,7 +779,7 @@
         },
         backend: {
           label: 'API + MCP',
-          tier: 'full',
+          tier: 'lite',
           color: 'emerald',
           title: 'FastAPI · LangGraph · MCP server',
           chips: ['FastAPI', 'LangGraph', 'MCP server', 'Wikipedia', 'DuckDuckGo', 'Anthropic'],
@@ -786,6 +791,8 @@
 
       phi: {
         title: 'PHI De-identification Pipeline',
+        tiers: ['local', 'lite'],
+        tierLabels: { lite: 'REMOTE' },
         subtitle: 'spaCy · Claude Haiku 4.5 · FastAPI · Celery · Redis · PostgreSQL',
         description: 'Healthcare PHI detection and synthetic substitution pipeline. spaCy biomedical NER (en_core_sci_md) handles ~90% of records as tier-1; Claude Haiku 4.5 covers ambiguous fallbacks. Each detected entity (name, SSN, MRN, date, phone, email, location) is replaced with a Faker-generated synthetic equivalent — not blank redaction — preserving analytical signal. SHA-256 hashes of originals stored in a PostgreSQL redaction log for auditing. Full observability: structured JSON logs, Prometheus metrics, OpenTelemetry traces → Jaeger. The browser demo runs Claude directly for PHI detection; full pipeline adds spaCy tier-1 + Celery workers.',
         accentClass: 'text-teal-400',
@@ -961,7 +968,7 @@
         { key: 'local', label: 'LOCAL' },
         { key: 'lite',  label: 'LITE'  },
         { key: 'full',  label: 'FULL'  },
-      ].filter(({ key }) => _mht[key]);
+      ].filter(({ key }) => (projects[_mk]?.tiers ?? ['local', 'lite', 'full']).includes(key));
       const tabs = defs.map(({ key, label }) => {
         label = _tierLabels[key] || label;
         const selected = _mt === key;

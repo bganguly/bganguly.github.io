@@ -99,11 +99,12 @@
       <p class="text-sm text-zinc-500 max-w-xl mb-4">
         Spring Boot 4.1 · Java 21 on GCP Cloud Run + Cloud SQL PostgreSQL 16 with ~500K demo orders and sub-second GIN trigram search.
       </p>
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 flex-wrap">
         <div id="backend-status" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono text-zinc-600 opacity-50" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08)">
           <span id="backend-status-dot" class="w-1.5 h-1.5 rounded-full bg-zinc-600 inline-block"></span>
-          <span id="backend-status-text">GCP Cloud Run · checking…</span>
+          <span id="backend-status-text">GCP · checking…</span>
         </div>
+        <span id="runtime-badge" style="display:none;font-size:0.68rem;padding:3px 10px;border-radius:6px;font-weight:600"></span>
         <span id="demo-scale-badge" style="display:none;font-size:0.68rem;padding:3px 8px;border-radius:6px;font-weight:600;background:rgba(99,102,241,0.10);border:1px solid rgba(99,102,241,0.25);color:#818cf8"></span>
       </div>
     </div>
@@ -255,6 +256,28 @@
       </div>
     </div>
 
+    <!-- 6. Runtime -->
+    <div class="glass rounded-2xl overflow-hidden">
+      <button class="w-full flex items-center justify-between gap-4 px-6 py-4 text-left" onclick="toggleCard('runtime')">
+        <div class="flex items-center gap-3">
+          <span class="chip method-get text-[11px] px-2 py-0.5">GET</span>
+          <span class="endpoint-path">/api/runtime</span>
+          <span class="text-xs text-zinc-600 hidden sm:inline">Backend deployment type — Cloud Run or GKE</span>
+        </div>
+        <svg id="chevron-runtime" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-zinc-600 flex-shrink-0 transition-transform duration-200"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div id="body-runtime" class="px-6 pb-6 border-t" style="border-color:rgba(255,255,255,0.06)">
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-4 mb-4">
+          <p class="text-xs text-zinc-600">Returns <code class="font-mono text-violet-400">cr</code> (Cloud Run) or <code class="font-mono text-violet-400">gke</code> (Kubernetes). Toggle via <code class="font-mono text-zinc-500">BACKEND_RUNTIME</code> env var — no code change needed.</p>
+          <button class="run-btn" onclick="runRuntime()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg>
+            Run
+          </button>
+        </div>
+        <div id="result-runtime"></div>
+      </div>
+    </div>
+
   </section>
 
   <script>
@@ -264,20 +287,37 @@
       const el = document.getElementById('demo-scale-badge');
       if (el && DEMO_SCALE) { el.textContent = 'demo · ' + DEMO_SCALE; el.style.display = ''; }
 
-      // Probe backend status
-      const dot  = document.getElementById('backend-status-dot');
-      const text = document.getElementById('backend-status-text');
+      const dot    = document.getElementById('backend-status-dot');
+      const text   = document.getElementById('backend-status-text');
+      const badge  = document.getElementById('runtime-badge');
+
+      // Probe backend health + runtime in parallel
       const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), 6000);
-      fetch(BASE + '/orders?pageSize=1', { signal: ctrl.signal })
-        .then(() => {
-          if (dot)  { dot.style.background  = '#34d399'; dot.parentElement.style.opacity = '1'; }
-          if (text) text.textContent = 'GCP Cloud Run · live';
-        })
-        .catch(() => {
-          if (text) text.textContent = 'GCP Cloud Run · offline';
-        })
-        .finally(() => clearTimeout(t));
+      const t = setTimeout(() => ctrl.abort(), 8000);
+
+      Promise.all([
+        fetch(BASE + '/orders?pageSize=1', { signal: ctrl.signal }).then(r => r.ok),
+        fetch(BASE + '/runtime', { signal: ctrl.signal }).then(r => r.ok ? r.json() : null).catch(() => null),
+      ]).then(([alive, runtimeData]) => {
+        const rt = runtimeData?.runtime ?? null;
+        if (dot)  { dot.style.background = alive ? '#34d399' : '#f87171'; dot.parentElement.style.opacity = '1'; }
+        if (text) text.textContent = alive ? 'GCP · live' : 'GCP · offline';
+        if (rt && badge) {
+          badge.textContent = 'backend · ' + rt;
+          badge.style.display = '';
+          if (rt === 'gke') {
+            badge.style.background = 'rgba(16,185,129,0.10)';
+            badge.style.border = '1px solid rgba(16,185,129,0.25)';
+            badge.style.color = '#34d399';
+          } else {
+            badge.style.background = 'rgba(251,146,60,0.10)';
+            badge.style.border = '1px solid rgba(251,146,60,0.25)';
+            badge.style.color = '#fb923c';
+          }
+        }
+      }).catch(() => {
+        if (text) text.textContent = 'GCP · offline';
+      }).finally(() => clearTimeout(t));
     })();
 
     // Default date range: seed data likely in 2024
@@ -585,7 +625,29 @@
       });
     }
 
-    const cardIds = ['orders', 'search', 'aggregates', 'customers', 'brush'];
+    async function runRuntime() {
+      setLoading('result-runtime');
+      try {
+        const { json, ms } = await fetchTimed(`${BASE}/runtime`);
+        const rt = json.runtime ?? '—';
+        const color = rt === 'gke'
+          ? { bg: 'rgba(16,185,129,0.12)', border: 'rgba(16,185,129,0.3)', text: '#34d399' }
+          : { bg: 'rgba(251,146,60,0.12)',  border: 'rgba(251,146,60,0.3)',  text: '#fb923c' };
+        document.getElementById('result-runtime').innerHTML =
+          metaBar(ms, 'reads BACKEND_RUNTIME env var at runtime') +
+          `<div class="flex items-center gap-3 mb-4">
+            <span style="font-size:0.75rem;padding:4px 14px;border-radius:8px;font-weight:600;background:${color.bg};border:1px solid ${color.border};color:${color.text}">
+              ${rt}
+            </span>
+            <span class="text-xs text-zinc-500">${rt === 'gke' ? 'Kubernetes on GKE (e2-standard-4 node)' : 'Serverless Cloud Run (scales to zero)'}</span>
+          </div>` +
+          rawJson(json);
+      } catch (e) {
+        document.getElementById('result-runtime').innerHTML = renderError(e);
+      }
+    }
+
+    const cardIds = ['orders', 'search', 'aggregates', 'customers', 'brush', 'runtime'];
 
     function toggleCard(id) {
       const body = document.getElementById('body-' + id);

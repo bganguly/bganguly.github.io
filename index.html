@@ -118,87 +118,6 @@
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-      <!-- NL-to-SQL -->
-      <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
-           onclick="openModal('nlsql')">
-        <div class="flex items-start justify-between mb-4">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center"
-                 style="background:linear-gradient(135deg,#7c3aed22,#6366f122);border:1px solid rgba(139,92,246,0.3)">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-violet-400"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-            </div>
-            <div>
-              <div class="flex items-center gap-2">
-                <h2 class="font-semibold text-zinc-100">NL-to-SQL Comparison</h2>
-                <span class="chip bg-violet-500/15 text-violet-300 border border-violet-500/25 text-[10px]">LLM</span>
-              </div>
-              <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
-                <span class="flex items-center gap-1 text-[11px] font-medium text-violet-400"><span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>Anthropic · OpenAI</span>
-                <span class="text-zinc-700 text-[10px]">·</span>
-                <span class="flex items-center gap-1 text-[11px] font-medium text-blue-400"><span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>DuckDB-WASM · Parquet</span>
-                <span class="text-zinc-700 text-[10px]">·</span>
-                <span class="flex items-center gap-1 text-[11px] font-medium text-emerald-400"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>DOL H1B LCA data</span>
-              </div>
-            </div>
-          </div>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-               class="text-zinc-600 group-hover:text-violet-400 transition-colors mt-1 flex-shrink-0">
-            <path d="M7 17L17 7M17 7H7M17 7v10"/>
-          </svg>
-        </div>
-        <p class="text-sm text-zinc-400 leading-relaxed mb-5">
-          Side-by-side NL-to-SQL generation across Anthropic and OpenAI models. SQL runs in-browser via DuckDB-WASM
-          against a Parquet snapshot of DOL H1B LCA disclosures — no backend, schema auto-detected from Parquet metadata.
-        </p>
-        <div class="flex flex-wrap gap-2">
-          <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">Anthropic</span>
-          <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">OpenAI</span>
-          <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">DuckDB-WASM</span>
-          <span class="chip bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Parquet · H1B LCA</span>
-          <span class="chip bg-sky-500/10 text-sky-400 border border-sky-500/20">React 19 · Vite</span>
-        </div>
-      </div>
-
-      <!-- PHI De-identification Pipeline -->
-      <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
-           onclick="openModal('phi')">
-        <div class="flex items-start justify-between mb-4">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center"
-                 style="background:linear-gradient(135deg,#2dd4bf18,#0d948018);border:1px solid rgba(45,212,191,0.3)">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="1.5"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-            </div>
-            <div>
-              <div class="flex items-center gap-2">
-                <h2 class="font-semibold text-zinc-100">PHI De-identification Pipeline</h2>
-                <span class="chip bg-teal-500/15 text-teal-300 border border-teal-500/25 text-[10px]">Python</span>
-              </div>
-              <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
-                <span class="flex items-center gap-1 text-[11px] font-medium text-teal-400"><span class="w-1.5 h-1.5 rounded-full bg-teal-400"></span>spaCy · Claude Haiku</span>
-                <span class="text-zinc-700 text-[10px]">·</span>
-                <span class="flex items-center gap-1 text-[11px] font-medium text-blue-400"><span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>FastAPI · Celery · Redis</span>
-              </div>
-            </div>
-          </div>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-               class="text-zinc-600 group-hover:text-teal-400 transition-colors mt-1 flex-shrink-0">
-            <path d="M7 17L17 7M17 7H7M17 7v10"/>
-          </svg>
-        </div>
-        <p class="text-sm text-zinc-400 leading-relaxed mb-5">
-          Healthcare PHI detection and synthetic substitution at scale. spaCy biomedical NER handles ~90% of records;
-          Claude Haiku 4.5 covers ambiguous fallbacks. Names, SSNs, MRNs, dates and phones are replaced with
-          realistic synthetic equivalents — not blank redactions — preserving analytical signal.
-        </p>
-        <div class="flex flex-wrap gap-2">
-          <span class="chip bg-teal-500/10 text-teal-400 border border-teal-500/20">spaCy NER</span>
-          <span class="chip bg-teal-500/10 text-teal-400 border border-teal-500/20">Claude Haiku 4.5</span>
-          <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">FastAPI · Celery</span>
-          <span class="chip bg-orange-500/10 text-orange-400 border border-orange-500/20">PostgreSQL · Docker</span>
-          <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">OTel · Jaeger</span>
-        </div>
-      </div>
-
       <!-- RAG + pgvector Demo -->
       <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
            onclick="openModal('rag')">
@@ -278,6 +197,87 @@
           <span class="chip bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">FastAPI · SSE</span>
           <span class="chip bg-sky-500/10 text-sky-400 border border-sky-500/20">Next.js 15</span>
           <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">Anthropic tool use</span>
+        </div>
+      </div>
+
+      <!-- NL-to-SQL -->
+      <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
+           onclick="openModal('nlsql')">
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                 style="background:linear-gradient(135deg,#7c3aed22,#6366f122);border:1px solid rgba(139,92,246,0.3)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-violet-400"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="font-semibold text-zinc-100">NL-to-SQL Comparison</h2>
+                <span class="chip bg-violet-500/15 text-violet-300 border border-violet-500/25 text-[10px]">LLM</span>
+              </div>
+              <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
+                <span class="flex items-center gap-1 text-[11px] font-medium text-violet-400"><span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>Anthropic · OpenAI</span>
+                <span class="text-zinc-700 text-[10px]">·</span>
+                <span class="flex items-center gap-1 text-[11px] font-medium text-blue-400"><span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>DuckDB-WASM · Parquet</span>
+                <span class="text-zinc-700 text-[10px]">·</span>
+                <span class="flex items-center gap-1 text-[11px] font-medium text-emerald-400"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>DOL H1B LCA data</span>
+              </div>
+            </div>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               class="text-zinc-600 group-hover:text-violet-400 transition-colors mt-1 flex-shrink-0">
+            <path d="M7 17L17 7M17 7H7M17 7v10"/>
+          </svg>
+        </div>
+        <p class="text-sm text-zinc-400 leading-relaxed mb-5">
+          Side-by-side NL-to-SQL generation across Anthropic and OpenAI models. SQL runs in-browser via DuckDB-WASM
+          against a Parquet snapshot of DOL H1B LCA disclosures — no backend, schema auto-detected from Parquet metadata.
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">Anthropic</span>
+          <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">OpenAI</span>
+          <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">DuckDB-WASM</span>
+          <span class="chip bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Parquet · H1B LCA</span>
+          <span class="chip bg-sky-500/10 text-sky-400 border border-sky-500/20">React 19 · Vite</span>
+        </div>
+      </div>
+
+      <!-- PHI De-identification Pipeline -->
+      <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
+           onclick="openModal('phi')">
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                 style="background:linear-gradient(135deg,#2dd4bf18,#0d948018);border:1px solid rgba(45,212,191,0.3)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="1.5"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="font-semibold text-zinc-100">PHI De-identification Pipeline</h2>
+                <span class="chip bg-teal-500/15 text-teal-300 border border-teal-500/25 text-[10px]">Python</span>
+              </div>
+              <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
+                <span class="flex items-center gap-1 text-[11px] font-medium text-teal-400"><span class="w-1.5 h-1.5 rounded-full bg-teal-400"></span>spaCy · Claude Haiku</span>
+                <span class="text-zinc-700 text-[10px]">·</span>
+                <span class="flex items-center gap-1 text-[11px] font-medium text-blue-400"><span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>FastAPI · Celery · Redis</span>
+              </div>
+            </div>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               class="text-zinc-600 group-hover:text-teal-400 transition-colors mt-1 flex-shrink-0">
+            <path d="M7 17L17 7M17 7H7M17 7v10"/>
+          </svg>
+        </div>
+        <p class="text-sm text-zinc-400 leading-relaxed mb-5">
+          Healthcare PHI detection and synthetic substitution at scale. spaCy biomedical NER handles ~90% of records;
+          Claude Haiku 4.5 covers ambiguous fallbacks. Names, SSNs, MRNs, dates and phones are replaced with
+          realistic synthetic equivalents — not blank redactions — preserving analytical signal.
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <span class="chip bg-teal-500/10 text-teal-400 border border-teal-500/20">spaCy NER</span>
+          <span class="chip bg-teal-500/10 text-teal-400 border border-teal-500/20">Claude Haiku 4.5</span>
+          <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">FastAPI · Celery</span>
+          <span class="chip bg-orange-500/10 text-orange-400 border border-orange-500/20">PostgreSQL · Docker</span>
+          <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">OTel · Jaeger</span>
         </div>
       </div>
 

@@ -1101,6 +1101,24 @@
             }
           }
         }
+        // Non-frontend panels on the same origin as the frontend inherit its health state
+        if (!panelId.endsWith('-frontend') && _absUrl) {
+          const projFe = projects[projectKey]?.frontend;
+          const feUrl = projFe && (projFe.liveUrlByTier?.[_mt] ?? projFe.liveUrl);
+          if (projFe?.healthPath && feUrl?.startsWith('http')) {
+            let sameOrigin = false;
+            try { sameOrigin = new URL(feUrl).origin === new URL(effectiveLiveUrl).origin; } catch(e) {}
+            if (sameOrigin) {
+              const hUrl = feUrl + projFe.healthPath;
+              if (HEALTH[hUrl] === false) {
+                return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · service offline</span>`;
+              }
+              if (HEALTH[hUrl] !== true) {
+                return `<span class="${cls} opacity-40 cursor-default select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">Checking…</span>`;
+              }
+            }
+          }
+        }
         // Gate button on health confirmation for any panel with a healthPath
         if (_absUrl && c.healthPath) {
           const hUrl = effectiveLiveUrl + c.healthPath;

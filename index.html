@@ -1156,18 +1156,29 @@
         if (_absUrl && c.healthPath) {
           const hUrl = effectiveLiveUrl + c.healthPath;
           if (HEALTH[hUrl] !== true) {
-            return `<span class="${cls} opacity-40 cursor-default select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">Checking…</span>`;
+            const _pendingLabel = (_mk === 'dashboard') ? 'Starting…' : 'Checking…';
+            return `<span class="${cls} opacity-40 cursor-default select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${_pendingLabel}</span>`;
           }
         }
-        // GCP Orders Dashboard: open via spinner button to handle cold-start delay
-        if (_mk === 'dashboard' && _mt === 'lite' && panelId && panelId.endsWith('-frontend')) {
-          return `<button onclick="_gcpAppOpen(this,'${effectiveLiveUrl}')" class="${cls} cursor-pointer" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</button>`;
-        }
-        // Re-probe at click time so a stale enabled-state (health passed at open but EC2 stopped
-        // since) gets caught before navigation rather than sending the user to a 502.
+        // All health-gated panels: re-probe at click time (catches stale enabled state).
+        // GCP cold-start completes before health passes so no extended spinner needed.
         if (_absUrl && c.healthPath) {
           const _hUrl = effectiveLiveUrl + c.healthPath;
           return `<button onclick="_openLiveUrl(this,'${effectiveLiveUrl}','${_hUrl}')" class="${cls} cursor-pointer" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</button>`;
+        }
+        // Non-frontend panels whose origin matches the frontend's inherit its health — re-probe
+        // on click using the frontend's health URL (covers API Explorer, backend panels, etc.).
+        if (!panelId.endsWith('-frontend') && _absUrl) {
+          const _pFe = projects[projectKey]?.frontend;
+          const _fUrl = _pFe && (_pFe.liveUrlByTier?.[_mt] ?? _pFe.liveUrl);
+          if (_pFe?.healthPath && _fUrl?.startsWith('http')) {
+            try {
+              if (new URL(_fUrl).origin === new URL(effectiveLiveUrl).origin) {
+                const _fhUrl = _fUrl + _pFe.healthPath;
+                return `<button onclick="_openLiveUrl(this,'${effectiveLiveUrl}','${_fhUrl}')" class="${cls} cursor-pointer" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</button>`;
+              }
+            } catch(e) {}
+          }
         }
         return `<a href="${effectiveLiveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
       }

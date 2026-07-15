@@ -741,6 +741,7 @@
         title: 'RAG + pgvector Demo (GCP)',
         tiers: ['local', 'lite'],
         tierLabels: { lite: 'REMOTE' },
+        clusterNote: 'ECS Fargate scheduled 8 am – 5 pm PT, weekdays',
         subtitle: 'LangChain · pgvector · Vercel AI SDK · NVIDIA NIM',
         description: 'Ingest any unstructured text → chunk via LangChain RecursiveCharacterTextSplitter → embed via OpenAI → store in pgvector. Questions trigger cosine-similarity retrieval; answers stream token-by-token via Vercel AI SDK streamText. Provider toggle in the UI switches between Anthropic, OpenAI, and NVIDIA NIM (Nemotron) — same interface, just a base_url swap. FastAPI handles all vector operations; Next.js API routes handle LLM streaming.',
         accentClass: 'text-blue-400',
@@ -751,6 +752,8 @@
           title: 'Next.js 15 · Vercel AI SDK · Token SSE',
           chips: ['Next.js 15', 'Vercel AI SDK', 'streamText', 'Provider toggle', 'Tailwind'],
           localUrl: 'http://localhost:3010',
+          liveUrl: '#',
+          liveLabel: 'Open App',
           githubUrl: GH + '/rag-pgvector-demo-gcp',
         },
         backend: {
@@ -760,6 +763,8 @@
           title: 'FastAPI · LangChain · pgvector · Redis',
           chips: ['FastAPI', 'LangChain', 'pgvector', 'OpenAI embeddings', 'Redis', 'Docker'],
           localUrl: 'http://localhost:8001/docs',
+          liveUrl: '#',
+          liveLabel: 'API Docs',
           githubUrl: GH + '/rag-pgvector-demo-gcp',
         },
         githubUrl: GH + '/rag-pgvector-demo-gcp',
@@ -769,6 +774,7 @@
         title: 'Multi-Agent Orchestration (GCP)',
         tiers: ['local', 'lite'],
         tierLabels: { lite: 'REMOTE' },
+        clusterNote: 'ECS Fargate scheduled 8 am – 5 pm PT, weekdays',
         subtitle: 'LangGraph · MCP server · parallel routing · FastAPI SSE',
         description: 'LangGraph StateGraph classifies each query and routes it: simple queries go direct to retrieval; complex queries decompose into parallel sub-queries via LangGraph\'s Send API, each handled by a specialist retrieve node. Agent reasoning steps (classify → decompose → retrieve → synthesize) stream to the browser as SSE events — pending / active / done — before the final answer appears. The same Wikipedia and DuckDuckGo tools are also exposed as an MCP server over stdio, connectable from Claude Desktop or any MCP client.',
         accentClass: 'text-amber-400',
@@ -779,6 +785,8 @@
           title: 'Next.js 15 · live step tracker · SSE',
           chips: ['Next.js 15', 'SSE step events', 'StepTracker UI', 'TypeScript'],
           localUrl: 'http://localhost:3011',
+          liveUrl: '#',
+          liveLabel: 'Open App',
           githubUrl: GH + '/agent-orchestration-demo-gcp',
         },
         backend: {
@@ -788,6 +796,8 @@
           title: 'FastAPI · LangGraph · MCP server',
           chips: ['FastAPI', 'LangGraph', 'MCP server', 'Wikipedia', 'DuckDuckGo', 'Anthropic'],
           localUrl: 'http://localhost:8002/docs',
+          liveUrl: '#',
+          liveLabel: 'API Docs',
           githubUrl: GH + '/agent-orchestration-demo-gcp',
         },
         githubUrl: GH + '/agent-orchestration-demo-gcp',
@@ -797,6 +807,7 @@
         title: 'PHI De-identification Pipeline',
         tiers: ['local', 'lite'],
         tierLabels: { lite: 'REMOTE' },
+        clusterNote: 'ECS Fargate scheduled 8 am – 5 pm PT, weekdays',
         subtitle: 'spaCy · Claude Haiku 4.5 · FastAPI · Celery · Redis · PostgreSQL',
         description: 'Healthcare PHI detection and synthetic substitution pipeline. spaCy biomedical NER (en_core_sci_md) handles ~90% of records as tier-1; Claude Haiku 4.5 covers ambiguous fallbacks. Each detected entity (name, SSN, MRN, date, phone, email, location) is replaced with a Faker-generated synthetic equivalent — not blank redaction — preserving analytical signal. SHA-256 hashes of originals stored in a PostgreSQL redaction log for auditing. Full observability: structured JSON logs, Prometheus metrics, OpenTelemetry traces → Jaeger. The browser demo runs Claude directly for PHI detection; full pipeline adds spaCy tier-1 + Celery workers.',
         accentClass: 'text-teal-400',
@@ -847,6 +858,9 @@
       nextjsFullFe:    ['nextjs',     'frontend', 'full'], nextjsFullBe:    ['nextjs',     'backend',  'full'],
       fargateFe:       ['fargate',    'frontend', null],   fargateBe:       ['fargate',    'backend',  null],
       serverlessFe:    ['serverless', 'frontend', null],   serverlessBe:    ['serverless', 'backend',  null],
+      ragLiteFe:       ['rag',        'frontend', 'lite'], ragLiteBe:       ['rag',        'backend',  'lite'],
+      agentLiteFe:     ['agent',      'frontend', 'lite'], agentLiteBe:     ['agent',      'backend',  'lite'],
+      phiLiteBe:       ['phi',        'backend',  'lite'],
     };
     for (const [luKey, [proj, panel, tier]] of Object.entries(_urlMap)) {
       if (!_lu[luKey] || !projects[proj]?.[panel]) continue;
@@ -1271,7 +1285,22 @@
       modal.classList.add('flex');
       document.body.style.overflow = 'hidden';
       switchModalTier(_mt);  // populates modal-body + re-probes if LOCAL
-      if (!isLocal) _healthCheck(key);
+      if (!isLocal) {
+        // Clear any previously-failed health entries so re-opening always re-probes
+        const _p = projects[key];
+        ['frontend', 'backend', 'extra'].forEach(function(panel) {
+          const _c = _p?.[panel];
+          if (!_c || !_c.healthPath) return;
+          const _urls = Object.values(_c.liveUrlByTier || {}).concat(_c.liveUrl || []);
+          _urls.forEach(function(u) {
+            if (u && u !== '#' && u.startsWith('http')) {
+              const _h = u + _c.healthPath;
+              if (HEALTH[_h] === false) delete HEALTH[_h];
+            }
+          });
+        });
+        _healthCheck(key);
+      }
     }
 
     function _gcpAppOpen(btn, url) {

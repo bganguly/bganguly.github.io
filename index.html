@@ -1049,6 +1049,21 @@
     }
     // ─────────────────────────────────────────────────────────────────────────
 
+    function _reqAccessHtml(projectKey, c, col) {
+      if (!c.liveLabel) return '';
+      const inputStyle  = `background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#e4e4e7;border-radius:6px;padding:5px 9px;font-size:0.75rem;outline:none;min-width:0;flex:1`;
+      const submitStyle = `background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText};border-radius:6px;padding:5px 11px;font-size:0.72rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0`;
+      const headingStyle = `font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${col.btnText};opacity:0.7;margin-bottom:2px`;
+      return `<form onsubmit="requestAccess(event,'${projectKey}','${c.liveLabel}')" style="display:flex;flex-direction:column;gap:4px;width:100%;margin-top:6px">
+        <p style="${headingStyle}">Request Access</p>
+        <div style="display:flex;gap:6px;align-items:center">
+          <input type="email" placeholder="your@company.com" required style="${inputStyle}"
+            onfocus="this.style.borderColor='${col.btnBorder}'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" />
+          <button type="submit" style="${submitStyle}">${arrowIcon}</button>
+        </div>
+      </form>`;
+    }
+
     function liveBtn(c, col, panelId, localMode) {
       const useLocal = localMode !== undefined ? localMode : isLocal;
 
@@ -1084,12 +1099,14 @@
           && window._deployLive[projectKey]?.[panelType] !== true;
         const offline = notDeployed || (_absUrl && PROD_LIVE[new URL(effectiveLiveUrl).origin] === false);
         if (offline) {
-          return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · service offline</span>`;
+          const s = `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · service offline</span>`;
+          return s + (_mt === 'lite' ? _reqAccessHtml(projectKey, c, col) : '');
         }
         if (_absUrl && c.healthPath) {
           const healthUrl = effectiveLiveUrl + c.healthPath;
           if (HEALTH[healthUrl] === false) {
-            return `<span class="${cls} opacity-30 cursor-not-allowed select-none" title="API returning 5xx — service degraded" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · service offline</span>`;
+            const s = `<span class="${cls} opacity-30 cursor-not-allowed select-none" title="API returning 5xx — service degraded" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · service offline</span>`;
+            return s + (_mt === 'lite' ? _reqAccessHtml(projectKey, c, col) : '');
           }
         }
         if (!_absUrl) {
@@ -1097,7 +1114,8 @@
           if (projFe?.healthPath) {
             const feUrl = projFe.liveUrlByTier?.[_mt] ?? projFe.liveUrl;
             if (feUrl && feUrl.startsWith('http') && HEALTH[feUrl + projFe.healthPath] === false) {
-              return `<span class="${cls} opacity-30 cursor-not-allowed select-none" title="API returning 5xx — service degraded" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · service offline</span>`;
+              const s = `<span class="${cls} opacity-30 cursor-not-allowed select-none" title="API returning 5xx — service degraded" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · service offline</span>`;
+              return s + (_mt === 'lite' ? _reqAccessHtml(projectKey, c, col) : '');
             }
           }
         }
@@ -1111,7 +1129,8 @@
             if (sameOrigin) {
               const hUrl = feUrl + projFe.healthPath;
               if (HEALTH[hUrl] === false) {
-                return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · service offline</span>`;
+                const s = `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · service offline</span>`;
+                return s + (_mt === 'lite' ? _reqAccessHtml(projectKey, c, col) : '');
               }
               if (HEALTH[hUrl] !== true) {
                 return `<span class="${cls} opacity-40 cursor-default select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">Checking…</span>`;
@@ -1140,9 +1159,9 @@
         if (projFeUrl && projFeUrl !== '#') return '';
       }
 
-      // LITE tab: always show a disabled button, never Request Access
       if (_mt === 'lite') {
-        return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · service offline</span>`;
+        return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · service offline</span>`
+          + _reqAccessHtml(projectKey, c, col);
       }
 
       // No live URL — Request Access (FULL adds cloud cost hint)

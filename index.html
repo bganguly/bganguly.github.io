@@ -591,7 +591,7 @@
           githubUrl: GH + '/dashboard-frontend-gcp',
           scaleByTier: { local: '~100K orders', lite: '~500K orders', full: '~4M orders' },
         },
-        clusterNote: 'Cluster operates 8:30 am – 5:00 pm PST, weekdays',
+        clusterNote: 'GA 8 am – 5 pm PST weekdays · off-hours requests may cold-start (~5 s)',
         githubUrl: GH,
       },
       nextjs: {
@@ -629,6 +629,7 @@
           chips: ['Next.js 16.2', 'TypeScript 5.9', 'Tailwind CSS 4.3', 'RSC'],
           liveUrl: '#',
           liveLabel: 'Open App',
+          healthPath: '/api/health',
           localUrl: 'http://localhost:3004',
           githubUrl: GH + '/nextjs-dashboard',
           scaleByTier: { local: '~100K orders', lite: '~500K orders', full: '~4M orders' },
@@ -1100,13 +1101,15 @@
             }
           }
         }
-        // GCP Orders Dashboard modal only — NOT AWS or any other modal
-        if (_mk === 'dashboard' && _mt === 'lite' && panelId && panelId.endsWith('-frontend')) {
-          const hUrl = c.healthPath ? (effectiveLiveUrl + c.healthPath) : null;
-          const hState = hUrl ? HEALTH[hUrl] : true;
-          if (hState !== true) {
+        // Gate button on health confirmation for any panel with a healthPath
+        if (_absUrl && c.healthPath) {
+          const hUrl = effectiveLiveUrl + c.healthPath;
+          if (HEALTH[hUrl] !== true) {
             return `<span class="${cls} opacity-40 cursor-default select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">Checking…</span>`;
           }
+        }
+        // GCP Orders Dashboard: open via spinner button to handle cold-start delay
+        if (_mk === 'dashboard' && _mt === 'lite' && panelId && panelId.endsWith('-frontend')) {
           return `<button onclick="_gcpAppOpen(this,'${effectiveLiveUrl}')" class="${cls} cursor-pointer" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</button>`;
         }
         return `<a href="${effectiveLiveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;

@@ -1163,6 +1163,12 @@
         if (_mk === 'dashboard' && _mt === 'lite' && panelId && panelId.endsWith('-frontend')) {
           return `<button onclick="_gcpAppOpen(this,'${effectiveLiveUrl}')" class="${cls} cursor-pointer" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</button>`;
         }
+        // Re-probe at click time so a stale enabled-state (health passed at open but EC2 stopped
+        // since) gets caught before navigation rather than sending the user to a 502.
+        if (_absUrl && c.healthPath) {
+          const _hUrl = effectiveLiveUrl + c.healthPath;
+          return `<button onclick="_openLiveUrl(this,'${effectiveLiveUrl}','${_hUrl}')" class="${cls} cursor-pointer" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</button>`;
+        }
         return `<a href="${effectiveLiveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
       }
 
@@ -1301,6 +1307,32 @@
         });
         _healthCheck(key);
       }
+    }
+
+    function _openLiveUrl(btn, url, healthUrl) {
+      btn.disabled = true;
+      const orig = btn.innerHTML;
+      const spinSvg = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 0.85s linear infinite;flex-shrink:0"><circle cx="12" cy="12" r="10" stroke-opacity="0.2"/><path d="M12 2a10 10 0 0 1 7.07 2.93" stroke-linecap="round"/></svg>';
+      btn.innerHTML = spinSvg + ' Checking…';
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 4000);
+      fetch(healthUrl, { credentials: 'omit', signal: ctrl.signal })
+        .then(function(r) {
+          clearTimeout(t);
+          if (r.ok) {
+            window.open(url, '_blank', 'noopener,noreferrer');
+            btn.innerHTML = orig;
+            btn.disabled = false;
+          } else {
+            HEALTH[healthUrl] = false;
+            _renderModalBody();
+          }
+        })
+        .catch(function() {
+          clearTimeout(t);
+          HEALTH[healthUrl] = false;
+          _renderModalBody();
+        });
     }
 
     function _gcpAppOpen(btn, url) {

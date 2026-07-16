@@ -8,5 +8,5 @@ window._deployLive = {
   serverless: { frontend: true,  backend: true  },
   rag:        { frontend: true, backend: true },
   agent:      { frontend: false, backend: false },
-  clickhouse: { frontend: false },
+  clickhouse: { frontend: true },
 };

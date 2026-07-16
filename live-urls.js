@@ -5,7 +5,7 @@ window._liveUrls = {
   nextjsLiteFe: 'https://df9jh7fbcc9nk.cloudfront.net',
   nlsqlLiteFe: 'https://natural-language-to-llm-query-comparison.vercel.app/nl-to-sql/',
   ragLiteBe: 'https://9y3yanp443.execute-api.us-east-1.amazonaws.com/',
-  ragLiteFe: 'https://frontend-ar9lr9fzp-gangulybikramjit-4435s-projects.vercel.app',
+  ragLiteFe: 'https://frontend-618kikaix-gangulybikramjit-4435s-projects.vercel.app',
   serverlessBe: 'https://d281doisqbuiu2.cloudfront.net/api-explorer.html',
   serverlessFe: 'https://d281doisqbuiu2.cloudfront.net',
 };

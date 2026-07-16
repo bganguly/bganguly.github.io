@@ -4,8 +4,8 @@ window._liveUrls = {
   nextjsLiteBe: 'https://df9jh7fbcc9nk.cloudfront.net/api-explorer',
   nextjsLiteFe: 'https://df9jh7fbcc9nk.cloudfront.net',
   nlsqlLiteFe: 'https://natural-language-to-llm-query-comparison.vercel.app/nl-to-sql/',
-  ragLiteBe: 'https://rjzv5wg32ibpqyz7nd665n3gei0ntgfo.lambda-url.us-east-1.on.aws/',
-  ragLiteFe: 'https://frontend-j26as1h5h-gangulybikramjit-4435s-projects.vercel.app',
+  ragLiteBe: 'https://9y3yanp443.execute-api.us-east-1.amazonaws.com/',
+  ragLiteFe: 'https://frontend-9hr7h3c6l-gangulybikramjit-4435s-projects.vercel.app',
   serverlessBe: 'https://d281doisqbuiu2.cloudfront.net/api-explorer.html',
   serverlessFe: 'https://d281doisqbuiu2.cloudfront.net',
 };

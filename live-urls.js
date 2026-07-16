@@ -4,7 +4,7 @@ window._liveUrls = {
   nextjsLiteBe: 'https://df9jh7fbcc9nk.cloudfront.net/api-explorer',
   nextjsLiteFe: 'https://df9jh7fbcc9nk.cloudfront.net',
   nlsqlLiteFe: 'https://natural-language-to-llm-query-comparison.vercel.app/nl-to-sql/',
-  ragLiteBe: 'http://localhost:8001/docs',
+  ragLiteBe: 'https://dasgyl6fl193h.cloudfront.net/docs',
   ragLiteFe: 'https://d21n92v3nexm0p.cloudfront.net',
   serverlessBe: 'https://d281doisqbuiu2.cloudfront.net/api-explorer.html',
   serverlessFe: 'https://d281doisqbuiu2.cloudfront.net',

@@ -944,6 +944,7 @@
       ragLiteFe:       ['rag',        'frontend', 'lite'], ragLiteBe:       ['rag',        'backend',  'lite'],
       agentLiteFe:     ['agent',      'frontend', 'lite'], agentLiteBe:     ['agent',      'backend',  'lite'],
       phiLiteBe:       ['phi',        'backend',  'lite'],
+      clickhouseFe:    ['clickhouse', 'frontend', null],
     };
     for (const [luKey, [proj, panel, tier]] of Object.entries(_urlMap)) {
       if (!_lu[luKey] || !projects[proj]?.[panel]) continue;
@@ -955,6 +956,7 @@
         projects[proj][panel].liveUrl = _lu[luKey];
       }
     }
+    if (_lu.clickhouseFe) projects.clickhouse.cloud.liveUrl = _lu.clickhouseFe;
 
     // Apply deploy-time live overrides written by deploy.sh
     if (window._deployLive) {

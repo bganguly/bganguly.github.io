@@ -6,6 +6,6 @@ window._deployLive = {
   nextjs:     { frontend: true,  backend: true  },
   fargate:    { frontend: false,  backend: false  },
   serverless: { frontend: true,  backend: true  },
-  rag:        { frontend: false, backend: false },
+  rag:        { frontend: true, backend: true },
   agent:      { frontend: false, backend: false },
 };

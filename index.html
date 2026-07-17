@@ -1369,11 +1369,11 @@
     }
 
     var _HEALTH_STAGE_LABELS = ['Checking…', 'Waking up…', 'Almost there…', 'Hang tight…'];
-    var _HEALTH_MAX_FAILS = 3; // give up after 3 failures (~15 s for fast-failing probes)
+    var _HEALTH_MAX_FAILS = 5; // give up after 5 failures (~50 s for cold-start probes)
 
     function _probeHealth(healthUrl, key, failsSoFar) {
       var ctrl = new AbortController();
-      var t = setTimeout(function() { ctrl.abort(); }, 5000);
+      var t = setTimeout(function() { ctrl.abort(); }, 10000);
       function _onFail() {
         clearTimeout(t);
         var nextFails = (failsSoFar || 0) + 1;
@@ -1474,7 +1474,7 @@
       const spinSvg = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 0.85s linear infinite;flex-shrink:0"><circle cx="12" cy="12" r="10" stroke-opacity="0.2"/><path d="M12 2a10 10 0 0 1 7.07 2.93" stroke-linecap="round"/></svg>';
       btn.innerHTML = spinSvg + ' Checking…';
       const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), 4000);
+      const t = setTimeout(() => ctrl.abort(), 10000);
       fetch(healthUrl, { credentials: 'omit', signal: ctrl.signal })
         .then(function(r) {
           clearTimeout(t);

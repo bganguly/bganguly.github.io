@@ -8,6 +8,6 @@ window._liveUrls = {
   nlsqlLiteFe: 'https://natural-language-to-llm-query-comparison.vercel.app/nl-to-sql/',
   ragLiteBe: 'https://frontend-sigma-ten-30.vercel.app/api-explorer.html',
   ragLiteFe: 'https://frontend-sigma-ten-30.vercel.app',
-  serverlessBe: 'https://d281doisqbuiu2.cloudfront.net/api-explorer.html',
-  serverlessFe: 'https://d281doisqbuiu2.cloudfront.net',
+  serverlessBe: 'https://d3nbn0s3ea4m39.cloudfront.net/api-explorer.html',
+  serverlessFe: 'https://d3nbn0s3ea4m39.cloudfront.net',
 };

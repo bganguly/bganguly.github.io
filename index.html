@@ -1238,9 +1238,17 @@
           const projFe = projects[projectKey]?.frontend;
           if (projFe?.healthPath) {
             const feUrl = projFe.liveUrlByTier?.[_mt] ?? projFe.liveUrl;
-            if (feUrl && feUrl.startsWith('http') && HEALTH[feUrl + projFe.healthPath] === false) {
-              const s = `<span class="${cls} opacity-30 cursor-not-allowed select-none" title="API returning 5xx — service degraded" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · service offline</span>`;
-              return s + (_mt === 'lite' ? _reqAccessHtml(projectKey, c, col) : '');
+            if (feUrl && feUrl.startsWith('http')) {
+              const hUrl = feUrl + projFe.healthPath;
+              if (HEALTH[hUrl] === false) {
+                const s = `<span class="${cls} opacity-30 cursor-not-allowed select-none" title="API returning 5xx — service degraded" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · service offline</span>`;
+                return s + (_mt === 'lite' ? _reqAccessHtml(projectKey, c, col) : '');
+              }
+              if (HEALTH[hUrl] !== true) {
+                const _stage = HEALTH_STAGE[hUrl] ?? 0;
+                const _pendingLabel = _HEALTH_STAGE_LABELS[_stage] || 'Checking…';
+                return `<span class="${cls} opacity-40 cursor-default select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${_pendingLabel}</span>`;
+              }
             }
           }
         }

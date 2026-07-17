@@ -611,13 +611,13 @@
         //   frontend  → 3006  (Vite strictPort in dashboard-frontend-gcp/vite.config.ts)
         //   backend   → 8080  (deploy.sh; run: ./scripts/deploy.sh)
         backend: {
-          label: 'Backend',
+          label: 'API',
           tier: 'lite',
           color: 'emerald',
           title: 'Spring Boot 4.1 · Java 21',
           chips: ['Spring Boot 4.1', 'Java 21', 'Flyway 12.4', 'REST API'],
           liveUrl: '#',
-          liveLabel: 'View API',
+          liveLabel: 'API Explorer',
           liveUrlByTier: { lite: 'orders-dashboard/api-explorer-lite.html', full: 'orders-dashboard/api-explorer-full.html' },
           localUrl: 'http://localhost:8080/explorer.html',
           githubUrl: GH + '/springboot-dashboard-backend-gcp',
@@ -656,7 +656,7 @@
         // Local port 3004 (Next.js -p 3004 in package.json scripts; full-stack, one process).
         // Backend (Prisma/PG) is internal to Next.js — no standalone local endpoint to probe.
         backend: {
-          label: 'Backend',
+          label: 'API',
           tier: 'lite',
           color: 'slate',
           title: 'PostgreSQL 16 · Prisma',
@@ -742,7 +742,7 @@
         // backend 3009 (application-local.yml; run: SPRING_PROFILES_ACTIVE=local ./mvnw spring-boot:run).
         // Backend has no directly testable HTTP artifact — no localUrl.
         backend: {
-          label: 'Backend',
+          label: 'API',
           tier: 'full',
           color: 'amber',
           title: 'Spring Boot 4.1 · Java 21 · ECS Fargate',
@@ -779,7 +779,7 @@
         // backend 3011 (serverless-offline httpPort in serverless.yml; run: npx sls offline).
         // Backend is event-driven (SNS→SQS→Lambda) — no directly testable HTTP artifact; no localUrl.
         backend: {
-          label: 'Backend',
+          label: 'API',
           tier: 'lite',
           color: 'teal',
           title: 'Lambda · SNS/SQS',
@@ -854,7 +854,7 @@
           chips: ['FastAPI', 'LangChain', 'pgvector', 'OpenAI embeddings', 'Redis', 'Docker'],
           localUrl: 'http://localhost:8001/docs',
           liveUrl: '#',
-          liveLabel: 'API Docs',
+          liveLabel: 'API Explorer',
           githubUrl: GH + '/rag-pgvector-demo-gcp',
         },
         githubUrl: GH + '/rag-pgvector-demo-gcp',
@@ -881,14 +881,14 @@
           requestAccessOnly: true,
         },
         backend: {
-          label: 'API + MCP',
+          label: 'API',
           tier: 'lite',
           color: 'emerald',
           title: 'FastAPI · LangGraph · MCP server',
           chips: ['FastAPI', 'LangGraph', 'MCP server', 'Wikipedia', 'DuckDuckGo', 'Anthropic'],
           localUrl: 'http://localhost:8002/docs',
           liveUrl: '#',
-          liveLabel: 'API Docs',
+          liveLabel: 'API Explorer',
           githubUrl: GH + '/agent-orchestration-demo-gcp',
           requestAccessOnly: true,
         },

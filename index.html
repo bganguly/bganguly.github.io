@@ -857,6 +857,7 @@
           localUrl: 'http://localhost:8001/docs',
           liveUrl: '#',
           liveLabel: 'API Docs',
+          healthPath: '/health',
           githubUrl: GH + '/rag-pgvector-demo-gcp',
         },
         githubUrl: GH + '/rag-pgvector-demo-gcp',
@@ -1260,7 +1261,9 @@
                 return s + (_mt === 'lite' ? _reqAccessHtml(projectKey, c, col) : '');
               }
               if (HEALTH[hUrl] !== true) {
-                return `<span class="${cls} opacity-40 cursor-default select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">Checking…</span>`;
+                const _stage = HEALTH_STAGE[hUrl] ?? 0;
+                const _pendingLabel = _HEALTH_STAGE_LABELS[_stage] || 'Checking…';
+                return `<span class="${cls} opacity-40 cursor-default select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${_pendingLabel}</span>`;
               }
             }
           }
@@ -1275,22 +1278,18 @@
             return `<span class="${cls} opacity-40 cursor-default select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${_pendingLabel}</span>${_startupNote}`;
           }
         }
-        // All health-gated panels: re-probe at click time (catches stale enabled state).
-        // GCP cold-start completes before health passes so no extended spinner needed.
+        // Health settling is complete — open directly, no re-probe on click.
         if (_absUrl && c.healthPath) {
-          const _hUrl = effectiveLiveUrl + c.healthPath;
-          return `<button onclick="_openLiveUrl(this,'${effectiveLiveUrl}','${_hUrl}')" class="${cls} cursor-pointer" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</button>`;
+          return `<a href="${effectiveLiveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
         }
-        // Non-frontend panels whose origin matches the frontend's inherit its health — re-probe
-        // on click using the frontend's health URL (covers API Explorer, backend panels, etc.).
+        // Same-origin backends that inherited the frontend's settled health — open directly.
         if (!panelId.endsWith('-frontend') && _absUrl) {
           const _pFe = projects[projectKey]?.frontend;
           const _fUrl = _pFe && (_pFe.liveUrlByTier?.[_mt] ?? _pFe.liveUrl);
           if (_pFe?.healthPath && _fUrl?.startsWith('http')) {
             try {
               if (new URL(_fUrl).origin === new URL(effectiveLiveUrl).origin) {
-                const _fhUrl = _fUrl + _pFe.healthPath;
-                return `<button onclick="_openLiveUrl(this,'${effectiveLiveUrl}','${_fhUrl}')" class="${cls} cursor-pointer" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</button>`;
+                return `<a href="${effectiveLiveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
               }
             } catch(e) {}
           }

@@ -716,6 +716,8 @@
           chips: ['Next.js 16.2', 'React 19', 'TypeScript 5.9', 'Tailwind CSS v4', 'Recharts', 'SSE'],
           liveUrl: '#',
           liveLabel: 'Open App',
+          healthPath: '/api/health',
+          startupNote: 'EC2 · ClickHouse Cloud wakes on first query · ~5 s',
           localUrl: 'http://localhost:3004',
           githubUrl: GH + '/clickhouse-dashboard',
           scaleByTier: { local: '~100K orders', lite: '~500K orders' },
@@ -784,6 +786,8 @@
           chips: ['AWS Lambda', 'SNS → SQS', 'Serverless 4.13'],
           liveUrl: '#',
           liveLabel: 'API Explorer',
+          healthPath: '/health',
+          startupNote: 'Lambda · cold-start on first invoke',
           githubUrl: GH + '/react-typescript-serverless-aws',
         },
         frontend: {

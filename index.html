@@ -695,12 +695,16 @@
           liveLabel: 'Open Live App',
         },
         backend: {
-          label: 'Database',
+          label: 'API',
           tier: 'lite',
           color: 'sky',
-          title: 'ClickHouse Cloud · Materialized Views',
-          chips: ['ClickHouse Cloud', 'MergeTree', 'SummingMergeTree', 'Materialized Views', '@clickhouse/client'],
+          title: 'Next.js API routes · ClickHouse Cloud',
+          chips: ['ClickHouse Cloud', '@clickhouse/client', 'Materialized Views', 'SSE · EventEmitter'],
+          liveUrl: '#',
+          liveLabel: 'API Explorer',
+          localUrl: 'http://localhost:3004/api-explorer',
           githubUrl: GH + '/clickhouse-dashboard',
+          scaleByTier: { local: '~100K orders', lite: '~500K orders' },
         },
         frontend: {
           label: 'App',
@@ -944,7 +948,7 @@
       ragLiteFe:       ['rag',        'frontend', 'lite'], ragLiteBe:       ['rag',        'backend',  'lite'],
       agentLiteFe:     ['agent',      'frontend', 'lite'], agentLiteBe:     ['agent',      'backend',  'lite'],
       phiLiteBe:       ['phi',        'backend',  'lite'],
-      clickhouseFe:    ['clickhouse', 'frontend', null],
+      clickhouseFe:    ['clickhouse', 'frontend', null],   clickhouseBe:    ['clickhouse', 'backend',  null],
     };
     for (const [luKey, [proj, panel, tier]] of Object.entries(_urlMap)) {
       if (!_lu[luKey] || !projects[proj]?.[panel]) continue;

@@ -5,6 +5,8 @@ window._liveUrls = {
   dashboardLiteFe: 'https://dash-lite-frontend-77y7e2wykq-uc.a.run.app',
   edgarAgentBe: 'https://edgar-backend-77y7e2wykq-uc.a.run.app',
   edgarAgentFe: 'https://edgar-frontend-77y7e2wykq-uc.a.run.app',
+  edgarAgentLiteBe: 'https://edgar-backend-77y7e2wykq-uc.a.run.app',
+  edgarAgentLiteFe: 'https://edgar-frontend-77y7e2wykq-uc.a.run.app',
   nextjsLiteBe: 'https://df9jh7fbcc9nk.cloudfront.net/api-explorer',
   nextjsLiteFe: 'https://df9jh7fbcc9nk.cloudfront.net',
   nlsqlLiteFe: 'https://natural-language-to-llm-query-comparison.vercel.app/nl-to-sql/',

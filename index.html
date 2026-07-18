@@ -111,92 +111,54 @@
     </div>
   </section>
 
-  <!-- AI / LLM -->
+  <!-- Featured AI/LLM + Full Stack -->
   <section id="llm-section" class="px-6 pb-16 max-w-6xl mx-auto">
     <div class="flex items-center gap-3 mb-8">
-      <p class="text-xs font-medium text-violet-400 tracking-widest uppercase">AI · LLM</p>
+      <p class="text-xs font-medium text-violet-400 tracking-widest uppercase">Featured · AI/LLM + Full Stack</p>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-      <!-- RAG + pgvector Demo -->
+      <!-- EDGAR 10-K Agent -->
       <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
-           onclick="openModal('rag')">
+           onclick="openModal('edgarAgent')">
         <div class="flex items-start justify-between mb-4">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center"
-                 style="background:linear-gradient(135deg,#2563eb22,#7c3aed22);border:1px solid rgba(37,99,235,0.3)">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="1.5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v4c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 9v4c0 1.66 4.03 3 9 3s9-1.34 9-3V9"/><path d="M3 13v4c0 1.66 4.03 3 9 3s9-1.34 9-3v-4"/></svg>
+                 style="background:linear-gradient(135deg,#6366f122,#8b5cf622);border:1px solid rgba(99,102,241,0.3)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="1.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
             </div>
             <div>
               <div class="flex items-center gap-2">
-                <h2 class="font-semibold text-zinc-100">RAG + pgvector Demo</h2>
-                <span class="chip bg-blue-500/15 text-blue-300 border border-blue-500/25 text-[10px]">Python</span>
+                <h2 class="font-semibold text-zinc-100">EDGAR 10-K Agent</h2>
+                <span class="chip bg-indigo-500/15 text-indigo-300 border border-indigo-500/25 text-[10px]">Python</span>
               </div>
               <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
-                <span class="flex items-center gap-1 text-[11px] font-medium text-blue-400"><span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>LangChain · pgvector</span>
+                <span class="flex items-center gap-1 text-[11px] font-medium text-indigo-400"><span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>Agent Loop · Tool Use</span>
                 <span class="text-zinc-700 text-[10px]">·</span>
-                <span class="flex items-center gap-1 text-[11px] font-medium text-violet-400"><span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>Vercel AI SDK · SSE</span>
+                <span class="flex items-center gap-1 text-[11px] font-medium text-violet-400"><span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>live EDGAR retrieval · Eval</span>
               </div>
             </div>
           </div>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-               class="text-zinc-600 group-hover:text-blue-400 transition-colors mt-1 flex-shrink-0">
+               class="text-zinc-600 group-hover:text-indigo-400 transition-colors mt-1 flex-shrink-0">
             <path d="M7 17L17 7M17 7H7M17 7v10"/>
           </svg>
         </div>
         <p class="text-sm text-zinc-400 leading-relaxed mb-5">
-          Ingest any unstructured text, chunk it via LangChain, embed via OpenAI, store in pgvector.
-          Questions trigger cosine-similarity retrieval; answers stream token-by-token via Vercel AI SDK.
-          Provider toggle switches between Anthropic, OpenAI, and NVIDIA NIM (Nemotron) — same interface, configurable base URL.
+          Agentic loop written from scratch — no LangChain, no pre-ingested data. The model decides at runtime when
+          to call SEC EDGAR tools; each call fetches live 10-K filings, extracts sections (Risk Factors, MD&amp;A,
+          financials), and parses structured figures. Multi-turn reasoning continues until a final answer is emitted.
+          Eval harness scores faithfulness and citation accuracy across runs. Provider toggle switches between
+          Anthropic Claude and NVIDIA NIM — same loop, same tools, different model.
         </p>
         <div class="flex flex-wrap gap-2">
-          <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">pgvector</span>
-          <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">LangChain</span>
-          <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">Vercel AI SDK</span>
-          <span class="chip bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">FastAPI · asyncio</span>
-          <span class="chip bg-sky-500/10 text-sky-400 border border-sky-500/20">Next.js 15 · SSE</span>
-          <span class="chip bg-orange-500/10 text-orange-400 border border-orange-500/20">NVIDIA NIM</span>
-        </div>
-      </div>
-
-      <!-- Agent Orchestration Demo -->
-      <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
-           onclick="openModal('agent')">
-        <div class="flex items-start justify-between mb-4">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center"
-                 style="background:linear-gradient(135deg,#d97706,22,#7c3aed22);border:1px solid rgba(217,119,6,0.3)">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="1.5"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v4M10 15l-3 2M14 15l3 2M10 11H7M14 11h3"/></svg>
-            </div>
-            <div>
-              <div class="flex items-center gap-2">
-                <h2 class="font-semibold text-zinc-100">Multi-Agent Orchestration</h2>
-                <span class="chip bg-amber-500/15 text-amber-300 border border-amber-500/25 text-[10px]">Python</span>
-              </div>
-              <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
-                <span class="flex items-center gap-1 text-[11px] font-medium text-amber-400"><span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>LangGraph · MCP server</span>
-                <span class="text-zinc-700 text-[10px]">·</span>
-                <span class="flex items-center gap-1 text-[11px] font-medium text-violet-400"><span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>parallel agent routing</span>
-              </div>
-            </div>
-          </div>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-               class="text-zinc-600 group-hover:text-amber-400 transition-colors mt-1 flex-shrink-0">
-            <path d="M7 17L17 7M17 7H7M17 7v10"/>
-          </svg>
-        </div>
-        <p class="text-sm text-zinc-400 leading-relaxed mb-5">
-          LangGraph state machine classifies each query and routes it: simple queries go direct to retrieval;
-          complex queries decompose into parallel sub-queries via LangGraph's Send API.
-          Each agent step streams to the UI in real time. Same tools exposed as an MCP server for Claude Desktop.
-        </p>
-        <div class="flex flex-wrap gap-2">
-          <span class="chip bg-amber-500/10 text-amber-400 border border-amber-500/20">LangGraph</span>
-          <span class="chip bg-amber-500/10 text-amber-400 border border-amber-500/20">MCP server</span>
-          <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">parallel Send API</span>
+          <span class="chip bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Agent Loop</span>
+          <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">Tool Use</span>
+          <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">SEC EDGAR API</span>
           <span class="chip bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">FastAPI · SSE</span>
-          <span class="chip bg-sky-500/10 text-sky-400 border border-sky-500/20">Next.js 15</span>
-          <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">Anthropic tool use</span>
+          <span class="chip bg-sky-500/10 text-sky-400 border border-sky-500/20">React · Vite</span>
+          <span class="chip bg-orange-500/10 text-orange-400 border border-orange-500/20">NVIDIA NIM</span>
+          <span class="chip bg-rose-500/10 text-rose-400 border border-rose-500/20">Eval</span>
         </div>
       </div>
 
@@ -240,47 +202,137 @@
         </div>
       </div>
 
-      <!-- EDGAR 10-K Agent -->
+      <!-- Multi-Agent Orchestration -->
       <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
-           onclick="openModal('edgarAgent')">
+           onclick="openModal('agent')">
         <div class="flex items-start justify-between mb-4">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center"
-                 style="background:linear-gradient(135deg,#6366f122,#8b5cf622);border:1px solid rgba(99,102,241,0.3)">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="1.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                 style="background:linear-gradient(135deg,#d97706,22,#7c3aed22);border:1px solid rgba(217,119,6,0.3)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="1.5"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v4M10 15l-3 2M14 15l3 2M10 11H7M14 11h3"/></svg>
             </div>
             <div>
               <div class="flex items-center gap-2">
-                <h2 class="font-semibold text-zinc-100">EDGAR 10-K Agent</h2>
-                <span class="chip bg-indigo-500/15 text-indigo-300 border border-indigo-500/25 text-[10px]">Python</span>
+                <h2 class="font-semibold text-zinc-100">Multi-Agent Orchestration</h2>
+                <span class="chip bg-amber-500/15 text-amber-300 border border-amber-500/25 text-[10px]">Python</span>
               </div>
               <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
-                <span class="flex items-center gap-1 text-[11px] font-medium text-indigo-400"><span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>Agent Loop · Tool Use</span>
+                <span class="flex items-center gap-1 text-[11px] font-medium text-amber-400"><span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>LangGraph · MCP server</span>
                 <span class="text-zinc-700 text-[10px]">·</span>
-                <span class="flex items-center gap-1 text-[11px] font-medium text-violet-400"><span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>live EDGAR retrieval · Eval</span>
+                <span class="flex items-center gap-1 text-[11px] font-medium text-violet-400"><span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>parallel agent routing</span>
               </div>
             </div>
           </div>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-               class="text-zinc-600 group-hover:text-indigo-400 transition-colors mt-1 flex-shrink-0">
+               class="text-zinc-600 group-hover:text-amber-400 transition-colors mt-1 flex-shrink-0">
             <path d="M7 17L17 7M17 7H7M17 7v10"/>
           </svg>
         </div>
         <p class="text-sm text-zinc-400 leading-relaxed mb-5">
-          Agentic loop written from scratch — no LangChain, no pre-ingested data. The model decides at runtime when
-          to call SEC EDGAR tools; each call fetches live 10-K filings, extracts sections (Risk Factors, MD&amp;A,
-          financials), and parses structured figures. Multi-turn reasoning continues until a final answer is emitted.
-          Eval harness scores faithfulness and citation accuracy across runs. Provider toggle switches between
-          Anthropic Claude and NVIDIA NIM — same loop, same tools, different model.
+          LangGraph state machine classifies each query and routes it: simple queries go direct to retrieval;
+          complex queries decompose into parallel sub-queries via LangGraph's Send API.
+          Each agent step streams to the UI in real time. Same tools exposed as an MCP server for Claude Desktop.
         </p>
         <div class="flex flex-wrap gap-2">
-          <span class="chip bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Agent Loop</span>
-          <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">Tool Use</span>
-          <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">SEC EDGAR API</span>
+          <span class="chip bg-amber-500/10 text-amber-400 border border-amber-500/20">LangGraph</span>
+          <span class="chip bg-amber-500/10 text-amber-400 border border-amber-500/20">MCP server</span>
+          <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">parallel Send API</span>
           <span class="chip bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">FastAPI · SSE</span>
-          <span class="chip bg-sky-500/10 text-sky-400 border border-sky-500/20">React · Vite</span>
+          <span class="chip bg-sky-500/10 text-sky-400 border border-sky-500/20">Next.js 15</span>
+          <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">Anthropic tool use</span>
+        </div>
+      </div>
+
+      <!-- ClickHouse Dashboard — AWS -->
+      <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
+           onclick="openModal('clickhouse')">
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                 style="background:linear-gradient(135deg,#0ea5e922,#06b6d422);border:1px solid rgba(14,165,233,0.3)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-sky-400"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v4c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 9v4c0 1.66 4.03 3 9 3s9-1.34 9-3V9"/><path d="M3 13v4c0 1.66 4.03 3 9 3s9-1.34 9-3v-4"/></svg>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="font-semibold text-zinc-100">ClickHouse Dashboard — AWS</h2>
+              </div>
+              <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
+                <span class="flex items-center gap-1 text-[11px] font-medium text-sky-400"><span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>Next.js 16.2</span>
+                <span class="text-zinc-700 text-[10px]">·</span>
+                <span class="flex items-center gap-1 text-[11px] font-medium text-cyan-400"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>ClickHouse Cloud</span>
+                <span class="text-zinc-700 text-[10px]">·</span>
+                <span class="flex items-center gap-1 text-[11px] font-medium text-violet-400"><span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>Materialized Views · SSE</span>
+                <span class="text-zinc-700 text-[10px]">·</span>
+                <span class="flex items-center gap-1 text-[11px] font-medium text-orange-400"><span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>Terraform · EC2</span>
+              </div>
+            </div>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               class="text-zinc-600 group-hover:text-sky-400 transition-colors mt-1 flex-shrink-0">
+            <path d="M7 17L17 7M17 7H7M17 7v10"/>
+          </svg>
+        </div>
+        <p class="text-sm text-zinc-400 leading-relaxed mb-5">
+          Full-stack Next.js dashboard backed by ClickHouse Cloud — sub-second full-text search on a denormalized
+          search column, real-time SSE via in-process EventEmitter, and chart aggregates maintained at INSERT time
+          by ClickHouse Materialized Views into SummingMergeTree tables. No aggregation worker, no Postgres.
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <span class="chip bg-sky-500/10 text-sky-400 border border-sky-500/20">Next.js 16.2</span>
+          <span class="chip bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">ClickHouse Cloud</span>
+          <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">Materialized Views</span>
+          <span class="chip bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">SSE · EventEmitter</span>
+          <span class="chip bg-orange-500/10 text-orange-400 border border-orange-500/20">Terraform · EC2</span>
+          <span class="chip bg-slate-500/10 text-slate-400 border border-slate-500/20">TypeScript 5.9</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Available on Demand -->
+  <section class="px-6 pb-24 max-w-6xl mx-auto">
+    <p class="text-xs font-medium text-zinc-500 tracking-widest uppercase mb-8">Available on Demand</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+      <!-- RAG + pgvector Demo -->
+      <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
+           onclick="openModal('rag')">
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                 style="background:linear-gradient(135deg,#2563eb22,#7c3aed22);border:1px solid rgba(37,99,235,0.3)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="1.5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v4c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 9v4c0 1.66 4.03 3 9 3s9-1.34 9-3V9"/><path d="M3 13v4c0 1.66 4.03 3 9 3s9-1.34 9-3v-4"/></svg>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="font-semibold text-zinc-100">RAG + pgvector Demo</h2>
+                <span class="chip bg-blue-500/15 text-blue-300 border border-blue-500/25 text-[10px]">Python</span>
+              </div>
+              <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
+                <span class="flex items-center gap-1 text-[11px] font-medium text-blue-400"><span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>LangChain · pgvector</span>
+                <span class="text-zinc-700 text-[10px]">·</span>
+                <span class="flex items-center gap-1 text-[11px] font-medium text-violet-400"><span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>Vercel AI SDK · SSE</span>
+              </div>
+            </div>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               class="text-zinc-600 group-hover:text-blue-400 transition-colors mt-1 flex-shrink-0">
+            <path d="M7 17L17 7M17 7H7M17 7v10"/>
+          </svg>
+        </div>
+        <p class="text-sm text-zinc-400 leading-relaxed mb-5">
+          Ingest any unstructured text, chunk it via LangChain, embed via OpenAI, store in pgvector.
+          Questions trigger cosine-similarity retrieval; answers stream token-by-token via Vercel AI SDK.
+          Provider toggle switches between Anthropic, OpenAI, and NVIDIA NIM (Nemotron) — same interface, configurable base URL.
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">pgvector</span>
+          <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">LangChain</span>
+          <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">Vercel AI SDK</span>
+          <span class="chip bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">FastAPI · asyncio</span>
+          <span class="chip bg-sky-500/10 text-sky-400 border border-sky-500/20">Next.js 15 · SSE</span>
           <span class="chip bg-orange-500/10 text-orange-400 border border-orange-500/20">NVIDIA NIM</span>
-          <span class="chip bg-rose-500/10 text-rose-400 border border-rose-500/20">Eval</span>
         </div>
       </div>
 
@@ -365,15 +417,8 @@
         </div>
       </div>
 
-    </div>
-  </section>
 
-  <!-- Projects -->
-  <section class="px-6 pb-24 max-w-6xl mx-auto">
-    <p class="text-xs font-medium text-zinc-500 tracking-widest uppercase mb-8">Projects</p>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-      <!-- Card: Orders Dashboard — GCP (Featured) -->
+      <!-- Orders Dashboard — GCP -->
       <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
            onclick="openModal('dashboard')">
         <div class="flex items-start justify-between mb-4">
@@ -457,50 +502,6 @@
           <span class="chip bg-slate-500/10 text-slate-400 border border-slate-500/20">PostgreSQL 16</span>
           <span class="chip bg-teal-500/10 text-teal-400 border border-teal-500/20">Terraform</span>
           <span class="chip bg-amber-500/10 text-amber-400 border border-amber-500/20">AWS RDS</span>
-        </div>
-      </div>
-
-      <!-- Card: ClickHouse Dashboard — AWS -->
-      <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
-           onclick="openModal('clickhouse')">
-        <div class="flex items-start justify-between mb-4">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center"
-                 style="background:linear-gradient(135deg,#0ea5e922,#06b6d422);border:1px solid rgba(14,165,233,0.3)">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-sky-400"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v4c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 9v4c0 1.66 4.03 3 9 3s9-1.34 9-3V9"/><path d="M3 13v4c0 1.66 4.03 3 9 3s9-1.34 9-3v-4"/></svg>
-            </div>
-            <div>
-              <div class="flex items-center gap-2">
-                <h2 class="font-semibold text-zinc-100">ClickHouse Dashboard — AWS</h2>
-              </div>
-              <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
-                <span class="flex items-center gap-1 text-[11px] font-medium text-sky-400"><span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>Next.js 16.2</span>
-                <span class="text-zinc-700 text-[10px]">·</span>
-                <span class="flex items-center gap-1 text-[11px] font-medium text-cyan-400"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>ClickHouse Cloud</span>
-                <span class="text-zinc-700 text-[10px]">·</span>
-                <span class="flex items-center gap-1 text-[11px] font-medium text-violet-400"><span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>Materialized Views · SSE</span>
-                <span class="text-zinc-700 text-[10px]">·</span>
-                <span class="flex items-center gap-1 text-[11px] font-medium text-orange-400"><span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>Terraform · EC2</span>
-              </div>
-            </div>
-          </div>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-               class="text-zinc-600 group-hover:text-sky-400 transition-colors mt-1 flex-shrink-0">
-            <path d="M7 17L17 7M17 7H7M17 7v10"/>
-          </svg>
-        </div>
-        <p class="text-sm text-zinc-400 leading-relaxed mb-5">
-          Full-stack Next.js dashboard backed by ClickHouse Cloud — sub-second full-text search on a denormalized
-          search column, real-time SSE via in-process EventEmitter, and chart aggregates maintained at INSERT time
-          by ClickHouse Materialized Views into SummingMergeTree tables. No aggregation worker, no Postgres.
-        </p>
-        <div class="flex flex-wrap gap-2">
-          <span class="chip bg-sky-500/10 text-sky-400 border border-sky-500/20">Next.js 16.2</span>
-          <span class="chip bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">ClickHouse Cloud</span>
-          <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">Materialized Views</span>
-          <span class="chip bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">SSE · EventEmitter</span>
-          <span class="chip bg-orange-500/10 text-orange-400 border border-orange-500/20">Terraform · EC2</span>
-          <span class="chip bg-slate-500/10 text-slate-400 border border-slate-500/20">TypeScript 5.9</span>
         </div>
       </div>
 

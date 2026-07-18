@@ -948,7 +948,7 @@
         title: 'Multi-Agent Orchestration (GCP)',
         tiers: ['local', 'lite'],
         tierLabels: { lite: 'REMOTE' },
-        clusterNote: 'ECS Fargate scheduled 8 am – 5 pm PT, weekdays',
+        clusterNote: 'code only · not deployed · $0/mo',
         subtitle: 'LangGraph · MCP server · parallel routing · FastAPI SSE',
         description: 'LangGraph StateGraph classifies each query and routes it: simple queries go direct to retrieval; complex queries decompose into parallel sub-queries via LangGraph\'s Send API, each handled by a specialist retrieve node. Agent reasoning steps (classify → decompose → retrieve → synthesize) stream to the browser as SSE events — pending / active / done — before the final answer appears. The same Wikipedia and DuckDuckGo tools are also exposed as an MCP server over stdio, connectable from Claude Desktop or any MCP client.',
         accentClass: 'text-amber-400',

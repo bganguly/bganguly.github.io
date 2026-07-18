@@ -807,6 +807,7 @@
           githubUrl: GH + '/clickhouse-dashboard',
           scaleByTier: { local: '~100K orders', lite: '~500K orders' },
         },
+        scheduleWindow: { startHour: 8, endHour: 17, tz: 'America/Los_Angeles' },
         clusterNote: 'EC2 scheduled 8 am – 5 pm PT, weekdays · ClickHouse Cloud auto-pauses after idle',
         githubUrl: GH + '/clickhouse-dashboard',
       },
@@ -1174,7 +1175,20 @@
 
       // Production probes: detect completely unreachable origins (DNS/network failure).
       // Cannot distinguish 200 from 5xx via no-cors; deploy.sh _deployLive is authoritative
-      // for error-page cases. This catches total outages (service deleted, DNS gone, etc.).
+      // for error-case cases. This catches total outages (service deleted, DNS gone, etc.).
+      // Skip probing origins belonging to schedule-gated projects when outside their window
+      // — avoids cold-starting a min=0 service just to confirm it's unreachable.
+      const _scheduledOrigins = new Set();
+      if (!isLocal) {
+        Object.values(projects).forEach(p => {
+          if (!p.scheduleWindow || _inScheduleWindow(p.scheduleWindow)) return;
+          [p.frontend?.liveUrl, p.backend?.liveUrl,
+           ...Object.values(p.frontend?.liveUrlByTier || {}),
+           ...Object.values(p.backend?.liveUrlByTier  || {})
+          ].filter(u => u && u !== '#' && u.startsWith('http'))
+           .forEach(u => _scheduledOrigins.add(new URL(u).origin));
+        });
+      }
       if (!isLocal) {
         const seen = new Set();
         Object.values(projects).forEach(p => {
@@ -1185,6 +1199,7 @@
             const origin = new URL(url).origin;
             if (seen.has(origin)) return;
             seen.add(origin);
+            if (_scheduledOrigins.has(origin)) return;
             PROD_LIVE[origin] = null;
             const ctrl = new AbortController();
             const t = setTimeout(() => ctrl.abort(), 8000);
@@ -1265,9 +1280,20 @@
       const scaleBadge = scaleText
         ? `<span style="margin-left:auto;font-size:0.60rem;font-weight:600;letter-spacing:0.04em;padding:3px 9px;border-radius:5px;background:${ts.bg};border:1px solid ${ts.border};color:${ts.text};white-space:nowrap">${scaleText}</span>`
         : '';
-      const clusterNote = (_mt !== 'local') ? (projects[_mk]?.clusterNote || '') : '';
+      let clusterNote = (_mt !== 'local') ? (projects[_mk]?.clusterNote || '') : '';
+      let clusterNoteColor = '#71717a';
+      const _sw = projects[_mk]?.scheduleWindow;
+      if (_sw && _mt !== 'local') {
+        if (_inScheduleWindow(_sw)) {
+          clusterNote = 'Live now';
+          clusterNoteColor = '#4ade80';
+        } else {
+          clusterNote = `Next: ${_nextScheduleSlot(_sw)}`;
+          clusterNoteColor = '#71717a';
+        }
+      }
       const clusterNoteHtml = clusterNote
-        ? `<p style="font-size:0.61rem;color:#71717a;margin-top:8px;text-align:center;letter-spacing:0.01em">&#128337; ${clusterNote}</p>`
+        ? `<p style="font-size:0.61rem;color:${clusterNoteColor};margin-top:8px;text-align:center;letter-spacing:0.01em">&#128337; ${clusterNote}</p>`
         : '';
       return `<div style="display:flex;align-items:center;gap:6px;margin-bottom:${clusterNote ? '6px' : '14px'};padding:5px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;flex-wrap:wrap">${tabs}${scaleBadge}</div>${clusterNoteHtml}<div style="margin-bottom:${clusterNote ? '8px' : '0'}"></div>`;
     }
@@ -1323,6 +1349,28 @@
     }
     // ─────────────────────────────────────────────────────────────────────────
 
+    function _inScheduleWindow(w) {
+      const pst = new Date(new Date().toLocaleString('en-US', { timeZone: w.tz || 'America/Los_Angeles' }));
+      const day = pst.getDay();
+      const h   = pst.getHours();
+      return day >= 1 && day <= 5 && h >= (w.startHour ?? 8) && h < (w.endHour ?? 17);
+    }
+
+    function _nextScheduleSlot(w) {
+      const pst = new Date(new Date().toLocaleString('en-US', { timeZone: w.tz || 'America/Los_Angeles' }));
+      const day = pst.getDay();
+      const h   = pst.getHours();
+      const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      if (day >= 1 && day <= 5 && h < (w.startHour ?? 8)) return `today ${w.startHour ?? 8}am PST`;
+      let ahead = 1;
+      while (ahead < 8) {
+        const next = (day + ahead) % 7;
+        if (next >= 1 && next <= 5) return `${days[next]} ${w.startHour ?? 8}am PST`;
+        ahead++;
+      }
+      return `Mon ${w.startHour ?? 8}am PST`;
+    }
+
     function _reqAccessHtml(projectKey, c, col) {
       if (!c.liveLabel) return '';
       const inputStyle  = `background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#e4e4e7;border-radius:6px;padding:5px 9px;font-size:0.75rem;outline:none;min-width:0;flex:1`;
@@ -1374,6 +1422,15 @@
             <button type="submit" style="${_submitStyle}">${arrowIcon}</button>
           </div>
         </form>`;
+      }
+
+      // Schedule gate — outside window: dimmed button + note + request access
+      const _sw = projects[projectKey]?.scheduleWindow;
+      if (_sw && _mt !== 'local' && !_inScheduleWindow(_sw)) {
+        const _nextSlot = _nextScheduleSlot(_sw);
+        return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel}</span>`
+          + `<p style="font-size:0.62rem;color:#52525b;margin-top:4px;text-align:center;letter-spacing:0.01em">out of schedule · request access below</p>`
+          + _reqAccessHtml(projectKey, c, col);
       }
 
       // Live URL known — show enabled or disabled button

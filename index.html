@@ -229,16 +229,17 @@
           </svg>
         </div>
         <p class="text-sm text-zinc-400 leading-relaxed mb-5">
-          LangGraph state machine classifies each query and routes it: simple queries go direct to retrieval;
-          complex queries decompose into parallel sub-queries via LangGraph's Send API.
-          Each agent step streams to the UI in real time. Same tools exposed as an MCP server for Claude Desktop.
+          17-node LangGraph pipeline: classifies query → spawns 10 parallel specialist researchers → collects →
+          4 domain synthesizers → fact-check → report. Simple queries short-circuit to 4 nodes.
+          Each step streams live to a React Flow DAG — nodes pulse while running, turn green on completion.
+          Same tools exposed as an MCP server for Claude Desktop. GKE mode available alongside Cloud Run.
         </p>
         <div class="flex flex-wrap gap-2">
           <span class="chip bg-amber-500/10 text-amber-400 border border-amber-500/20">LangGraph</span>
           <span class="chip bg-amber-500/10 text-amber-400 border border-amber-500/20">MCP server</span>
-          <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">parallel Send API</span>
+          <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">React Flow DAG</span>
           <span class="chip bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">FastAPI · SSE</span>
-          <span class="chip bg-sky-500/10 text-sky-400 border border-sky-500/20">Next.js 15</span>
+          <span class="chip bg-sky-500/10 text-sky-400 border border-sky-500/20">Cloud Run · GKE</span>
           <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">Anthropic tool use</span>
         </div>
       </div>
@@ -263,7 +264,7 @@
                 <span class="text-zinc-700 text-[10px]">·</span>
                 <span class="flex items-center gap-1 text-[11px] font-medium text-violet-400"><span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>Materialized Views · SSE</span>
                 <span class="text-zinc-700 text-[10px]">·</span>
-                <span class="flex items-center gap-1 text-[11px] font-medium text-orange-400"><span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>Terraform · EC2</span>
+                <span class="flex items-center gap-1 text-[11px] font-medium text-orange-400"><span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>App Runner · CodeBuild</span>
               </div>
             </div>
           </div>
@@ -276,13 +277,14 @@
           Full-stack Next.js dashboard backed by ClickHouse Cloud — sub-second full-text search on a denormalized
           search column, real-time SSE via in-process EventEmitter, and chart aggregates maintained at INSERT time
           by ClickHouse Materialized Views into SummingMergeTree tables. No aggregation worker, no Postgres.
+          Hosted on AWS App Runner (scale-to-zero, wakes in ~15–30 s).
         </p>
         <div class="flex flex-wrap gap-2">
           <span class="chip bg-sky-500/10 text-sky-400 border border-sky-500/20">Next.js 16.2</span>
           <span class="chip bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">ClickHouse Cloud</span>
           <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">Materialized Views</span>
           <span class="chip bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">SSE · EventEmitter</span>
-          <span class="chip bg-orange-500/10 text-orange-400 border border-orange-500/20">Terraform · EC2</span>
+          <span class="chip bg-orange-500/10 text-orange-400 border border-orange-500/20">App Runner · CodeBuild</span>
           <span class="chip bg-slate-500/10 text-slate-400 border border-slate-500/20">TypeScript 5.9</span>
         </div>
       </div>
@@ -483,7 +485,7 @@
                   <span class="text-zinc-700 text-[10px]">·</span>
                   <span class="flex items-center gap-1 text-[11px] font-medium text-violet-400"><span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>Terraform · PostgreSQL 16</span>
                   <span class="text-zinc-700 text-[10px]">·</span>
-                  <span class="flex items-center gap-1 text-[11px] font-medium text-orange-400"><span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>AWS RDS</span>
+                  <span class="flex items-center gap-1 text-[11px] font-medium text-orange-400"><span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>App Runner</span>
               </div>
             </div>
           </div>
@@ -495,13 +497,14 @@
         <p class="text-sm text-zinc-400 leading-relaxed mb-5">
           Full-stack Next.js implementation showcasing UI, realtime updates, and database-backed search over AWS RDS —
           comparing Next.js as a full-stack platform against the split-service GCP model.
+          Hosted on AWS App Runner (scale-to-zero, wakes in ~15–30 s).
         </p>
         <div class="flex flex-wrap gap-2">
           <span class="chip bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Next.js 16.2</span>
           <span class="chip bg-sky-500/10 text-sky-400 border border-sky-500/20">TypeScript 5.9</span>
           <span class="chip bg-slate-500/10 text-slate-400 border border-slate-500/20">PostgreSQL 16</span>
           <span class="chip bg-teal-500/10 text-teal-400 border border-teal-500/20">Terraform</span>
-          <span class="chip bg-amber-500/10 text-amber-400 border border-amber-500/20">AWS RDS</span>
+          <span class="chip bg-orange-500/10 text-orange-400 border border-orange-500/20">App Runner · CodeBuild</span>
         </div>
       </div>
 
@@ -728,18 +731,16 @@
       nextjs: {
         title: 'Next.js Dashboard — AWS',
         subtitle: 'Full-stack · realtime · Postgres 16',
-        description: 'Explores Next.js as a unified full-stack platform: UI, realtime updates, and database-backed search all in one AWS-hosted service. Acts as an architectural comparison to the split-service GCP approach.',
+        description: 'Explores Next.js as a unified full-stack platform: UI, realtime updates, and database-backed search all in one AWS-hosted service. Acts as an architectural comparison to the split-service GCP approach. Hosted on App Runner (scale-to-zero, wakes in ~15–30 s).',
         accentClass: 'text-indigo-400',
         cloud: {
           label: 'Cloud Provider',
           color: 'aws',
-          title: 'AWS RDS',
-          chips: ['AWS RDS PG 16', 'Terraform', 'VPC'],
+          title: 'AWS · App Runner',
+          chips: ['App Runner', 'AWS RDS PG 16', 'Terraform', 'CodeBuild'],
           liveUrl: '#',
           liveLabel: 'Open Live App',
         },
-        // Local port 3004 (Next.js -p 3004 in package.json scripts; full-stack, one process).
-        // Backend (Prisma/PG) is internal to Next.js — no standalone local endpoint to probe.
         backend: {
           label: 'API',
           tier: 'lite',
@@ -765,19 +766,19 @@
           githubUrl: GH + '/nextjs-dashboard',
           scaleByTier: { local: '~100K orders', lite: '~500K orders', full: '~4M orders' },
         },
-        clusterNote: 'EC2 + RDS scheduled 8 am – 5 pm PT, weekdays',
+        clusterNote: 'App Runner · wakes on first request · ~15–30 s',
         githubUrl: GH + '/nextjs-dashboard',
       },
       clickhouse: {
         title: 'ClickHouse Dashboard — AWS',
-        subtitle: 'Next.js 16 · ClickHouse Cloud · Materialized Views · SSE · Terraform',
-        description: 'Full-stack Next.js dashboard backed by ClickHouse Cloud (Development tier, auto-pause). Aggregates maintained at INSERT time by four Materialized Views into SummingMergeTree tables — no worker process, no dual-write gap. Full-text search via positionCaseInsensitive on a denormalized searchText column; keyset cursor pagination for efficient deep pages. Real-time order events via in-process Node.js EventEmitter → SSE. Infra: EC2 t3.small + CloudFront managed by Terraform; ClickHouse Cloud service lifecycle managed by deploy.sh via CH Cloud API.',
+        subtitle: 'Next.js 16 · ClickHouse Cloud · Materialized Views · SSE · App Runner',
+        description: 'Full-stack Next.js dashboard backed by ClickHouse Cloud. Aggregates maintained at INSERT time by four Materialized Views into SummingMergeTree tables — no worker process, no dual-write gap. Full-text search via positionCaseInsensitive on a denormalized searchText column; keyset cursor pagination for efficient deep pages. Real-time order events via in-process Node.js EventEmitter → SSE. Infra: App Runner (scale-to-zero) + CloudFront managed by Terraform; ClickHouse Cloud service lifecycle managed by deploy.sh via CH Cloud API.',
         accentClass: 'text-sky-400',
         cloud: {
           label: 'Cloud Provider',
           color: 'aws',
-          title: 'AWS · EC2 + CloudFront',
-          chips: ['EC2 t3.small', 'CloudFront', 'Terraform', 'VPC'],
+          title: 'AWS · App Runner + CloudFront',
+          chips: ['App Runner', 'CloudFront', 'Terraform', 'CodeBuild'],
           liveUrl: '#',
           liveLabel: 'Open Live App',
         },
@@ -802,13 +803,12 @@
           liveUrl: '#',
           liveLabel: 'Open App',
           healthPath: '/api/health',
-          startupNote: 'EC2 · ClickHouse Cloud wakes on first query · ~5 s',
+          startupNote: 'App Runner · wakes on first request · ~15–30 s',
           localUrl: 'http://localhost:3004',
           githubUrl: GH + '/clickhouse-dashboard',
           scaleByTier: { local: '~100K orders', lite: '~500K orders' },
         },
-        scheduleWindow: { startHour: 8, endHour: 17, tz: 'America/Los_Angeles' },
-        clusterNote: 'EC2 scheduled 8 am – 5 pm PT, weekdays · ClickHouse Cloud auto-pauses after idle',
+        clusterNote: 'App Runner · wakes on first request · ~15–30 s',
         githubUrl: GH + '/clickhouse-dashboard',
       },
       fargate: {
@@ -951,15 +951,15 @@
         tiers: ['local', 'lite'],
         tierLabels: { lite: 'REMOTE' },
         clusterNote: 'code only · not deployed · $0/mo',
-        subtitle: 'LangGraph · MCP server · parallel routing · FastAPI SSE',
-        description: 'LangGraph StateGraph classifies each query and routes it: simple queries go direct to retrieval; complex queries decompose into parallel sub-queries via LangGraph\'s Send API, each handled by a specialist retrieve node. Agent reasoning steps (classify → decompose → retrieve → synthesize) stream to the browser as SSE events — pending / active / done — before the final answer appears. The same Wikipedia and DuckDuckGo tools are also exposed as an MCP server over stdio, connectable from Claude Desktop or any MCP client.',
+        subtitle: 'LangGraph · 20-agent pipeline · React Flow DAG · MCP server',
+        description: '17-node LangGraph pipeline for complex queries: planner → 10 parallel specialist researchers → collect barrier → 4 domain synthesizers → fact-check → report writer. Simple queries short-circuit to 4 nodes. Each SSE event carries node/label/layer/parent for live React Flow DAG layout — nodes pulse while running, turn green on completion. Tools exposed as an MCP server (stdio) for Claude Desktop. GKE mode available alongside Cloud Run.',
         accentClass: 'text-amber-400',
         frontend: {
           label: 'App',
           tier: 'lite',
           color: 'amber',
-          title: 'Next.js 15 · live step tracker · SSE',
-          chips: ['Next.js 15', 'SSE step events', 'StepTracker UI', 'TypeScript'],
+          title: 'Next.js 15 · React Flow DAG · SSE',
+          chips: ['Next.js 15', 'React Flow', 'SSE live DAG', 'TypeScript'],
           localUrl: 'http://localhost:3011',
           liveUrl: '#',
           liveLabel: 'Open App',

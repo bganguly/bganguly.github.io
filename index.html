@@ -722,7 +722,7 @@
           githubUrl: GH + '/clickhouse-dashboard',
           scaleByTier: { local: '~100K orders', lite: '~500K orders' },
         },
-        clusterNote: 'ClickHouse Cloud auto-pauses after idle · ~5 s wake on first query',
+        clusterNote: 'EC2 scheduled 8 am – 5 pm PT, weekdays · ClickHouse Cloud auto-pauses after idle',
         githubUrl: GH + '/clickhouse-dashboard',
       },
       fargate: {
@@ -1388,7 +1388,7 @@
           }, 5000);
         }
       }
-      fetch(healthUrl, { credentials: 'omit', signal: ctrl.signal })
+      fetch(healthUrl + '?_=' + Date.now(), { credentials: 'omit', signal: ctrl.signal })
         .then(function(r) {
           clearTimeout(t);
           if (r.ok) {
@@ -1475,7 +1475,7 @@
       btn.innerHTML = spinSvg + ' Checking…';
       const ctrl = new AbortController();
       const t = setTimeout(() => ctrl.abort(), 10000);
-      fetch(healthUrl, { credentials: 'omit', signal: ctrl.signal })
+      fetch(healthUrl + '?_=' + Date.now(), { credentials: 'omit', signal: ctrl.signal })
         .then(function(r) {
           clearTimeout(t);
           if (r.ok) {

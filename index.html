@@ -1060,7 +1060,7 @@
         title: 'PHI De-identification Pipeline',
         tiers: ['local', 'lite'],
         tierLabels: { lite: 'REMOTE' },
-        clusterNote: 'ECS Fargate scheduled 8 am – 5 pm PT, weekdays',
+        clusterNote: 'code only · not deployed · $0/mo',
         subtitle: 'spaCy · Claude Haiku 4.5 · FastAPI · Celery · Redis · PostgreSQL',
         description: 'Healthcare PHI detection and synthetic substitution pipeline. spaCy biomedical NER (en_core_sci_md) handles ~90% of records as tier-1; Claude Haiku 4.5 covers ambiguous fallbacks. Each detected entity (name, SSN, MRN, date, phone, email, location) is replaced with a Faker-generated synthetic equivalent — not blank redaction — preserving analytical signal. SHA-256 hashes of originals stored in a PostgreSQL redaction log for auditing. Full observability: structured JSON logs, Prometheus metrics, OpenTelemetry traces → Jaeger. The browser demo runs Claude directly for PHI detection; full pipeline adds spaCy tier-1 + Celery workers.',
         accentClass: 'text-teal-400',

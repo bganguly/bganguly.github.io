@@ -70,6 +70,10 @@
     ::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .card-desc {
+      display: -webkit-box;
+      -webkit-line-clamp: 5;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
       min-height: calc(5 * 1.625em);
     }
   </style>

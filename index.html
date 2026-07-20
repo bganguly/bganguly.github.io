@@ -197,6 +197,8 @@
         <p class="text-sm text-zinc-400 leading-relaxed mb-5 card-desc">
           Side-by-side NL-to-SQL generation across Anthropic and OpenAI models. SQL runs in-browser via DuckDB-WASM
           against a Parquet snapshot of DOL H1B LCA disclosures — no backend, schema auto-detected from Parquet metadata.
+          Generated SQL and query results render side-by-side for direct model comparison.
+          Entirely client-side — no server, no data upload, no API latency beyond the LLM call itself.
         </p>
         <div class="flex flex-wrap gap-2">
           <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">Anthropic</span>
@@ -280,6 +282,7 @@
         <p class="text-sm text-zinc-400 leading-relaxed mb-5 card-desc">
           Index SEC 10-K / 10-Q filings by ticker and date range, then ask cross-filing questions with grounded answers.
           OpenAI <code class="text-zinc-300">text-embedding-3-small</code> embeddings in pgvector; runtime provider toggle across Anthropic, OpenAI, Google, and NVIDIA NIM — same interface, same vector store.
+          FastAPI + Mangum makes the backend Lambda-compatible — the same image runs on Cloud Run or AWS Lambda without modification.
         </p>
         <div class="flex flex-wrap gap-2">
           <span class="chip bg-teal-500/10 text-teal-400 border border-teal-500/20">pgvector</span>
@@ -463,6 +466,7 @@
         <p class="text-sm text-zinc-400 leading-relaxed mb-5 card-desc">
           Full-stack Next.js implementation showcasing UI, realtime updates, and database-backed search over AWS RDS —
           comparing Next.js as a full-stack platform against the split-service GCP model.
+          API routes, server components, and SSE all coexist in a single deployment — one codebase, one container, one deploy target.
           Hosted on AWS App Runner (scale-to-zero, wakes in ~15–30 s).
         </p>
         <div class="flex flex-wrap gap-2">
@@ -504,6 +508,7 @@
           Healthcare PHI detection and synthetic substitution at scale. spaCy biomedical NER handles ~90% of records;
           Claude Haiku 4.5 covers ambiguous fallbacks. Names, SSNs, MRNs, dates and phones are replaced with
           realistic synthetic equivalents — not blank redactions — preserving analytical signal.
+          Full observability: Prometheus metrics, structured JSON logs, and OpenTelemetry traces exported to Jaeger.
         </p>
         <div class="flex flex-wrap gap-2">
           <span class="chip bg-teal-500/10 text-teal-400 border border-teal-500/20">spaCy NER</span>
@@ -544,6 +549,8 @@
         <p class="text-sm text-zinc-400 leading-relaxed mb-5 card-desc">
           Event-driven async pipeline: React polls a job status endpoint while Lambda functions process jobs
           through SNS fan-out to SQS, with DynamoDB state tracking. Deployed with Serverless Framework.
+          Fan-out lets multiple downstream consumers process the same event independently.
+          DynamoDB tracks each transition — submitted, processing, complete, failed — giving the UI a precise real-time view of every job.
         </p>
         <div class="flex flex-wrap gap-2">
           <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">React 19.2</span>
@@ -587,6 +594,8 @@
         <p class="text-sm text-zinc-400 leading-relaxed mb-5 card-desc">
           AWS-first deployment: React UI behind CloudFront + Spring Boot on ECS Fargate, with DynamoDB persistence
           and SQS for async job processing. Deployed via CodeBuild CI/CD pipeline.
+          Fargate eliminates cluster management — containers run on demand without pre-provisioned EC2.
+          CloudFront caches the SPA globally; CodeBuild builds and pushes container images on every commit with no local Docker required.
         </p>
         <div class="flex flex-wrap gap-2">
           <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">React 19.2</span>

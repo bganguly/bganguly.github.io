@@ -69,6 +69,15 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
     @keyframes spin { to { transform: rotate(360deg); } }
+    .card-desc {
+      display: -webkit-box;
+      -webkit-line-clamp: 5;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    @media (max-width: 640px) {
+      .card-desc { -webkit-line-clamp: 5; }
+    }
   </style>
 </head>
 <body class="text-zinc-100 font-sans antialiased min-h-screen">
@@ -144,7 +153,7 @@
             <path d="M7 17L17 7M17 7H7M17 7v10"/>
           </svg>
         </div>
-        <p class="text-sm text-zinc-400 leading-relaxed mb-5">
+        <p class="text-sm text-zinc-400 leading-relaxed mb-5 card-desc">
           Ingest any unstructured text, chunk it via LangChain, embed via OpenAI, store in pgvector.
           Questions trigger cosine-similarity retrieval; answers stream token-by-token via Vercel AI SDK.
           Provider toggle switches between Anthropic, OpenAI, and NVIDIA NIM (Nemotron) — same interface, configurable base URL.
@@ -187,7 +196,7 @@
             <path d="M7 17L17 7M17 7H7M17 7v10"/>
           </svg>
         </div>
-        <p class="text-sm text-zinc-400 leading-relaxed mb-5">
+        <p class="text-sm text-zinc-400 leading-relaxed mb-5 card-desc">
           Side-by-side NL-to-SQL generation across Anthropic and OpenAI models. SQL runs in-browser via DuckDB-WASM
           against a Parquet snapshot of DOL H1B LCA disclosures — no backend, schema auto-detected from Parquet metadata.
         </p>
@@ -226,7 +235,7 @@
             <path d="M7 17L17 7M17 7H7M17 7v10"/>
           </svg>
         </div>
-        <p class="text-sm text-zinc-400 leading-relaxed mb-5">
+        <p class="text-sm text-zinc-400 leading-relaxed mb-5 card-desc">
           Agentic loop written from scratch — no LangChain, no pre-ingested data. The model decides at runtime when
           to call SEC EDGAR tools; each call fetches live 10-K filings, extracts sections (Risk Factors, MD&amp;A,
           financials), and parses structured figures. Multi-turn reasoning continues until a final answer is emitted.
@@ -270,7 +279,7 @@
             <path d="M7 17L17 7M17 7H7M17 7v10"/>
           </svg>
         </div>
-        <p class="text-sm text-zinc-400 leading-relaxed mb-5">
+        <p class="text-sm text-zinc-400 leading-relaxed mb-5 card-desc">
           Index SEC 10-K / 10-Q filings by ticker and date range, then ask cross-filing questions with grounded answers.
           OpenAI <code class="text-zinc-300">text-embedding-3-small</code> embeddings in pgvector; runtime provider toggle across Anthropic, OpenAI, Google, and NVIDIA NIM — same interface, same vector store.
         </p>
@@ -310,7 +319,7 @@
             <path d="M7 17L17 7M17 7H7M17 7v10"/>
           </svg>
         </div>
-        <p class="text-sm text-zinc-400 leading-relaxed mb-5">
+        <p class="text-sm text-zinc-400 leading-relaxed mb-5 card-desc">
           17-node LangGraph pipeline: classifies query → spawns 10 parallel specialist researchers → collects →
           4 domain synthesizers → fact-check → report. Simple queries short-circuit to 4 nodes.
           Each step streams live to a React Flow DAG — nodes pulse while running, turn green on completion.
@@ -355,7 +364,7 @@
             <path d="M7 17L17 7M17 7H7M17 7v10"/>
           </svg>
         </div>
-        <p class="text-sm text-zinc-400 leading-relaxed mb-5">
+        <p class="text-sm text-zinc-400 leading-relaxed mb-5 card-desc">
           Full-stack Next.js dashboard backed by ClickHouse Cloud — sub-second full-text search on a denormalized
           search column, real-time SSE via in-process EventEmitter, and chart aggregates maintained at INSERT time
           by ClickHouse Materialized Views into SummingMergeTree tables. No aggregation worker, no Postgres.
@@ -409,7 +418,7 @@
             <path d="M7 17L17 7M17 7H7M17 7v10"/>
           </svg>
         </div>
-        <p class="text-sm text-zinc-400 leading-relaxed mb-5">
+        <p class="text-sm text-zinc-400 leading-relaxed mb-5 card-desc">
           Production-grade analytics dashboard over millions of orders — sub-second full-text search via GIN trigram index,
           millisecond chart queries from pre-aggregated Cloud SQL tables. Deployed as two independent services
           as two Cloud Run services with Pulumi TypeScript IaC — ~$1-2/month at demo traffic, 30s deploys via gcloud run deploy.
@@ -453,7 +462,7 @@
             <path d="M7 17L17 7M17 7H7M17 7v10"/>
           </svg>
         </div>
-        <p class="text-sm text-zinc-400 leading-relaxed mb-5">
+        <p class="text-sm text-zinc-400 leading-relaxed mb-5 card-desc">
           Full-stack Next.js implementation showcasing UI, realtime updates, and database-backed search over AWS RDS —
           comparing Next.js as a full-stack platform against the split-service GCP model.
           Hosted on AWS App Runner (scale-to-zero, wakes in ~15–30 s).
@@ -493,7 +502,7 @@
             <path d="M7 17L17 7M17 7H7M17 7v10"/>
           </svg>
         </div>
-        <p class="text-sm text-zinc-400 leading-relaxed mb-5">
+        <p class="text-sm text-zinc-400 leading-relaxed mb-5 card-desc">
           Healthcare PHI detection and synthetic substitution at scale. spaCy biomedical NER handles ~90% of records;
           Claude Haiku 4.5 covers ambiguous fallbacks. Names, SSNs, MRNs, dates and phones are replaced with
           realistic synthetic equivalents — not blank redactions — preserving analytical signal.
@@ -534,7 +543,7 @@
             <path d="M7 17L17 7M17 7H7M17 7v10"/>
           </svg>
         </div>
-        <p class="text-sm text-zinc-400 leading-relaxed mb-5">
+        <p class="text-sm text-zinc-400 leading-relaxed mb-5 card-desc">
           Event-driven async pipeline: React polls a job status endpoint while Lambda functions process jobs
           through SNS fan-out to SQS, with DynamoDB state tracking. Deployed with Serverless Framework.
         </p>
@@ -577,7 +586,7 @@
             <path d="M7 17L17 7M17 7H7M17 7v10"/>
           </svg>
         </div>
-        <p class="text-sm text-zinc-400 leading-relaxed mb-5">
+        <p class="text-sm text-zinc-400 leading-relaxed mb-5 card-desc">
           AWS-first deployment: React UI behind CloudFront + Spring Boot on ECS Fargate, with DynamoDB persistence
           and SQS for async job processing. Deployed via CodeBuild CI/CD pipeline.
         </p>

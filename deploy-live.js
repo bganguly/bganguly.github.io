@@ -3,7 +3,7 @@ window._deployLive = {
   showLlmSection: true,
   nlsql:      { frontend: true },
   dashboard:  { frontend: true, backend: true },
-  nextjs:     { frontend: false, backend: false },
+  nextjs:     { frontend: true, backend: false },
   clickhouse: { frontend: true, backend: true },
   fargate:    { frontend: true,  backend: true  },
   serverless: { frontend: true,  backend: true  },

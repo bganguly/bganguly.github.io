@@ -12,6 +12,8 @@ window._liveUrls = {
   nextjsFe: 'https://d3bqp09yjf43op.cloudfront.net',
   nextjsLiteBe: 'https://df9jh7fbcc9nk.cloudfront.net/api-explorer',
   nextjsLiteFe: 'https://df9jh7fbcc9nk.cloudfront.net',
+  agentLiteFe: 'https://agent-frontend-77y7e2wykq-uc.a.run.app',
+  agentLiteBe: 'https://agent-backend-77y7e2wykq-uc.a.run.app/docs',
   nlsqlLiteFe: 'https://natural-language-to-llm-query-comparison.vercel.app/nl-to-sql/',
   ragLiteBe: 'https://frontend-sigma-ten-30.vercel.app/api-explorer.html',
   ragLiteFe: 'https://frontend-sigma-ten-30.vercel.app',

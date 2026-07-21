@@ -356,7 +356,7 @@
                 <span class="text-zinc-700 text-[10px]">·</span>
                 <span class="flex items-center gap-1 text-[11px] font-medium text-violet-400"><span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>Materialized Views · SSE</span>
                 <span class="text-zinc-700 text-[10px]">·</span>
-                <span class="flex items-center gap-1 text-[11px] font-medium text-orange-400"><span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>App Runner · CodeBuild</span>
+                <span class="flex items-center gap-1 text-[11px] font-medium text-orange-400"><span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>App Runner · GitHub Actions</span>
               </div>
             </div>
           </div>
@@ -376,7 +376,7 @@
           <span class="chip bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">ClickHouse Cloud</span>
           <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">Materialized Views</span>
           <span class="chip bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">SSE · EventEmitter</span>
-          <span class="chip bg-orange-500/10 text-orange-400 border border-orange-500/20">App Runner · CodeBuild</span>
+          <span class="chip bg-orange-500/10 text-orange-400 border border-orange-500/20">App Runner · GitHub Actions</span>
           <span class="chip bg-slate-500/10 text-slate-400 border border-slate-500/20">TypeScript 5.9</span>
         </div>
       </div>
@@ -474,7 +474,7 @@
           <span class="chip bg-sky-500/10 text-sky-400 border border-sky-500/20">TypeScript 5.9</span>
           <span class="chip bg-slate-500/10 text-slate-400 border border-slate-500/20">PostgreSQL 16</span>
           <span class="chip bg-teal-500/10 text-teal-400 border border-teal-500/20">Terraform</span>
-          <span class="chip bg-orange-500/10 text-orange-400 border border-orange-500/20">App Runner · CodeBuild</span>
+          <span class="chip bg-orange-500/10 text-orange-400 border border-orange-500/20">App Runner · GitHub Actions</span>
         </div>
       </div>
 
@@ -580,7 +580,7 @@
                   <span class="text-zinc-700 text-[10px]">·</span>
                   <span class="flex items-center gap-1 text-[11px] font-medium text-emerald-400"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Spring Boot 4.1 · TypeScript 5.8</span>
                   <span class="text-zinc-700 text-[10px]">·</span>
-                  <span class="flex items-center gap-1 text-[11px] font-medium text-violet-400"><span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>CodeBuild · DynamoDB</span>
+                  <span class="flex items-center gap-1 text-[11px] font-medium text-violet-400"><span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>GitHub Actions · DynamoDB</span>
                   <span class="text-zinc-700 text-[10px]">·</span>
                   <span class="flex items-center gap-1 text-[11px] font-medium text-orange-400"><span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>AWS Fargate</span>
               </div>
@@ -593,9 +593,9 @@
         </div>
         <p class="text-sm text-zinc-400 leading-relaxed mb-5 card-desc">
           AWS-first deployment: React UI behind CloudFront + Spring Boot on ECS Fargate, with DynamoDB persistence
-          and SQS for async job processing. Deployed via CodeBuild CI/CD pipeline.
+          and SQS for async job processing. GitHub Actions builds and pushes container images to ECR on every commit.
           Fargate eliminates cluster management — containers run on demand without pre-provisioned EC2.
-          CloudFront caches the SPA globally; CodeBuild builds and pushes container images on every commit with no local Docker required.
+          CloudFront caches the SPA globally.
         </p>
         <div class="flex flex-wrap gap-2">
           <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">React 19.2</span>
@@ -604,7 +604,7 @@
           <span class="chip bg-pink-500/10 text-pink-400 border border-pink-500/20">Java 21</span>
           <span class="chip bg-orange-500/10 text-orange-400 border border-orange-500/20">DynamoDB</span>
           <span class="chip bg-rose-500/10 text-rose-400 border border-rose-500/20">SQS</span>
-          <span class="chip bg-slate-500/10 text-slate-400 border border-slate-500/20">CodeBuild</span>
+          <span class="chip bg-slate-500/10 text-slate-400 border border-slate-500/20">GitHub Actions</span>
           <span class="chip bg-amber-500/10 text-amber-400 border border-amber-500/20">AWS Fargate</span>
         </div>
       </div>
@@ -734,13 +734,11 @@
           chips: ['React 19.2', 'TypeScript 5.9', 'Vite 6.4', 'Recharts 3.9'],
           liveUrl: '#',
           liveLabel: 'Open App',
-          healthPath: '/api/orders?pageSize=1',
           startupNote: 'Cloud Run · ~5–10 s cold-start',
           localUrl: 'http://localhost:3006',
           githubUrl: GH + '/dashboard-frontend-gcp',
           scaleByTier: { local: '~100K orders', lite: '~500K orders', full: '~4M orders' },
         },
-        clusterNote: 'GA 8 am – 5 pm PST weekdays · off-hours requests may cold-start (~5 s)',
         githubUrl: GH,
       },
       nextjs: {
@@ -752,7 +750,7 @@
           label: 'Cloud Provider',
           color: 'aws',
           title: 'AWS · App Runner',
-          chips: ['App Runner', 'AWS RDS PG 16', 'Terraform', 'CodeBuild'],
+          chips: ['App Runner', 'AWS RDS PG 16', 'Terraform', 'GitHub Actions'],
           liveUrl: '#',
           liveLabel: 'Open Live App',
         },
@@ -793,7 +791,7 @@
           label: 'Cloud Provider',
           color: 'aws',
           title: 'AWS · App Runner + CloudFront',
-          chips: ['App Runner', 'CloudFront', 'Terraform', 'CodeBuild'],
+          chips: ['App Runner', 'CloudFront', 'Terraform', 'GitHub Actions'],
           liveUrl: '#',
           liveLabel: 'Open Live App',
         },
@@ -828,14 +826,14 @@
       },
       fargate: {
         title: 'Job Runner — AWS',
-        subtitle: 'React 19.2 · Spring Boot 4.1 · CloudFront · CodeBuild',
-        description: 'AWS-native architecture: React SPA served via CloudFront, Spring Boot containerised on ECS Fargate, async job processing with DynamoDB + SQS, all deployed via CodeBuild CI/CD.',
+        subtitle: 'React 19.2 · Spring Boot 4.1 · CloudFront · GitHub Actions',
+        description: 'AWS-native architecture: React SPA served via CloudFront, Spring Boot containerised on ECS Fargate, async job processing with DynamoDB + SQS. GitHub Actions builds and pushes container images to ECR on every commit.',
         accentClass: 'text-amber-400',
         cloud: {
           label: 'Cloud Provider',
           color: 'aws',
           title: 'AWS',
-          chips: ['ECS Fargate', 'CloudFront', 'CodeBuild', 'DynamoDB', 'SQS'],
+          chips: ['ECS Fargate', 'CloudFront', 'GitHub Actions', 'DynamoDB', 'SQS'],
           liveUrl: '#',
           liveLabel: 'Open Live App',
         },
@@ -1008,7 +1006,7 @@
           label: 'Cloud Provider',
           color: 'aws',
           title: 'AWS Lambda + Neon + Vercel',
-          chips: ['Lambda', 'Neon pgvector', 'Vercel', 'Terraform', 'CodeBuild'],
+          chips: ['Lambda', 'Neon pgvector', 'Vercel', 'Terraform', 'GitHub Actions'],
           liveUrl: '#',
           liveLabel: 'Open Live App',
         },
@@ -1189,19 +1187,6 @@
       // Production probes: detect completely unreachable origins (DNS/network failure).
       // Cannot distinguish 200 from 5xx via no-cors; deploy.sh _deployLive is authoritative
       // for error-case cases. This catches total outages (service deleted, DNS gone, etc.).
-      // Skip probing origins belonging to schedule-gated projects when outside their window
-      // — avoids cold-starting a min=0 service just to confirm it's unreachable.
-      const _scheduledOrigins = new Set();
-      if (!isLocal) {
-        Object.values(projects).forEach(p => {
-          if (!p.scheduleWindow || _inScheduleWindow(p.scheduleWindow)) return;
-          [p.frontend?.liveUrl, p.backend?.liveUrl,
-           ...Object.values(p.frontend?.liveUrlByTier || {}),
-           ...Object.values(p.backend?.liveUrlByTier  || {})
-          ].filter(u => u && u !== '#' && u.startsWith('http'))
-           .forEach(u => _scheduledOrigins.add(new URL(u).origin));
-        });
-      }
       if (!isLocal) {
         const seen = new Set();
         Object.values(projects).forEach(p => {
@@ -1212,7 +1197,6 @@
             const origin = new URL(url).origin;
             if (seen.has(origin)) return;
             seen.add(origin);
-            if (_scheduledOrigins.has(origin)) return;
             PROD_LIVE[origin] = null;
             const ctrl = new AbortController();
             const t = setTimeout(() => ctrl.abort(), 8000);
@@ -1295,16 +1279,6 @@
         : '';
       let clusterNote = (_mt !== 'local') ? (projects[_mk]?.clusterNote || '') : '';
       let clusterNoteColor = '#71717a';
-      const _sw = projects[_mk]?.scheduleWindow;
-      if (_sw && _mt !== 'local') {
-        if (_inScheduleWindow(_sw)) {
-          clusterNote = 'Live now';
-          clusterNoteColor = '#4ade80';
-        } else {
-          clusterNote = `Next: ${_nextScheduleSlot(_sw)}`;
-          clusterNoteColor = '#71717a';
-        }
-      }
       const clusterNoteHtml = clusterNote
         ? `<p style="font-size:0.61rem;color:${clusterNoteColor};margin-top:8px;text-align:center;letter-spacing:0.01em">&#128337; ${clusterNote}</p>`
         : '';
@@ -1362,26 +1336,9 @@
     }
     // ─────────────────────────────────────────────────────────────────────────
 
-    function _inScheduleWindow(w) {
-      const pst = new Date(new Date().toLocaleString('en-US', { timeZone: w.tz || 'America/Los_Angeles' }));
-      const day = pst.getDay();
-      const h   = pst.getHours();
-      return day >= 1 && day <= 5 && h >= (w.startHour ?? 8) && h < (w.endHour ?? 17);
-    }
+    function _inScheduleWindow(_w) { return true; }
 
-    function _nextScheduleSlot(w) {
-      const pst = new Date(new Date().toLocaleString('en-US', { timeZone: w.tz || 'America/Los_Angeles' }));
-      const day = pst.getDay();
-      const h   = pst.getHours();
-      const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-      if (day >= 1 && day <= 5 && h < (w.startHour ?? 8)) return `today ${w.startHour ?? 8}am PST`;
-      let ahead = 1;
-      while (ahead < 8) {
-        const next = (day + ahead) % 7;
-        if (next >= 1 && next <= 5) return `${days[next]} ${w.startHour ?? 8}am PST`;
-        ahead++;
-      }
-      return `Mon ${w.startHour ?? 8}am PST`;
+    function _nextScheduleSlot(_w) { return '';
     }
 
     function _reqAccessHtml(projectKey, c, col) {
@@ -1435,15 +1392,6 @@
             <button type="submit" style="${_submitStyle}">${arrowIcon}</button>
           </div>
         </form>`;
-      }
-
-      // Schedule gate — outside window: dimmed button + note + request access
-      const _sw = projects[projectKey]?.scheduleWindow;
-      if (_sw && _mt !== 'local' && !_inScheduleWindow(_sw)) {
-        const _nextSlot = _nextScheduleSlot(_sw);
-        return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel}</span>`
-          + `<p style="font-size:0.62rem;color:#52525b;margin-top:4px;text-align:center;letter-spacing:0.01em">out of schedule · request access below</p>`
-          + _reqAccessHtml(projectKey, c, col);
       }
 
       // Live URL known — show enabled or disabled button

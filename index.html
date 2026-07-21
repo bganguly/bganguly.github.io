@@ -734,6 +734,7 @@
           chips: ['React 19.2', 'TypeScript 5.9', 'Vite 6.4', 'Recharts 3.9'],
           liveUrl: '#',
           liveLabel: 'Open App',
+          healthPath: '/api/orders?pageSize=1',
           startupNote: 'Cloud Run · ~5–10 s cold-start',
           localUrl: 'http://localhost:3006',
           githubUrl: GH + '/dashboard-frontend-gcp',
@@ -815,7 +816,7 @@
           chips: ['Next.js 16.2', 'React 19', 'TypeScript 5.9', 'Tailwind CSS v4', 'Recharts', 'SSE'],
           liveUrl: '#',
           liveLabel: 'Open App',
-          healthPath: '/api/health',
+          healthPath: '/api/ch-warmup',
           startupNote: 'App Runner · wakes on first request · ~15–30 s',
           localUrl: 'http://localhost:3004',
           githubUrl: GH + '/clickhouse-dashboard',
@@ -1580,7 +1581,23 @@
             _onFail();
           }
         })
-        .catch(function() { _onFail(); });
+        .catch(function() {
+          // If the abort controller fired (timeout) this is a genuine connectivity failure.
+          // If NOT aborted, it is a CORS TypeError: the server responded but the browser
+          // blocked cross-origin access. Use PROD_LIVE (no-cors probe of the same origin)
+          // as a secondary signal: if the origin is confirmed up, treat as healthy rather
+          // than incorrectly marking an accessible service as offline.
+          if (ctrl.signal.aborted) { _onFail(); return; }
+          var origin;
+          try { origin = new URL(healthUrl).origin; } catch(e) { _onFail(); return; }
+          if (PROD_LIVE[origin] === true) {
+            clearTimeout(t);
+            HEALTH[healthUrl] = true;
+            if (_mk === key) _renderModalBody();
+          } else {
+            _onFail();
+          }
+        });
     }
 
     function _healthCheck(key) {

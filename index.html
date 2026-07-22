@@ -1474,7 +1474,7 @@
         }
         // Health settling is complete — open directly, no re-probe on click.
         if (_absUrl && c.healthPath) {
-          return `<a href="${effectiveLiveUrl}" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
+          return `<a href="${effectiveLiveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
         }
         // Same-origin backends that inherited the frontend's settled health — open directly.
         if (!panelId.endsWith('-frontend') && _absUrl) {
@@ -1483,12 +1483,13 @@
           if (_pFe?.healthPath && _fUrl?.startsWith('http')) {
             try {
               if (new URL(_fUrl).origin === new URL(effectiveLiveUrl).origin) {
-                return `<a href="${effectiveLiveUrl}" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
+                return `<a href="${effectiveLiveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
               }
             } catch(e) {}
           }
         }
-        return `<a href="${effectiveLiveUrl}" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
+        const _tgt = _absUrl ? 'target="_blank" rel="noopener"' : '';
+        return `<a href="${effectiveLiveUrl}" ${_tgt} class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
       }
 
       // Suppress Request Access on non-frontend panels when the frontend is already live for this tier
@@ -1684,7 +1685,7 @@
         .then(function(r) {
           clearTimeout(t);
           if (r.ok) {
-            window.location.href = url;
+            window.open(url, '_blank', 'noopener,noreferrer');
             btn.innerHTML = orig;
             btn.disabled = false;
           } else {
@@ -1700,7 +1701,7 @@
     }
 
     function _gcpAppOpen(btn, url) {
-      window.location.href = url;
+      window.open(url, '_blank', 'noopener,noreferrer');
       var spinSvg = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 0.85s linear infinite;flex-shrink:0"><circle cx="12" cy="12" r="10" stroke-opacity="0.2"/><path d="M12 2a10 10 0 0 1 7.07 2.93" stroke-linecap="round"/></svg>';
       btn.innerHTML = spinSvg + ' Starting…';
       btn.disabled = true;

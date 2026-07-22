@@ -1685,7 +1685,7 @@
         .then(function(r) {
           clearTimeout(t);
           if (r.ok) {
-            window.open(url, '_blank', 'noopener,noreferrer');
+            window.open(url, '_blank');
             btn.innerHTML = orig;
             btn.disabled = false;
           } else {
@@ -1701,7 +1701,7 @@
     }
 
     function _gcpAppOpen(btn, url) {
-      window.open(url, '_blank', 'noopener,noreferrer');
+      window.open(url, '_blank');
       var spinSvg = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 0.85s linear infinite;flex-shrink:0"><circle cx="12" cy="12" r="10" stroke-opacity="0.2"/><path d="M12 2a10 10 0 0 1 7.07 2.93" stroke-linecap="round"/></svg>';
       btn.innerHTML = spinSvg + ' Starting…';
       btn.disabled = true;

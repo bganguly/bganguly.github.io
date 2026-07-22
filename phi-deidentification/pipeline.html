@@ -66,6 +66,10 @@
     .nav-sep { color: var(--text-dim); font-size: 0.75rem; }
     .nav-title { font-size: 0.85rem; font-weight: 600; }
     .nav-right { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 0.72rem; }
+    @media (max-width: 480px) {
+      .nav-right { display: none; }
+      .nav-sep, .nav-title { display: none; }
+    }
     .nav-model { font-family: ui-monospace, monospace; color: var(--accent); font-weight: 500; }
     .btn-demo {
       background: var(--accent-dim);

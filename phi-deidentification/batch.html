@@ -64,6 +64,10 @@
     .nav-sep { color: var(--text-dim); font-size: 0.75rem; }
     .nav-title { font-size: 0.85rem; font-weight: 600; }
     .nav-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+    @media (max-width: 480px) {
+      .nav-right { display: none; }
+      .nav-sep, .nav-title { display: none; }
+    }
     .nav-btn {
       font-size: 0.72rem; font-weight: 500;
       padding: 4px 10px; border-radius: var(--radius);

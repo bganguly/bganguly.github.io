@@ -762,7 +762,7 @@
           title: 'PostgreSQL 16 · Prisma',
           chips: ['PostgreSQL 16', 'Prisma', 'SSE'],
           liveUrl: '#',
-          liveLabel: 'API Explorer',
+          liveLabel: 'Next.js API Explorer',
           localUrl: 'http://localhost:3004/api-explorer',
           githubUrl: GH + '/nextjs-dashboard',
           scaleByTier: { local: '~100K orders', lite: '~500K orders', full: '~4M orders' },
@@ -800,10 +800,10 @@
           label: 'API',
           tier: 'lite',
           color: 'sky',
-          title: 'Next.js API routes · ClickHouse Cloud',
+          title: 'ClickHouse Cloud · Next.js API routes',
           chips: ['ClickHouse Cloud', '@clickhouse/client', 'Materialized Views', 'SSE · EventEmitter'],
           liveUrl: '#',
-          liveLabel: 'API Explorer',
+          liveLabel: 'ClickHouse API Explorer',
           localUrl: 'http://localhost:3004/api-explorer',
           githubUrl: GH + '/clickhouse-dashboard',
           scaleByTier: { local: '~100K orders', lite: '~500K orders' },
@@ -812,10 +812,10 @@
           label: 'App',
           tier: 'lite',
           color: 'indigo',
-          title: 'Next.js 16.2 · TypeScript 5.9 · Recharts',
+          title: 'Next.js 16.2 · ClickHouse-backed · Recharts',
           chips: ['Next.js 16.2', 'React 19', 'TypeScript 5.9', 'Tailwind CSS v4', 'Recharts', 'SSE'],
           liveUrl: '#',
-          liveLabel: 'Open App',
+          liveLabel: 'Open ClickHouse App',
           healthPath: '/api/ch-warmup',
           startupNote: 'App Runner · wakes on first request · ~15–30 s',
           localUrl: 'http://localhost:3004',
@@ -1311,18 +1311,91 @@
       });
     }
 
+    function _chipRows(key) {
+      const p = projects[key];
+      let row1chips, row1col, row2chips, row2col;
+      if (p.frontend && p.backend) {
+        row1chips = p.frontend.chips || [];
+        row1col   = colorMap[p.frontend.color] || colorMap.blue;
+        row2chips = p.backend.chips  || [];
+        row2col   = colorMap[p.backend.color]  || colorMap.emerald;
+      } else if (p.frontend) {
+        const all = p.frontend.chips || [];
+        const mid = Math.ceil(all.length / 2);
+        row1chips = all.slice(0, mid);
+        row2chips = all.slice(mid);
+        row1col   = colorMap[p.frontend.color] || colorMap.blue;
+        row2col   = row1col;
+      } else {
+        return '';
+      }
+      const r1 = row1chips.map(t => `<span class="chip border ${row1col.chip}">${t}</span>`).join(' ');
+      const r2 = row2chips.map(t => `<span class="chip border ${row2col.chip}">${t}</span>`).join(' ');
+      return `<div class="flex flex-wrap gap-1.5">${r1}</div><div class="flex flex-wrap gap-1.5 mt-2">${r2}</div>`;
+    }
+
+    function _apiExplorerBtnHtml() {
+      const p   = projects[_mk];
+      const be  = p.backend;
+      const cls = 'flex items-center justify-center gap-1.5 w-full py-2.5 rounded-xl text-sm font-semibold transition-opacity hover:opacity-90 mt-3';
+
+      if (_mt === 'local') {
+        if (!be || !be.localUrl) {
+          return `<span class="${cls} opacity-20 cursor-default select-none" style="background:rgba(100,116,139,0.15);border:1px solid rgba(100,116,139,0.3);color:#94a3b8">no local API</span>`;
+        }
+        const col    = colorMap[be.color] || colorMap.emerald;
+        const origin = new URL(be.localUrl).origin;
+        const live   = isLocal ? (LOCAL_LIVE[origin] ?? false) : false;
+        const addr   = be.localUrl.replace('http://', '');
+        if (live) return `<a href="${be.localUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${addr}</a>`;
+        return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${addr}</span>`;
+      }
+
+      const effectiveUrl = be && (be.liveUrlByTier?.[_mt] ?? be.liveUrl);
+      const lbl          = be?.liveLabel || '';
+      const hasApiLbl    = lbl && (lbl.toLowerCase().includes('api') || lbl.toLowerCase().includes('explorer'));
+      const isLiveUrl    = effectiveUrl && effectiveUrl !== '#';
+
+      if (hasApiLbl && isLiveUrl) {
+        const col   = colorMap[be.color] || colorMap.emerald;
+        const isAbs = effectiveUrl.startsWith('http');
+        if (!isAbs) {
+          return `<a href="${effectiveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon} ${lbl}</a>`;
+        }
+        const feUrl     = p.frontend && (p.frontend.liveUrlByTier?.[_mt] ?? p.frontend.liveUrl);
+        const healthUrl = feUrl && p.frontend?.healthPath ? feUrl + p.frontend.healthPath : null;
+        if (healthUrl) {
+          if (HEALTH[healthUrl] === false) {
+            return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${lbl} · service offline</span>`
+              + _reqAccessHtml(_mk, be, col);
+          }
+          if (HEALTH[healthUrl] !== true) {
+            const _stage   = HEALTH_STAGE[healthUrl] ?? 0;
+            const _pending = _HEALTH_STAGE_LABELS[_stage] || 'Checking…';
+            return `<span class="${cls} opacity-40 cursor-default select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${_pending}</span>`;
+          }
+        }
+        return `<a href="${effectiveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon} ${lbl}</a>`;
+      }
+
+      const col         = colorMap[be?.color || p.frontend?.color || 'violet'] || colorMap.violet;
+      const inputStyle  = `background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#e4e4e7;border-radius:6px;padding:5px 9px;font-size:0.75rem;outline:none;min-width:0;flex:1`;
+      const submitStyle = `background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText};border-radius:6px;padding:5px 11px;font-size:0.72rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0`;
+      const headStyle   = `font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${col.btnText};opacity:0.7;margin-bottom:2px`;
+      return `<form onsubmit="requestAccess(event,'${_mk}','Request Access')" style="display:flex;flex-direction:column;gap:4px;width:100%;margin-top:12px">
+        <p style="${headStyle}">Request Access</p>
+        <div style="display:flex;gap:6px;align-items:center">
+          <input type="email" placeholder="your@company.com" required style="${inputStyle}"
+            onfocus="this.style.borderColor='${col.btnBorder}'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" />
+          <button type="submit" style="${submitStyle}">${arrowIcon}</button>
+        </div>
+      </form>`;
+    }
+
     function _renderModalBody() {
       const el = document.getElementById('modal-body');
       if (!el) return;
-      el.innerHTML = _tierBarHtml() + _panelsHtml(projects[_mk]);
-      const cl = document.getElementById('modal-cloud');
-      if (!cl) return;
-      const p = projects[_mk];
-      if (_mt === 'local') {
-        cl.innerHTML = `<div style="border-radius:12px;padding:14px 16px;background:rgba(100,116,139,0.08);border:1px solid rgba(100,116,139,0.2)"><p style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#64748b;margin-bottom:4px">Local</p><p style="font-size:0.8rem;color:#94a3b8">All services run on your machine — no cloud account needed.</p></div>`;
-      } else {
-        cl.innerHTML = p.cloud ? cloudPanelHtml(p.cloud) : '';
-      }
+      el.innerHTML = _tierBarHtml() + _apiExplorerBtnHtml();
     }
 
     function switchModalTier(tier) {
@@ -1638,8 +1711,8 @@
           </div>
           <p class="text-xs ${p.accentClass} mb-2">${p.subtitle}</p>
           <p class="text-sm text-zinc-400 leading-relaxed mb-4">${p.description}</p>
+          <div class="mb-2">${_chipRows(key)}</div>
           <div id="modal-body"></div>
-          <div id="modal-cloud"></div>
         </div>`;
 
       const modal = document.getElementById('modal');

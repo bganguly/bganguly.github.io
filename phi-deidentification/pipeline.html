@@ -59,10 +59,11 @@
     }
     .nav-back {
       display: flex; align-items: center; gap: 6px;
-      font-size: 0.8rem; color: var(--text-muted);
-      transition: color 0.15s;
+      font-size: 0.75rem; font-weight: 500; color: var(--text-muted);
+      padding: 4px 10px; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px;
+      transition: color 0.15s, border-color 0.15s;
     }
-    .nav-back:hover { color: var(--text); text-decoration: none; }
+    .nav-back:hover { color: var(--text); border-color: rgba(255,255,255,0.35); text-decoration: none; }
     .nav-sep { color: var(--text-dim); font-size: 0.75rem; }
     .nav-title { font-size: 0.85rem; font-weight: 600; }
     .nav-right { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 0.72rem; }
@@ -266,7 +267,7 @@
 <body>
 
 <nav>
-  <a href="../index.html?open=phi" class="nav-back">
+  <a href="/#phi" class="nav-back">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
     Portfolio
   </a>

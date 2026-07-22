@@ -1484,7 +1484,8 @@
             } catch(e) {}
           }
         }
-        return `<a href="${effectiveLiveUrl}" target="_blank" rel="noopener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
+        const _tgt = _absUrl ? 'target="_blank" rel="noopener"' : '';
+        return `<a href="${effectiveLiveUrl}" ${_tgt} class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
       }
 
       // Suppress Request Access on non-frontend panels when the frontend is already live for this tier
@@ -1709,6 +1710,7 @@
       modal.classList.add('hidden');
       modal.classList.remove('flex');
       document.body.style.overflow = '';
+      if (location.hash) history.pushState({}, '', location.pathname + location.search);
     }
 
     function closeModalOnBackdrop(e) {
@@ -1717,12 +1719,31 @@
 
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-    // Auto-open modal from ?open=<key> — used by api-explorer back buttons
+    // Push hash when modal opens so browser back restores it
+    const _origOpenModal = openModal;
+    openModal = function(key) {
+      _origOpenModal(key);
+      history.pushState({modal: key}, '', '#' + key);
+    };
+
+    window.addEventListener('popstate', function() {
+      const key = location.hash.slice(1);
+      if (key && projects[key]) {
+        _origOpenModal(key);
+      } else {
+        const modal = document.getElementById('modal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = '';
+      }
+    });
+
+    // Auto-open modal from ?open=<key> (api-explorer back buttons) or #<key> (hash routing)
     (function() {
-      const openKey = new URLSearchParams(location.search).get('open');
+      const openKey = new URLSearchParams(location.search).get('open') || location.hash.slice(1);
       if (openKey && projects[openKey]) {
-        history.replaceState({}, '', location.pathname);
-        openModal(openKey);
+        history.replaceState({modal: openKey}, '', '#' + openKey);
+        _origOpenModal(openKey);
       }
     })();
 

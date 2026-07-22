@@ -76,11 +76,15 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 4px 10px;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px;
       color: var(--text-muted);
       transition: color 0.15s;
     }
-    .nav-back:hover { color: var(--text); text-decoration: none; }
+    .nav-back:hover { color: var(--text); border-color: rgba(255,255,255,0.35); text-decoration: none; }
     .nav-sep { color: var(--text-dim); font-size: 0.75rem; }
     .nav-title { font-size: 0.85rem; font-weight: 600; }
     .nav-right {
@@ -549,7 +553,7 @@
 
   <!-- Nav -->
   <nav>
-    <a href="../index.html?open=phi" class="nav-back">
+    <a href="/#phi" class="nav-back">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M5 12l7 7M5 12l7-7"/></svg>
       Portfolio
     </a>

@@ -1631,6 +1631,8 @@
     }
 
     function openModal(key) {
+      const modal = document.getElementById('modal');
+      if (_mk === key && modal && !modal.classList.contains('hidden')) return;
       const p = projects[key];
       _mk  = key;
       _mht = _detectTiers(p);

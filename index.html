@@ -1727,8 +1727,10 @@
     // Push hash when modal opens so browser back restores it
     const _origOpenModal = openModal;
     openModal = function(key) {
+      const modal = document.getElementById('modal');
+      const alreadyOpen = _mk === key && modal && !modal.classList.contains('hidden');
       _origOpenModal(key);
-      history.pushState({modal: key}, '', '#' + key);
+      if (!alreadyOpen) history.pushState({modal: key}, '', '#' + key);
     };
 
     window.addEventListener('popstate', function() {

@@ -1736,6 +1736,8 @@
     window.addEventListener('popstate', function() {
       const key = location.hash.slice(1);
       if (key && projects[key]) {
+        const modal = document.getElementById('modal');
+        if (modal.classList.contains('hidden')) { history.back(); return; }
         _origOpenModal(key);
       } else {
         const modal = document.getElementById('modal');

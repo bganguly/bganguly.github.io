@@ -1441,24 +1441,20 @@
             }
           }
         }
-        // Non-frontend panels on the same origin as the frontend inherit its health state
+        // Non-frontend panels always inherit health state from the frontend button
         if (!panelId.endsWith('-frontend') && _absUrl) {
           const projFe = projects[projectKey]?.frontend;
           const feUrl = projFe && (projFe.liveUrlByTier?.[_mt] ?? projFe.liveUrl);
           if (projFe?.healthPath && feUrl?.startsWith('http')) {
-            let sameOrigin = false;
-            try { sameOrigin = new URL(feUrl).origin === new URL(effectiveLiveUrl).origin; } catch(e) {}
-            if (sameOrigin) {
-              const hUrl = feUrl + projFe.healthPath;
-              if (HEALTH[hUrl] === false) {
-                const s = `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · service offline</span>`;
-                return s + (_mt === 'lite' ? _reqAccessHtml(projectKey, c, col) : '');
-              }
-              if (HEALTH[hUrl] !== true) {
-                const _stage = HEALTH_STAGE[hUrl] ?? 0;
-                const _pendingLabel = _HEALTH_STAGE_LABELS[_stage] || 'Checking…';
-                return `<span class="${cls} opacity-40 cursor-default select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${_pendingLabel}</span>`;
-              }
+            const hUrl = feUrl + projFe.healthPath;
+            if (HEALTH[hUrl] === false) {
+              const s = `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · service offline</span>`;
+              return s + (_mt === 'lite' ? _reqAccessHtml(projectKey, c, col) : '');
+            }
+            if (HEALTH[hUrl] !== true) {
+              const _stage = HEALTH_STAGE[hUrl] ?? 0;
+              const _pendingLabel = _HEALTH_STAGE_LABELS[_stage] || 'checking…';
+              return `<span class="${cls} opacity-40 cursor-default select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${_pendingLabel}</span>`;
             }
           }
         }
@@ -1476,16 +1472,12 @@
         if (_absUrl && c.healthPath) {
           return `<a href="${effectiveLiveUrl}" target="_blank" rel="opener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
         }
-        // Same-origin backends that inherited the frontend's settled health — open directly.
+        // Non-frontend panels that inherited the frontend's settled health — open directly.
         if (!panelId.endsWith('-frontend') && _absUrl) {
           const _pFe = projects[projectKey]?.frontend;
           const _fUrl = _pFe && (_pFe.liveUrlByTier?.[_mt] ?? _pFe.liveUrl);
           if (_pFe?.healthPath && _fUrl?.startsWith('http')) {
-            try {
-              if (new URL(_fUrl).origin === new URL(effectiveLiveUrl).origin) {
-                return `<a href="${effectiveLiveUrl}" target="_blank" rel="opener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
-              }
-            } catch(e) {}
+            return `<a href="${effectiveLiveUrl}" target="_blank" rel="opener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
           }
         }
         const _tgt = _absUrl ? 'target="_blank" rel="opener"' : '';
@@ -1558,8 +1550,8 @@
         </div>`;
     }
 
-    var _HEALTH_STAGE_LABELS = ['Checking…', 'Waking up…', 'Almost there…', 'Hang tight…'];
-    var _HEALTH_MAX_FAILS = 5; // give up after 5 failures (~50 s for cold-start probes)
+    var _HEALTH_STAGE_LABELS = ['checking 1 of 5', 'checking 2 of 5', 'checking 3 of 5', 'checking 4 of 5', 'checking 5 of 5'];
+    var _HEALTH_MAX_FAILS = 5;
 
     function _probeHealth(healthUrl, key, failsSoFar) {
       var ctrl = new AbortController();

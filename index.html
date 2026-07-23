@@ -1715,7 +1715,7 @@
       modal.classList.add('hidden');
       modal.classList.remove('flex');
       document.body.style.overflow = '';
-      if (location.hash) history.back();
+      if (location.hash) history.replaceState(null, '', location.pathname + location.search);
     }
 
     function closeModalOnBackdrop(e) {

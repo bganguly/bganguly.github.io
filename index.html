@@ -728,7 +728,6 @@
           liveUrlByTier: { lite: 'orders-dashboard/api-explorer-lite.html', full: 'orders-dashboard/api-explorer-full.html' },
           localUrl: 'http://localhost:8080/explorer.html',
           githubUrl: GH + '/springboot-dashboard-backend',
-          scaleByTier: { local: '~100K orders', lite: '~500K orders', full: '~4M orders' },
         },
         frontend: {
           label: 'Frontend',
@@ -739,10 +738,8 @@
           liveUrl: '#',
           liveLabel: 'Open App',
           healthPath: '/api/orders?pageSize=1',
-          startupNote: 'Cloud Run · ~5–10 s cold-start',
           localUrl: 'http://localhost:3006',
           githubUrl: GH + '/dashboard-frontend',
-          scaleByTier: { local: '~100K orders', lite: '~500K orders', full: '~4M orders' },
         },
         githubUrl: GH,
       },
@@ -769,7 +766,6 @@
           liveLabel: 'API Explorer',
           localUrl: 'http://localhost:3004/api-explorer',
           githubUrl: GH + '/nextjs-dashboard',
-          scaleByTier: { local: '~100K orders', lite: '~500K orders', full: '~4M orders' },
         },
         frontend: {
           label: 'Frontend',
@@ -782,9 +778,7 @@
           healthPath: '/api/health',
           localUrl: 'http://localhost:3004',
           githubUrl: GH + '/nextjs-dashboard',
-          scaleByTier: { local: '~100K orders', lite: '~500K orders', full: '~4M orders' },
         },
-        clusterNote: 'App Runner · wakes on first request · ~15–30 s',
         githubUrl: GH + '/nextjs-dashboard',
       },
       clickhouse: {
@@ -810,7 +804,6 @@
           liveLabel: 'API Explorer',
           localUrl: 'http://localhost:3004/api-explorer',
           githubUrl: GH + '/clickhouse-dashboard',
-          scaleByTier: { local: '~100K orders', lite: '~500K orders' },
         },
         frontend: {
           label: 'App',
@@ -821,12 +814,9 @@
           liveUrl: '#',
           liveLabel: 'Open App',
           healthPath: '/api/ch-warmup',
-          startupNote: 'App Runner · wakes on first request · ~15–30 s',
           localUrl: 'http://localhost:3004',
           githubUrl: GH + '/clickhouse-dashboard',
-          scaleByTier: { local: '~100K orders', lite: '~500K orders' },
         },
-        clusterNote: 'App Runner · wakes on first request · ~15–30 s',
         githubUrl: GH + '/clickhouse-dashboard',
       },
       fargate: {
@@ -935,7 +925,6 @@
         title: 'RAG + pgvector Demo (GCP)',
         tiers: ['local', 'lite'],
         tierLabels: { lite: 'REMOTE' },
-        clusterNote: 'Lambda · wakes on first request · ~2–5 s cold-start',
         subtitle: 'LangChain · pgvector · Vercel AI SDK · NVIDIA NIM',
         description: 'Ingest any unstructured text → chunk via LangChain RecursiveCharacterTextSplitter → embed via OpenAI → store in pgvector. Questions trigger cosine-similarity retrieval; answers stream token-by-token via Vercel AI SDK streamText. Provider toggle in the UI switches between Anthropic, OpenAI, and NVIDIA NIM (Nemotron) — same interface, just a base_url swap. FastAPI handles all vector operations; Next.js API routes handle LLM streaming.',
         accentClass: 'text-blue-400',
@@ -949,7 +938,6 @@
           liveUrl: '#',
           liveLabel: 'Open App',
           healthPath: '/api/health',
-          startupNote: 'Lambda · ~2–5 s cold-start',
           githubUrl: GH + '/rag-pgvector-demo',
         },
         backend: {
@@ -970,7 +958,6 @@
         title: 'Multi-Agent Orchestration (GCP)',
         tiers: ['local', 'lite'],
         tierLabels: { lite: 'REMOTE' },
-        clusterNote: 'code only · not deployed · $0/mo',
         subtitle: 'LangGraph · 20-agent pipeline · React Flow DAG · MCP server',
         description: '17-node LangGraph pipeline for complex queries: planner → 10 parallel specialist researchers → collect barrier → 4 domain synthesizers → fact-check → report writer. Simple queries short-circuit to 4 nodes. Each SSE event carries node/label/layer/parent for live React Flow DAG layout — nodes pulse while running, turn green on completion. Tools exposed as an MCP server (stdio) for Claude Desktop. GKE mode available alongside Cloud Run.',
         accentClass: 'text-amber-400',
@@ -1005,7 +992,6 @@
         title: 'SEC EDGAR RAG Demo',
         tiers: ['local', 'lite'],
         tierLabels: { lite: 'REMOTE' },
-        clusterNote: 'Lambda · wakes on first request · ~2–5 s cold-start',
         subtitle: 'SEC 10-K / 10-Q · pgvector · LangChain · 4 LLM providers · Vercel AI SDK',
         description: 'Index SEC 10-K / 10-Q filings by ticker and date range, then ask cross-filing questions with grounded LLM answers. OpenAI text-embedding-3-small embeddings (fixed at ingest and query time) stored in pgvector via cosine similarity. Runtime provider toggle across Anthropic, OpenAI, Google, and NVIDIA NIM — same interface, just a base_url swap. FastAPI + Mangum handles all vector operations and is Lambda-compatible; Next.js API routes handle LLM streaming via Vercel AI SDK streamText.',
         accentClass: 'text-teal-400',
@@ -1027,7 +1013,6 @@
           liveUrl: '#',
           liveLabel: 'Open App',
           healthPath: '/api/health',
-          startupNote: 'Lambda · ~2–5 s cold-start',
           githubUrl: GH + '/edgar-rag-demo',
         },
         backend: {
@@ -1082,7 +1067,6 @@
         title: 'PHI De-identification Pipeline',
         tiers: ['local', 'lite'],
         tierLabels: { lite: 'REMOTE' },
-        clusterNote: 'code only · not deployed · $0/mo',
         subtitle: 'spaCy · Claude Haiku 4.5 · FastAPI · Celery · Redis · PostgreSQL',
         description: 'Healthcare PHI detection and synthetic substitution pipeline. spaCy biomedical NER (en_core_sci_md) handles ~90% of records as tier-1; Claude Haiku 4.5 covers ambiguous fallbacks. Each detected entity (name, SSN, MRN, date, phone, email, location) is replaced with a Faker-generated synthetic equivalent — not blank redaction — preserving analytical signal. SHA-256 hashes of originals stored in a PostgreSQL redaction log for auditing. Full observability: structured JSON logs, Prometheus metrics, OpenTelemetry traces → Jaeger. The browser demo runs Claude directly for PHI detection; full pipeline adds spaCy tier-1 + Celery workers.',
         accentClass: 'text-teal-400',
@@ -1278,20 +1262,7 @@
         const dot = selected ? ts.text    : '#3f3f46';
         return `<button onclick="switchModalTier('${key}')" style="display:inline-flex;align-items:center;gap:5px;padding:5px 14px;border-radius:6px;font-size:0.65rem;font-weight:700;letter-spacing:0.08em;background:${bg};border:1px solid ${bdr};color:${clr};cursor:pointer;transition:all 0.12s"><span style="width:5px;height:5px;border-radius:50%;background:${dot};flex-shrink:0"></span>${label}</button>`;
       }).join('');
-      const p = projects[_mk];
-      const scaleText = p && (
-        p.frontend?.scaleByTier?.[_mt] || p.backend?.scaleByTier?.[_mt]
-      );
-      const ts = _tierStyles[_mt] || _tierStyles.full;
-      const scaleBadge = scaleText
-        ? `<span style="margin-left:auto;font-size:0.60rem;font-weight:600;letter-spacing:0.04em;padding:3px 9px;border-radius:5px;background:${ts.bg};border:1px solid ${ts.border};color:${ts.text};white-space:nowrap">${scaleText}</span>`
-        : '';
-      let clusterNote = (_mt !== 'local') ? (projects[_mk]?.clusterNote || '') : '';
-      let clusterNoteColor = '#71717a';
-      const clusterNoteHtml = clusterNote
-        ? `<p style="font-size:0.61rem;color:${clusterNoteColor};margin-top:8px;text-align:center;letter-spacing:0.01em">&#128337; ${clusterNote}</p>`
-        : '';
-      return `<div style="display:flex;align-items:center;gap:6px;margin-bottom:${clusterNote ? '6px' : '14px'};padding:5px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;flex-wrap:wrap">${tabs}${scaleBadge}</div>${clusterNoteHtml}<div style="margin-bottom:${clusterNote ? '8px' : '0'}"></div>`;
+      return `<div style="display:flex;align-items:center;gap:6px;margin-bottom:14px;padding:5px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;flex-wrap:wrap">${tabs}</div>`;
     }
 
     function _panelsHtml(p) {
@@ -1466,8 +1437,7 @@
           if (HEALTH[hUrl] !== true) {
             const _stage = HEALTH_STAGE[hUrl] ?? 0;
             const _pendingLabel = _HEALTH_STAGE_LABELS[_stage] || 'Checking…';
-            const _startupNote = c.startupNote ? `<p style="font-size:0.62rem;color:#52525b;margin-top:4px;text-align:center;letter-spacing:0.01em">${c.startupNote}</p>` : '';
-            return `<span class="${cls} opacity-40 cursor-default select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${_pendingLabel}</span>${_startupNote}`;
+            return `<span class="${cls} opacity-40 cursor-default select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${_pendingLabel}</span>`;
           }
         }
         // Health settling is complete — open directly, no re-probe on click.
@@ -1498,16 +1468,8 @@
           + _reqAccessHtml(projectKey, c, col);
       }
 
-      // No live URL — Request Access (FULL adds cloud cost hint)
-      const cloudColor = projects[projectKey]?.cloud?.color;
-      const costHintText = (_mt === 'full')
-        ? (cloudColor === 'gcp' ? 'GCP spun down · code only · ~$80/mo at idle'
-         : cloudColor === 'aws' ? 'AWS spun down · code only · ~$15/mo at idle'
-         : null)
-        : null;
-      const gcpHint = costHintText
-        ? `<p style="font-size:0.60rem;color:#71717a;margin-bottom:4px;letter-spacing:0.01em">${costHintText}</p>`
-        : '';
+      // No live URL — Request Access
+      const gcpHint = '';
       const inputStyle  = `background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#e4e4e7;border-radius:6px;padding:5px 9px;font-size:0.75rem;outline:none;min-width:0;flex:1`;
       const submitStyle = `background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText};border-radius:6px;padding:5px 11px;font-size:0.72rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0`;
       const headingStyle = `font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${col.btnText};opacity:0.7;margin-bottom:2px`;

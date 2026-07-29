@@ -666,9 +666,6 @@
     const isLocal = ['localhost', '127.0.0.1', ''].includes(location.hostname);
 
     const LOCAL_LIVE = {};
-    const PROD_LIVE  = {}; // null=unknown, true=reachable, false=unreachable
-    const HEALTH     = {}; // keyed by full health-check URL: null=pending, true=ok, false=degraded
-    const HEALTH_STAGE = {}; // keyed by healthUrl: 0=checking, 1=waking up, 2=almost there, 3=hang tight
 
     async function requestAccess(event, projectKey, label) {
       event.preventDefault();
@@ -1177,29 +1174,6 @@
         });
       }
 
-      // Production probes: detect completely unreachable origins (DNS/network failure).
-      // Cannot distinguish 200 from 5xx via no-cors; deploy.sh _deployLive is authoritative
-      // for error-case cases. This catches total outages (service deleted, DNS gone, etc.).
-      if (!isLocal) {
-        const seen = new Set();
-        Object.values(projects).forEach(p => {
-          [p.frontend?.liveUrl, p.backend?.liveUrl,
-           ...Object.values(p.frontend?.liveUrlByTier || {}),
-           ...Object.values(p.backend?.liveUrlByTier  || {})
-          ].filter(u => u && u !== '#' && u.startsWith('http')).forEach(url => {
-            const origin = new URL(url).origin;
-            if (seen.has(origin)) return;
-            seen.add(origin);
-            PROD_LIVE[origin] = null;
-            const ctrl = new AbortController();
-            const t = setTimeout(() => ctrl.abort(), 8000);
-            fetch(url, { method: 'HEAD', mode: 'no-cors', signal: ctrl.signal })
-              .then(() => { PROD_LIVE[origin] = true; })
-              .catch(() => { PROD_LIVE[origin] = false; })
-              .finally(() => clearTimeout(t));
-          });
-        });
-      }
     })();
 
     const colorMap = {
@@ -1374,79 +1348,9 @@
         </form>`;
       }
 
-      // Live URL known — show enabled or disabled button
+      // Live URL known — show button directly
       if (effectiveLiveUrl && effectiveLiveUrl !== '#') {
-        const _absUrl = effectiveLiveUrl.startsWith('http');
-        const panelType = panelId.endsWith('-frontend') ? 'frontend' : 'backend';
-        // Relative URLs are static files that are always accessible but only useful when the
-        // service is deployed. Gate on _deployLive if present so the button shows offline
-        // when deploy.sh hasn't marked this panel as live.
-        const notDeployed = !_absUrl
-          && window._deployLive != null
-          && window._deployLive[projectKey]?.[panelType] !== true;
-        const offline = notDeployed || (_absUrl && PROD_LIVE[new URL(effectiveLiveUrl).origin] === false);
-        if (offline) {
-          const s = `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel}</span>`;
-          return s + (_mt === 'lite' ? _reqAccessHtml(projectKey, c, col) : '');
-        }
-        if (_absUrl && c.healthPath) {
-          const healthUrl = effectiveLiveUrl + c.healthPath;
-          if (HEALTH[healthUrl] === false) {
-            const s = `<span class="${cls} opacity-30 cursor-not-allowed select-none" title="API returning 5xx — service degraded" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel}</span>`;
-            return s + (_mt === 'lite' ? _reqAccessHtml(projectKey, c, col) : '');
-          }
-        }
-        if (!_absUrl) {
-          const projFe = projects[projectKey]?.frontend;
-          if (projFe?.healthPath) {
-            const feUrl = projFe.liveUrlByTier?.[_mt] ?? projFe.liveUrl;
-            if (feUrl && feUrl.startsWith('http')) {
-              const hUrl = feUrl + projFe.healthPath;
-              if (HEALTH[hUrl] === false) {
-                const s = `<span class="${cls} opacity-30 cursor-not-allowed select-none" title="API returning 5xx — service degraded" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel}</span>`;
-                return s + (_mt === 'lite' ? _reqAccessHtml(projectKey, c, col) : '');
-              }
-              if (HEALTH[hUrl] !== true) {
-                return `<span class="${cls} opacity-40 cursor-default select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel}</span>`;
-              }
-            }
-          }
-        }
-        // Non-frontend panels always inherit health state from the frontend button
-        if (!panelId.endsWith('-frontend') && _absUrl) {
-          const projFe = projects[projectKey]?.frontend;
-          const feUrl = projFe && (projFe.liveUrlByTier?.[_mt] ?? projFe.liveUrl);
-          if (projFe?.healthPath && feUrl?.startsWith('http')) {
-            const hUrl = feUrl + projFe.healthPath;
-            if (HEALTH[hUrl] === false) {
-              const s = `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel}</span>`;
-              return s + (_mt === 'lite' ? _reqAccessHtml(projectKey, c, col) : '');
-            }
-            if (HEALTH[hUrl] !== true) {
-              return `<span class="${cls} opacity-40 cursor-default select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel}</span>`;
-            }
-          }
-        }
-        // Gate button on health confirmation for any panel with a healthPath
-        if (_absUrl && c.healthPath) {
-          const hUrl = effectiveLiveUrl + c.healthPath;
-          if (HEALTH[hUrl] !== true) {
-            return `<span class="${cls} opacity-40 cursor-default select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel}</span>`;
-          }
-        }
-        // Health settling is complete — open directly, no re-probe on click.
-        if (_absUrl && c.healthPath) {
-          return `<a href="${effectiveLiveUrl}" target="_blank" rel="opener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
-        }
-        // Non-frontend panels that inherited the frontend's settled health — open directly.
-        if (!panelId.endsWith('-frontend') && _absUrl) {
-          const _pFe = projects[projectKey]?.frontend;
-          const _fUrl = _pFe && (_pFe.liveUrlByTier?.[_mt] ?? _pFe.liveUrl);
-          if (_pFe?.healthPath && _fUrl?.startsWith('http')) {
-            return `<a href="${effectiveLiveUrl}" target="_blank" rel="opener" class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
-          }
-        }
-        const _tgt = _absUrl ? 'target="_blank" rel="opener"' : '';
+        const _tgt = effectiveLiveUrl.startsWith('http') ? 'target="_blank" rel="opener"' : '';
         return `<a href="${effectiveLiveUrl}" ${_tgt} class="${cls}" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${arrowIcon}${c.liveLabel}</a>`;
       }
 
@@ -1455,11 +1359,6 @@
         const projFe = projects[projectKey]?.frontend;
         const projFeUrl = projFe && (projFe.liveUrlByTier?.[_mt] ?? projFe.liveUrl);
         if (projFeUrl && projFeUrl !== '#') return '';
-      }
-
-      if (_mt === 'lite') {
-        return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel}</span>`
-          + _reqAccessHtml(projectKey, c, col);
       }
 
       // No live URL — Request Access
@@ -1508,78 +1407,6 @@
         </div>`;
     }
 
-    var _HEALTH_STAGE_LABELS = [];
-    var _HEALTH_MAX_FAILS = 5;
-
-    function _probeHealth(healthUrl, key, failsSoFar) {
-      var ctrl = new AbortController();
-      var t = setTimeout(function() { ctrl.abort(); }, 10000);
-      function _onFail() {
-        clearTimeout(t);
-        var nextFails = (failsSoFar || 0) + 1;
-        if (nextFails >= _HEALTH_MAX_FAILS) {
-          HEALTH[healthUrl] = false;
-          if (_mk === key) _renderModalBody();
-        } else if (_mk === key) {
-          HEALTH_STAGE[healthUrl] = nextFails;
-          _renderModalBody();
-          setTimeout(function() {
-            if (_mk === key && HEALTH[healthUrl] !== true) _probeHealth(healthUrl, key, nextFails);
-          }, 5000);
-        }
-      }
-      fetch(healthUrl + '?_=' + Date.now(), { credentials: 'omit', signal: ctrl.signal })
-        .then(function(r) {
-          clearTimeout(t);
-          if (r.ok) {
-            HEALTH[healthUrl] = true;
-            if (_mk === key) _renderModalBody();
-          } else {
-            _onFail();
-          }
-        })
-        .catch(function() {
-          // If the abort controller fired (timeout) this is a genuine connectivity failure.
-          // If NOT aborted, it is a CORS TypeError: the server responded but the browser
-          // blocked cross-origin access. Use PROD_LIVE (no-cors probe of the same origin)
-          // as a secondary signal: if the origin is confirmed up, treat as healthy rather
-          // than incorrectly marking an accessible service as offline.
-          if (ctrl.signal.aborted) { _onFail(); return; }
-          var origin;
-          try { origin = new URL(healthUrl).origin; } catch(e) { _onFail(); return; }
-          if (PROD_LIVE[origin] === true) {
-            clearTimeout(t);
-            HEALTH[healthUrl] = true;
-            if (_mk === key) _renderModalBody();
-          } else {
-            _onFail();
-          }
-        });
-    }
-
-    function _healthCheck(key) {
-      const p = projects[key];
-      if (!p) return;
-      ['frontend', 'backend', 'extra'].forEach(function(panel) {
-        var c = p[panel];
-        if (!c || !c.healthPath) return;
-        var tiers = Object.keys(c.liveUrlByTier || {});
-        if (!tiers.length && c.liveUrl && c.liveUrl !== '#') tiers = [null];
-        tiers.forEach(function(tier) {
-          var baseUrl = tier ? (c.liveUrlByTier?.[tier] ?? c.liveUrl) : c.liveUrl;
-          if (!baseUrl || baseUrl === '#' || !baseUrl.startsWith('http')) return;
-          var healthUrl = baseUrl + c.healthPath;
-          if (HEALTH[healthUrl] !== undefined) {
-            if (_mk === key) _renderModalBody();
-            return;
-          }
-          HEALTH[healthUrl] = null;
-          HEALTH_STAGE[healthUrl] = 0;
-          _probeHealth(healthUrl, key, 0);
-        });
-      });
-    }
-
     function openModal(key) {
       const modal = document.getElementById('modal');
       if (_mk === key && modal && !modal.classList.contains('hidden')) return;
@@ -1606,58 +1433,7 @@
       modal.classList.remove('hidden');
       modal.classList.add('flex');
       document.body.style.overflow = 'hidden';
-      switchModalTier(_mt);  // populates modal-body + re-probes if LOCAL
-      if (!isLocal) {
-        // Clear health state so re-opening always re-probes from scratch
-        const _p = projects[key];
-        ['frontend', 'backend', 'extra'].forEach(function(panel) {
-          const _c = _p?.[panel];
-          if (!_c || !_c.healthPath) return;
-          const _urls = Object.values(_c.liveUrlByTier || {}).concat(_c.liveUrl || []);
-          _urls.forEach(function(u) {
-            if (u && u !== '#' && u.startsWith('http')) {
-              const _h = u + _c.healthPath;
-              if (HEALTH[_h] !== true) { delete HEALTH[_h]; delete HEALTH_STAGE[_h]; }
-            }
-          });
-        });
-        _healthCheck(key);
-      }
-    }
-
-    function _openLiveUrl(btn, url, healthUrl) {
-      btn.disabled = true;
-      const orig = btn.innerHTML;
-      const spinSvg = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 0.85s linear infinite;flex-shrink:0"><circle cx="12" cy="12" r="10" stroke-opacity="0.2"/><path d="M12 2a10 10 0 0 1 7.07 2.93" stroke-linecap="round"/></svg>';
-      btn.innerHTML = spinSvg + ' Checking…';
-      const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), 10000);
-      fetch(healthUrl + '?_=' + Date.now(), { credentials: 'omit', signal: ctrl.signal })
-        .then(function(r) {
-          clearTimeout(t);
-          if (r.ok) {
-            window.open(url, '_blank');
-            btn.innerHTML = orig;
-            btn.disabled = false;
-          } else {
-            HEALTH[healthUrl] = false;
-            _renderModalBody();
-          }
-        })
-        .catch(function() {
-          clearTimeout(t);
-          HEALTH[healthUrl] = false;
-          _renderModalBody();
-        });
-    }
-
-    function _gcpAppOpen(btn, url) {
-      window.open(url, '_blank');
-      var spinSvg = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 0.85s linear infinite;flex-shrink:0"><circle cx="12" cy="12" r="10" stroke-opacity="0.2"/><path d="M12 2a10 10 0 0 1 7.07 2.93" stroke-linecap="round"/></svg>';
-      btn.innerHTML = spinSvg + ' Starting…';
-      btn.disabled = true;
-      btn.style.opacity = '0.75';
-      setTimeout(function() { _renderModalBody(); }, 14000);
+      switchModalTier(_mt);
     }
 
     function closeModal() {

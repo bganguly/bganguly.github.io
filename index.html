@@ -727,7 +727,7 @@
           liveLabel: 'API Explorer',
           liveUrlByTier: { lite: 'orders-dashboard/api-explorer-lite.html', full: 'orders-dashboard/api-explorer-full.html' },
           localUrl: 'http://localhost:8080/explorer.html',
-          githubUrl: GH + '/springboot-dashboard-backend-gcp',
+          githubUrl: GH + '/springboot-dashboard-backend',
           scaleByTier: { local: '~100K orders', lite: '~500K orders', full: '~4M orders' },
         },
         frontend: {
@@ -741,7 +741,7 @@
           healthPath: '/api/orders?pageSize=1',
           startupNote: 'Cloud Run · ~5–10 s cold-start',
           localUrl: 'http://localhost:3006',
-          githubUrl: GH + '/dashboard-frontend-gcp',
+          githubUrl: GH + '/dashboard-frontend',
           scaleByTier: { local: '~100K orders', lite: '~500K orders', full: '~4M orders' },
         },
         githubUrl: GH,
@@ -851,7 +851,7 @@
           color: 'amber',
           title: 'Spring Boot 4.1 · Java 21 · ECS Fargate',
           chips: ['Spring Boot 4.1', 'Java 21', 'ECS Fargate'],
-          githubUrl: GH + '/react-springboot-fargate-aws',
+          githubUrl: GH + '/react-springboot-fargate',
           liveLabel: 'API Explorer',
           requestAccessOnly: true,
         },
@@ -864,9 +864,9 @@
           liveUrl: '#',
           liveLabel: 'Open App',
           localUrl: 'http://localhost:3008',
-          githubUrl: GH + '/react-springboot-fargate-aws',
+          githubUrl: GH + '/react-springboot-fargate',
         },
-        githubUrl: GH + '/react-springboot-fargate-aws',
+        githubUrl: GH + '/react-springboot-fargate',
       },
       serverless: {
         title: 'Event Pipeline — AWS',
@@ -892,7 +892,7 @@
           chips: ['AWS Lambda', 'SNS → SQS', 'Serverless 4.13'],
           liveUrl: '#',
           liveLabel: 'API Explorer',
-          githubUrl: GH + '/react-typescript-serverless-aws',
+          githubUrl: GH + '/react-typescript-serverless',
         },
         frontend: {
           label: 'Frontend',
@@ -903,9 +903,9 @@
           liveUrl: '#',
           liveLabel: 'Open App',
           localUrl: 'http://localhost:3010',
-          githubUrl: GH + '/react-typescript-serverless-aws',
+          githubUrl: GH + '/react-typescript-serverless',
         },
-        githubUrl: GH + '/react-typescript-serverless-aws',
+        githubUrl: GH + '/react-typescript-serverless',
       },
 
       // ── AI / LLM (local-only; hidden in production) ───────────────────────
@@ -950,7 +950,7 @@
           liveLabel: 'Open App',
           healthPath: '/api/health',
           startupNote: 'Lambda · ~2–5 s cold-start',
-          githubUrl: GH + '/rag-pgvector-demo-gcp',
+          githubUrl: GH + '/rag-pgvector-demo',
         },
         backend: {
           label: 'API',
@@ -961,9 +961,9 @@
           localUrl: 'http://localhost:8001/docs',
           liveUrl: '#',
           liveLabel: 'API Explorer',
-          githubUrl: GH + '/rag-pgvector-demo-gcp',
+          githubUrl: GH + '/rag-pgvector-demo',
         },
-        githubUrl: GH + '/rag-pgvector-demo-gcp',
+        githubUrl: GH + '/rag-pgvector-demo',
       },
 
       agent: {
@@ -984,7 +984,7 @@
           liveUrl: '#',
           liveLabel: 'Open App',
           requestAccessOnly: true,
-          githubUrl: GH + '/agent-orchestration-demo-gcp',
+          githubUrl: GH + '/agent-orchestration-demo',
         },
         backend: {
           label: 'API',
@@ -996,9 +996,9 @@
           liveUrl: '#',
           liveLabel: 'API Explorer',
           requestAccessOnly: true,
-          githubUrl: GH + '/agent-orchestration-demo-gcp',
+          githubUrl: GH + '/agent-orchestration-demo',
         },
-        githubUrl: GH + '/agent-orchestration-demo-gcp',
+        githubUrl: GH + '/agent-orchestration-demo',
       },
 
       edgar: {
@@ -1061,7 +1061,7 @@
           liveUrl: '#',
           liveLabel: 'Open App',
           requestAccessOnly: true,
-          githubUrl: GH + '/edgar-10k-agent',
+          githubUrl: GH + '/edgar-agent',
         },
         backend: {
           label: 'API',
@@ -1073,9 +1073,9 @@
           liveUrl: '#',
           liveLabel: 'API Explorer',
           requestAccessOnly: true,
-          githubUrl: GH + '/edgar-10k-agent',
+          githubUrl: GH + '/edgar-agent',
         },
-        githubUrl: GH + '/edgar-10k-agent',
+        githubUrl: GH + '/edgar-agent',
       },
 
       phi: {
@@ -1094,7 +1094,7 @@
           chips: ['spaCy tier-1', 'Claude Haiku 4.5', 'OTel → Jaeger', 'Synthetic substitution'],
           liveUrl: 'phi-deidentification/pipeline.html',
           liveLabel: 'View Pipeline',
-          githubUrl: GH + '/phi-deidentification-pipeline-gcp',
+          githubUrl: GH + '/phi-deidentification-pipeline',
         },
         backend: {
           label: 'Demo',
@@ -1105,7 +1105,7 @@
           liveUrl: 'phi-deidentification/index.html',
           liveLabel: 'Open Demo',
           localUrl: 'http://localhost:8000/docs',
-          githubUrl: GH + '/phi-deidentification-pipeline-gcp',
+          githubUrl: GH + '/phi-deidentification-pipeline',
           apiKeyNote: 'Requires Anthropic API key',
         },
         extra: {
@@ -1116,9 +1116,9 @@
           chips: ['real-time progress', 'parallel workers', 'fast vs Claude trace'],
           liveUrl: 'phi-deidentification/batch.html',
           liveLabel: 'Run Batch',
-          githubUrl: GH + '/phi-deidentification-pipeline-gcp',
+          githubUrl: GH + '/phi-deidentification-pipeline',
         },
-        githubUrl: GH + '/phi-deidentification-pipeline-gcp',
+        githubUrl: GH + '/phi-deidentification-pipeline',
       },
     };
 

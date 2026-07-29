@@ -1386,13 +1386,13 @@
           && window._deployLive[projectKey]?.[panelType] !== true;
         const offline = notDeployed || (_absUrl && PROD_LIVE[new URL(effectiveLiveUrl).origin] === false);
         if (offline) {
-          const s = `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · service offline</span>`;
+          const s = `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel}</span>`;
           return s + (_mt === 'lite' ? _reqAccessHtml(projectKey, c, col) : '');
         }
         if (_absUrl && c.healthPath) {
           const healthUrl = effectiveLiveUrl + c.healthPath;
           if (HEALTH[healthUrl] === false) {
-            const s = `<span class="${cls} opacity-30 cursor-not-allowed select-none" title="API returning 5xx — service degraded" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · service offline</span>`;
+            const s = `<span class="${cls} opacity-30 cursor-not-allowed select-none" title="API returning 5xx — service degraded" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel}</span>`;
             return s + (_mt === 'lite' ? _reqAccessHtml(projectKey, c, col) : '');
           }
         }
@@ -1403,13 +1403,11 @@
             if (feUrl && feUrl.startsWith('http')) {
               const hUrl = feUrl + projFe.healthPath;
               if (HEALTH[hUrl] === false) {
-                const s = `<span class="${cls} opacity-30 cursor-not-allowed select-none" title="API returning 5xx — service degraded" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · service offline</span>`;
+                const s = `<span class="${cls} opacity-30 cursor-not-allowed select-none" title="API returning 5xx — service degraded" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel}</span>`;
                 return s + (_mt === 'lite' ? _reqAccessHtml(projectKey, c, col) : '');
               }
               if (HEALTH[hUrl] !== true) {
-                const _stage = HEALTH_STAGE[hUrl] ?? 0;
-                const _pendingLabel = _HEALTH_STAGE_LABELS[_stage] || 'Checking…';
-                return `<span class="${cls} opacity-40 cursor-default select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${_pendingLabel}</span>`;
+                return `<span class="${cls} opacity-40 cursor-default select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel}</span>`;
               }
             }
           }
@@ -1421,13 +1419,11 @@
           if (projFe?.healthPath && feUrl?.startsWith('http')) {
             const hUrl = feUrl + projFe.healthPath;
             if (HEALTH[hUrl] === false) {
-              const s = `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · service offline</span>`;
+              const s = `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel}</span>`;
               return s + (_mt === 'lite' ? _reqAccessHtml(projectKey, c, col) : '');
             }
             if (HEALTH[hUrl] !== true) {
-              const _stage = HEALTH_STAGE[hUrl] ?? 0;
-              const _pendingLabel = _HEALTH_STAGE_LABELS[_stage] || 'checking…';
-              return `<span class="${cls} opacity-40 cursor-default select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${_pendingLabel}</span>`;
+              return `<span class="${cls} opacity-40 cursor-default select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel}</span>`;
             }
           }
         }
@@ -1435,9 +1431,7 @@
         if (_absUrl && c.healthPath) {
           const hUrl = effectiveLiveUrl + c.healthPath;
           if (HEALTH[hUrl] !== true) {
-            const _stage = HEALTH_STAGE[hUrl] ?? 0;
-            const _pendingLabel = _HEALTH_STAGE_LABELS[_stage] || 'Checking…';
-            return `<span class="${cls} opacity-40 cursor-default select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${_pendingLabel}</span>`;
+            return `<span class="${cls} opacity-40 cursor-default select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel}</span>`;
           }
         }
         // Health settling is complete — open directly, no re-probe on click.
@@ -1464,7 +1458,7 @@
       }
 
       if (_mt === 'lite') {
-        return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel} · service offline</span>`
+        return `<span class="${cls} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.liveLabel}</span>`
           + _reqAccessHtml(projectKey, c, col);
       }
 
@@ -1514,7 +1508,7 @@
         </div>`;
     }
 
-    var _HEALTH_STAGE_LABELS = ['checking 1 of 5', 'checking 2 of 5', 'checking 3 of 5', 'checking 4 of 5', 'checking 5 of 5'];
+    var _HEALTH_STAGE_LABELS = [];
     var _HEALTH_MAX_FAILS = 5;
 
     function _probeHealth(healthUrl, key, failsSoFar) {

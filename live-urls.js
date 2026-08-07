@@ -2,7 +2,7 @@
 window._liveUrls = {
   agentLiteBe: 'https://agent-backend-77y7e2wykq-uc.a.run.app/docs',
   agentLiteFe: 'https://agent-frontend-77y7e2wykq-uc.a.run.app',
-  clickhouseBe: 'https://gd9a9etnk2.us-east-1.awsapprunner.com/api-explorer',
+  clickhouseBe: 'https://d1n8zhx1j8oymk.cloudfront.net/api-explorer',
   clickhouseFe: 'https://d1n8zhx1j8oymk.cloudfront.net',
   dashboardLiteFe: 'https://dash-lite-frontend-77y7e2wykq-uc.a.run.app',
   edgarAgentBe: 'https://edgar-backend-77y7e2wykq-uc.a.run.app',

@@ -7,7 +7,7 @@ window._liveUrls = {
   dashboardLiteFe: 'https://dash-lite-frontend-77y7e2wykq-uc.a.run.app',
   edgarAgentBe: 'https://edgar-frontend-77y7e2wykq-uc.a.run.app/api-explorer',
   edgarAgentFe: 'https://edgar-frontend-77y7e2wykq-uc.a.run.app',
-  edgarAgentLiteBe: 'https://edgar-frontend-77y7e2wykq-uc.a.run.app/api-explorer',
+  edgarAgentLiteBe: 'https://edgar-backend-77y7e2wykq-uc.a.run.app',
   edgarAgentLiteFe: 'https://edgar-frontend-77y7e2wykq-uc.a.run.app',
   fargateBe: 'https://d1r1yv4zty4xd0.cloudfront.net',
   fargateFe: 'https://d3gn54w27kjodk.cloudfront.net',

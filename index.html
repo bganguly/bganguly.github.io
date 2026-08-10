@@ -1115,7 +1115,7 @@
           localUrl: 'http://localhost:5173/api-explorer.html',
           liveUrl: '#',
           liveLabel: 'API Explorer',
-          requestAccessOnly: true,
+          lockedUrl: 'https://edgar-frontend-77y7e2wykq-uc.a.run.app/api-explorer.html',
           githubUrl: GH + '/edgar-agent',
         },
         githubUrl: GH + '/edgar-agent',
@@ -1392,6 +1392,12 @@
       const projectKey = panelId.replace(/-(?:frontend|backend|extra)$/, '');
       const cls = 'flex items-center justify-center gap-1.5 w-full py-2 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90 mt-auto';
       const effectiveLiveUrl = c.liveUrlByTier?.[_mt] ?? c.liveUrl;
+
+      // lockedUrl: display URL as non-clickable text
+      if (c.lockedUrl) {
+        const base = 'flex items-center justify-center w-full py-2 rounded-lg text-xs font-mono mt-auto break-all';
+        return `<span class="${base} opacity-40 cursor-default select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${c.lockedUrl.replace('https://', '')}</span>`;
+      }
 
       // requestAccessOnly: always show the access form, never the live button
       if (c.requestAccessOnly && c.liveLabel) {

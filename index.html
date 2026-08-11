@@ -703,7 +703,6 @@
     </div>
   </div>
 
-  <script src="deploy-live.js"></script>
   <script src="live-urls.js"></script>
   <script>
     // ── Access-gate config (EmailJS) ─────────────────────────────────────
@@ -1191,18 +1190,6 @@
     }
     if (_lu.clickhouseFe) projects.clickhouse.cloud.liveUrl = _lu.clickhouseFe;
 
-    // Apply deploy-time live overrides written by deploy.sh
-    if (window._deployLive) {
-      for (const [key, flags] of Object.entries(window._deployLive)) {
-        if (!projects[key]) continue;
-        if (!flags.frontend && projects[key].frontend) { projects[key].frontend.liveUrl = '#'; projects[key].frontend.liveUrlByTier = {}; }
-        if (!flags.backend  && projects[key].backend)  { projects[key].backend.liveUrl  = '#'; projects[key].backend.liveUrlByTier  = {}; }
-      }
-      if (!isLocal && window._deployLive.showLlmSection === false) {
-        const s = document.getElementById('llm-section');
-        if (s) s.hidden = true;
-      }
-    }
 
     // Probe each project's live URLs at page load (no-cors HEAD, 8 s timeout).
     (function () {

@@ -8,6 +8,6 @@ window._deployLive = {
   fargate:    { frontend: true,  backend: true  },
   serverless: { frontend: true,  backend: true  },
   rag:        { frontend: true, backend: true },
-  agent:      { frontend: true, backend: true },
+  agent:      { frontend: true, backend: false },
   edgarAgent: { frontend: true, backend: true },
 };

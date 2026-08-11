@@ -1180,6 +1180,7 @@
     };
     for (const [luKey, [proj, panel, tier]] of Object.entries(_urlMap)) {
       if (!_lu[luKey] || !projects[proj]?.[panel]) continue;
+      if (projects[proj][panel].requestAccessOnly) continue;
       if (tier) {
         const p = projects[proj][panel];
         p.liveUrlByTier = p.liveUrlByTier || {};

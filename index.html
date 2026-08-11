@@ -781,25 +781,17 @@
         //   frontend  → 3006  (Vite strictPort in dashboard-frontend-gcp/vite.config.ts)
         //   backend   → 8080  (deploy.sh; run: ./scripts/deploy.sh)
         backend: {
-          label: 'API',
-          tier: 'lite',
-          color: 'emerald',
+          label: 'API',          color: 'emerald',
           title: 'Spring Boot 4.1 · Java 21',
           chips: ['Spring Boot 4.1', 'Java 21', 'Flyway 12.4', 'REST API'],
-          liveLabel: 'API Explorer',
-          requestAccessOnly: true,
-          localUrl: 'http://localhost:8080/explorer.html',
+          liveLabel: 'API Explorer',          localUrl: 'http://localhost:8080/explorer.html',
           githubUrl: GH + '/springboot-dashboard-backend',
         },
         frontend: {
-          label: 'Frontend',
-          tier: 'lite',
-          color: 'blue',
+          label: 'Frontend',          color: 'blue',
           title: 'React 19.2 + Vite 6.4',
           chips: ['React 19.2', 'TypeScript 5.9', 'Vite 6.4', 'Recharts 3.9'],
-          liveLabel: 'Open App',
-          requestAccessOnly: true,
-          localUrl: 'http://localhost:3006',
+          liveLabel: 'Open App',          localUrl: 'http://localhost:3006',
           githubUrl: GH + '/dashboard-frontend',
         },
         githubUrl: GH,
@@ -818,25 +810,17 @@
           liveLabel: 'Open Live App',
         },
         backend: {
-          label: 'API',
-          tier: 'lite',
-          color: 'slate',
+          label: 'API',          color: 'slate',
           title: 'PostgreSQL 16 · Prisma',
           chips: ['PostgreSQL 16', 'Prisma', 'SSE'],
-          liveLabel: 'API Explorer',
-          requestAccessOnly: true,
-          localUrl: 'http://localhost:3004/api-explorer',
+          liveLabel: 'API Explorer',          localUrl: 'http://localhost:3004/api-explorer',
           githubUrl: GH + '/nextjs-dashboard',
         },
         frontend: {
-          label: 'Frontend',
-          tier: 'lite',
-          color: 'indigo',
+          label: 'Frontend',          color: 'indigo',
           title: 'Next.js 16.2 · TypeScript 5.9',
           chips: ['Next.js 16.2', 'TypeScript 5.9', 'Tailwind CSS 4.3', 'RSC'],
-          liveLabel: 'Open App',
-          requestAccessOnly: true,
-          localUrl: 'http://localhost:3004',
+          liveLabel: 'Open App',          localUrl: 'http://localhost:3004',
           githubUrl: GH + '/nextjs-dashboard',
         },
         githubUrl: GH + '/nextjs-dashboard',
@@ -855,9 +839,7 @@
           liveLabel: 'Open Live App',
         },
         backend: {
-          label: 'API',
-          tier: 'lite',
-          color: 'sky',
+          label: 'API',          color: 'sky',
           title: 'Next.js API routes · ClickHouse Cloud',
           chips: ['ClickHouse Cloud', '@clickhouse/client', 'Materialized Views', 'SSE · EventEmitter'],
           liveUrl: '#',
@@ -866,9 +848,7 @@
           githubUrl: GH + '/clickhouse-dashboard',
         },
         frontend: {
-          label: 'App',
-          tier: 'lite',
-          color: 'indigo',
+          label: 'App',          color: 'indigo',
           title: 'Next.js 16.2 · TypeScript 5.9 · Recharts',
           chips: ['Next.js 16.2', 'React 19', 'TypeScript 5.9', 'Tailwind CSS v4', 'Recharts', 'SSE'],
           liveUrl: '#',
@@ -896,19 +876,13 @@
         // backend 3009 (application-local.yml; run: SPRING_PROFILES_ACTIVE=local ./mvnw spring-boot:run).
         // Backend has no directly testable HTTP artifact — no localUrl.
         backend: {
-          label: 'API',
-          tier: 'full',
-          color: 'amber',
+          label: 'API',          color: 'amber',
           title: 'Spring Boot 4.1 · Java 21 · ECS Fargate',
           chips: ['Spring Boot 4.1', 'Java 21', 'ECS Fargate'],
           githubUrl: GH + '/react-springboot-fargate',
-          liveLabel: 'API Explorer',
-          requestAccessOnly: true,
-        },
+          liveLabel: 'API Explorer',        },
         frontend: {
-          label: 'Frontend',
-          tier: 'full',
-          color: 'blue',
+          label: 'Frontend',          color: 'blue',
           title: 'React 19.2 · CloudFront',
           chips: ['React 19.2', 'TypeScript 5.8', 'S3', 'CloudFront'],
           liveUrl: '#',
@@ -935,9 +909,7 @@
         // backend 3011 (serverless-offline httpPort in serverless.yml; run: npx sls offline).
         // Backend is event-driven (SNS→SQS→Lambda) — no directly testable HTTP artifact; no localUrl.
         backend: {
-          label: 'API',
-          tier: 'lite',
-          color: 'teal',
+          label: 'API',          color: 'teal',
           title: 'Lambda · SNS/SQS',
           chips: ['AWS Lambda', 'SNS → SQS', 'Serverless 4.13'],
           liveUrl: '#',
@@ -945,9 +917,7 @@
           githubUrl: GH + '/react-typescript-serverless',
         },
         frontend: {
-          label: 'Frontend',
-          tier: 'lite',
-          color: 'blue',
+          label: 'Frontend',          color: 'blue',
           title: 'React 19.2 · Vite 5.4',
           chips: ['React 19.2', 'TypeScript 5.8', 'Vite 5.4', 'API Gateway', 'Job polling UI'],
           liveUrl: '#',
@@ -960,16 +930,11 @@
 
       // ── AI / LLM (local-only; hidden in production) ───────────────────────
       nlsql: {
-        title: 'NL-to-SQL Comparison',
-        tiers: ['local', 'lite'],
-        tierLabels: { lite: 'REMOTE' },
-        subtitle: 'Anthropic · OpenAI · DuckDB-WASM · H1B LCA data',
+        title: 'NL-to-SQL Comparison',        subtitle: 'Anthropic · OpenAI · DuckDB-WASM · H1B LCA data',
         description: 'Compares natural-language-to-SQL generation across Anthropic and OpenAI models, executing generated SQL in-browser via DuckDB-WASM against a Parquet dataset of DOL H1B LCA disclosures. Schema is auto-detected from Parquet metadata; no backend required.',
         accentClass: 'text-violet-400',
         frontend: {
-          label: 'App',
-          tier: 'lite',
-          color: 'violet',
+          label: 'App',          color: 'violet',
           title: 'React 19 · Vite · DuckDB-WASM',
           chips: ['React 19', 'Vite', 'DuckDB-WASM', 'Anthropic', 'OpenAI', 'Parquet'],
           liveUrl: '#',
@@ -982,16 +947,11 @@
       },
 
       rag: {
-        title: 'RAG + pgvector Demo (GCP)',
-        tiers: ['local', 'lite'],
-        tierLabels: { lite: 'REMOTE' },
-        subtitle: 'LangChain · pgvector · Vercel AI SDK · NVIDIA NIM',
+        title: 'RAG + pgvector Demo (GCP)',        subtitle: 'LangChain · pgvector · Vercel AI SDK · NVIDIA NIM',
         description: 'Ingest any unstructured text → chunk via LangChain RecursiveCharacterTextSplitter → embed via OpenAI → store in pgvector. Questions trigger cosine-similarity retrieval; answers stream token-by-token via Vercel AI SDK streamText. Provider toggle in the UI switches between Anthropic, OpenAI, and NVIDIA NIM (Nemotron) — same interface, just a base_url swap. FastAPI handles all vector operations; Next.js API routes handle LLM streaming.',
         accentClass: 'text-blue-400',
         frontend: {
-          label: 'App',
-          tier: 'lite',
-          color: 'blue',
+          label: 'App',          color: 'blue',
           title: 'Next.js 15 · Vercel AI SDK · Token SSE',
           chips: ['Next.js 15', 'Vercel AI SDK', 'streamText', 'Provider toggle', 'Tailwind'],
           localUrl: 'http://localhost:3010',
@@ -1001,9 +961,7 @@
           githubUrl: GH + '/rag-pgvector-demo',
         },
         backend: {
-          label: 'API',
-          tier: 'lite',
-          color: 'emerald',
+          label: 'API',          color: 'emerald',
           title: 'FastAPI · LangChain · pgvector · Redis',
           chips: ['FastAPI', 'LangChain', 'pgvector', 'OpenAI embeddings', 'Redis', 'Docker'],
           localUrl: 'http://localhost:8001/docs',
@@ -1014,16 +972,11 @@
       },
 
       agent: {
-        title: 'Multi-Agent Orchestration (GCP)',
-        tiers: ['local', 'lite'],
-        tierLabels: { lite: 'REMOTE' },
-        subtitle: 'LangGraph · 20-agent pipeline · React Flow DAG · MCP server',
+        title: 'Multi-Agent Orchestration (GCP)',        subtitle: 'LangGraph · 20-agent pipeline · React Flow DAG · MCP server',
         description: '17-node LangGraph pipeline for complex queries: planner → 10 parallel specialist researchers → collect barrier → 4 domain synthesizers → fact-check → report writer. Simple queries short-circuit to 4 nodes. Each SSE event carries node/label/layer/parent for live React Flow DAG layout — nodes pulse while running, turn green on completion. Tools exposed as an MCP server (stdio) for Claude Desktop. GKE mode available alongside Cloud Run.',
         accentClass: 'text-amber-400',
         frontend: {
-          label: 'App',
-          tier: 'lite',
-          color: 'amber',
+          label: 'App',          color: 'amber',
           title: 'Next.js 15 · React Flow DAG · SSE',
           chips: ['Next.js 15', 'React Flow', 'SSE live DAG', 'TypeScript'],
           localUrl: 'http://localhost:3011',
@@ -1032,25 +985,18 @@
           githubUrl: GH + '/agent-orchestration-demo',
         },
         backend: {
-          label: 'API',
-          tier: 'lite',
-          color: 'emerald',
+          label: 'API',          color: 'emerald',
           title: 'FastAPI · LangGraph · MCP server',
           chips: ['FastAPI', 'LangGraph', 'MCP server', 'Wikipedia', 'DuckDuckGo', 'Anthropic'],
           localUrl: 'http://localhost:8002/docs',
           liveUrl: '#',
-          liveLabel: 'API Explorer',
-          requestAccessOnly: true,
-          githubUrl: GH + '/agent-orchestration-demo',
+          liveLabel: 'API Explorer',          githubUrl: GH + '/agent-orchestration-demo',
         },
         githubUrl: GH + '/agent-orchestration-demo',
       },
 
       edgar: {
-        title: 'SEC EDGAR RAG Demo',
-        tiers: ['local', 'lite'],
-        tierLabels: { lite: 'REMOTE' },
-        subtitle: 'SEC 10-K / 10-Q · pgvector · LangChain · 4 LLM providers · Vercel AI SDK',
+        title: 'SEC EDGAR RAG Demo',        subtitle: 'SEC 10-K / 10-Q · pgvector · LangChain · 4 LLM providers · Vercel AI SDK',
         description: 'Index SEC 10-K / 10-Q filings by ticker and date range, then ask cross-filing questions with grounded LLM answers. OpenAI text-embedding-3-small embeddings (fixed at ingest and query time) stored in pgvector via cosine similarity. Runtime provider toggle across Anthropic, OpenAI, Google, and NVIDIA NIM — same interface, just a base_url swap. FastAPI + Mangum handles all vector operations and is Lambda-compatible; Next.js API routes handle LLM streaming via Vercel AI SDK streamText.',
         accentClass: 'text-teal-400',
         cloud: {
@@ -1062,41 +1008,28 @@
           liveLabel: 'Open Live App',
         },
         frontend: {
-          label: 'App',
-          tier: 'lite',
-          color: 'teal',
+          label: 'App',          color: 'teal',
           title: 'Next.js 15 · Vercel AI SDK · Token SSE',
           chips: ['Next.js 15', 'React 19', 'Vercel AI SDK', 'streamText', 'TypeScript 5.7', 'Tailwind'],
           localUrl: 'http://localhost:3011',
-          liveLabel: 'Open App',
-          requestAccessOnly: true,
-          githubUrl: GH + '/edgar-rag-demo',
+          liveLabel: 'Open App',          githubUrl: GH + '/edgar-rag-demo',
         },
         backend: {
-          label: 'API',
-          tier: 'lite',
-          color: 'emerald',
+          label: 'API',          color: 'emerald',
           title: 'FastAPI · LangChain · pgvector · Mangum',
           chips: ['FastAPI 0.115', 'LangChain', 'pgvector', 'OpenAI embeddings', 'Mangum', 'SEC EDGAR API'],
           localUrl: 'http://localhost:8002/docs',
-          liveLabel: 'API Explorer',
-          requestAccessOnly: true,
-          githubUrl: GH + '/edgar-rag-demo',
+          liveLabel: 'API Explorer',          githubUrl: GH + '/edgar-rag-demo',
         },
         githubUrl: GH + '/edgar-rag-demo',
       },
 
       edgarAgent: {
-        title: 'EDGAR 10-K Agent',
-        tiers: ['local', 'lite'],
-        tierLabels: { lite: 'REMOTE' },
-        subtitle: 'Agent Loop · Tool Use · live EDGAR retrieval · Anthropic Claude · NVIDIA NIM · Eval',
+        title: 'EDGAR 10-K Agent',        subtitle: 'Agent Loop · Tool Use · live EDGAR retrieval · Anthropic Claude · NVIDIA NIM · Eval',
         description: 'Agentic loop written from scratch — no LangChain, no pre-ingested data. The model decides at runtime when and how to invoke SEC EDGAR tools; each call fetches live 10-K filings, extracts specific sections (Risk Factors, MD&A, financials), and parses structured figures. Multi-turn reasoning continues until a final answer is emitted. An eval harness benchmarks answer quality (faithfulness, completeness, citation accuracy) across providers. FastAPI streams every tool-call event and token to the React UI via SSE. Provider toggle switches between Anthropic Claude and NVIDIA NIM — same agent loop, same tools, different model.',
         accentClass: 'text-indigo-400',
         frontend: {
-          label: 'App',
-          tier: 'lite',
-          color: 'indigo',
+          label: 'App',          color: 'indigo',
           title: 'React · Vite · live tool-call stream',
           chips: ['React', 'Vite', 'SSE', 'tool-call events', 'TypeScript'],
           localUrl: 'http://localhost:5173',
@@ -1105,9 +1038,7 @@
           githubUrl: GH + '/edgar-agent',
         },
         backend: {
-          label: 'API',
-          tier: 'lite',
-          color: 'emerald',
+          label: 'API',          color: 'emerald',
           title: 'FastAPI · agent loop · EDGAR tools · Eval',
           chips: ['FastAPI', 'Agent Loop', 'Tool Use', 'SEC EDGAR API', 'Anthropic', 'NVIDIA NIM', 'Eval harness'],
           localUrl: 'http://localhost:5173/api-explorer.html',
@@ -1119,77 +1050,45 @@
       },
 
       phi: {
-        title: 'PHI De-identification Pipeline',
-        tiers: ['local', 'lite'],
-        tierLabels: { lite: 'REMOTE' },
-        subtitle: 'spaCy · Claude Haiku 4.5 · FastAPI · Celery · Redis · PostgreSQL',
+        title: 'PHI De-identification Pipeline',        subtitle: 'spaCy · Claude Haiku 4.5 · FastAPI · Celery · Redis · PostgreSQL',
         description: 'Healthcare PHI detection and synthetic substitution pipeline. spaCy biomedical NER (en_core_sci_md) handles ~90% of records as tier-1; Claude Haiku 4.5 covers ambiguous fallbacks. Each detected entity (name, SSN, MRN, date, phone, email, location) is replaced with a Faker-generated synthetic equivalent — not blank redaction — preserving analytical signal. SHA-256 hashes of originals stored in a PostgreSQL redaction log for auditing. Full observability: structured JSON logs, Prometheus metrics, OpenTelemetry traces → Jaeger. The browser demo runs Claude directly for PHI detection; full pipeline adds spaCy tier-1 + Celery workers.',
         accentClass: 'text-teal-400',
         frontend: {
-          label: 'Pipeline',
-          tier: 'lite',
-          color: 'teal',
+          label: 'Pipeline',          color: 'teal',
           title: 'Architecture · Trace · Example',
           chips: ['spaCy tier-1', 'Claude Haiku 4.5', 'OTel → Jaeger', 'Synthetic substitution'],
-          liveLabel: 'View Pipeline',
-          requestAccessOnly: true,
-          githubUrl: GH + '/phi-deidentification-pipeline',
+          liveLabel: 'View Pipeline',          githubUrl: GH + '/phi-deidentification-pipeline',
         },
         backend: {
-          label: 'Demo',
-          tier: 'lite',
-          color: 'emerald',
+          label: 'Demo',          color: 'emerald',
           title: 'Browser Demo — Claude Haiku 4.5',
           chips: ['claude-haiku-4-5', 'PHI detection', 'SHA-256 audit log'],
-          liveLabel: 'Open Demo',
-          requestAccessOnly: true,
-          localUrl: 'http://localhost:8000/docs',
+          liveLabel: 'Open Demo',          localUrl: 'http://localhost:8000/docs',
           githubUrl: GH + '/phi-deidentification-pipeline',
         },
         extra: {
-          label: 'Batch Run',
-          tier: 'lite',
-          color: 'amber',
+          label: 'Batch Run',          color: 'amber',
           title: '50 Records · 3 Workers · Live',
           chips: ['real-time progress', 'parallel workers', 'fast vs Claude trace'],
-          liveLabel: 'Run Batch',
-          requestAccessOnly: true,
-          githubUrl: GH + '/phi-deidentification-pipeline',
+          liveLabel: 'Run Batch',          githubUrl: GH + '/phi-deidentification-pipeline',
         },
         githubUrl: GH + '/phi-deidentification-pipeline',
       },
     };
 
-    // Apply live URL overrides written by set-live-url.sh (each app's deploy writes its CDN URL here)
+    // live-urls.js is the single source of truth: per-project/panel, either a URL or 'rao'
     const _lu = window._liveUrls || {};
-    const _urlMap = {
-      nlsqlLiteFe:     ['nlsql',      'frontend', 'lite'],
-      dashboardLiteFe: ['dashboard',  'frontend', 'lite'], dashboardLiteBe: ['dashboard',  'backend',  'lite'],
-      dashboardFullFe: ['dashboard',  'frontend', 'full'], dashboardFullBe: ['dashboard',  'backend',  'full'],
-      nextjsFe:        ['nextjs',     'frontend', null],   nextjsBe:        ['nextjs',     'backend',  null],
-      nextjsLiteFe:    ['nextjs',     'frontend', 'lite'], nextjsLiteBe:    ['nextjs',     'backend',  'lite'],
-      nextjsFullFe:    ['nextjs',     'frontend', 'full'], nextjsFullBe:    ['nextjs',     'backend',  'full'],
-      fargateFe:       ['fargate',    'frontend', null],   fargateBe:       ['fargate',    'backend',  null],
-      serverlessFe:    ['serverless', 'frontend', null],   serverlessBe:    ['serverless', 'backend',  null],
-      ragLiteFe:       ['rag',        'frontend', 'lite'], ragLiteBe:       ['rag',        'backend',  'lite'],
-      agentLiteFe:     ['agent',      'frontend', 'lite'], agentLiteBe:     ['agent',      'backend',  'lite'],
-      edgarLiteFe:          ['edgar',      'frontend', 'lite'], edgarLiteBe:          ['edgar',      'backend',  'lite'],
-      edgarAgentLiteFe:     ['edgarAgent', 'frontend', 'lite'], edgarAgentLiteBe:     ['edgarAgent', 'backend',  'lite'],
-      phiLiteBe:       ['phi',        'backend',  'lite'],
-      clickhouseFe:    ['clickhouse', 'frontend', null],   clickhouseBe:    ['clickhouse', 'backend',  null],
-    };
-    for (const [luKey, [proj, panel, tier]] of Object.entries(_urlMap)) {
-      if (!_lu[luKey] || !projects[proj]?.[panel]) continue;
-      if (projects[proj][panel].requestAccessOnly) continue;
-      if (tier) {
-        const p = projects[proj][panel];
-        p.liveUrlByTier = p.liveUrlByTier || {};
-        p.liveUrlByTier[tier] = _lu[luKey];
-      } else {
-        projects[proj][panel].liveUrl = _lu[luKey];
+    for (const [proj, panels] of Object.entries(_lu)) {
+      for (const [side, val] of Object.entries(panels)) {
+        const panelKey = side === 'fe' ? 'frontend' : side === 'be' ? 'backend' : 'extra';
+        if (!projects[proj]?.[panelKey]) continue;
+        if (val === 'rao') {
+          projects[proj][panelKey].requestAccessOnly = true;
+        } else {
+          projects[proj][panelKey].remoteUrl = val;
+        }
       }
     }
-    if (_lu.clickhouseFe) projects.clickhouse.cloud.liveUrl = _lu.clickhouseFe;
 
 
     // Probe each project's live URLs at page load (no-cors HEAD, 8 s timeout).
@@ -1240,42 +1139,35 @@
     const arrowIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>`;
 
     const _tierStyles = {
-      lite:  { bg: 'rgba(14,165,233,0.12)',  border: 'rgba(14,165,233,0.3)',  text: '#38bdf8' },
-      full:  { bg: 'rgba(139,92,246,0.10)',  border: 'rgba(139,92,246,0.3)',  text: '#c4b5fd' },
-      local: { bg: 'rgba(100,116,139,0.12)', border: 'rgba(100,116,139,0.3)', text: '#94a3b8' },
+      remote: { bg: 'rgba(14,165,233,0.12)',  border: 'rgba(14,165,233,0.3)',  text: '#38bdf8' },
+      local:  { bg: 'rgba(100,116,139,0.12)', border: 'rgba(100,116,139,0.3)', text: '#94a3b8' },
     };
 
     // ── Modal tier state ──────────────────────────────────────────────────────
     let _mk  = null;   // current modal project key
-    let _mt  = null;   // selected tier: 'local' | 'lite' | 'full'
-    let _mht = null;   // available tiers: { local, lite, full }
+    let _mt  = null;   // selected tier: 'local' | 'remote'
+    let _mht = null;   // available tiers: { local, remote }
 
     function _detectTiers(p) {
       const panels = [p.frontend, p.backend, p.extra].filter(Boolean);
       return {
-        local: panels.some(c => !!c.localUrl),
-        lite:  panels.some(c => (c.tier || 'full') === 'lite'),
-        full:  panels.some(c => (c.tier || 'full') === 'full'),
+        local:  panels.some(c => !!c.localUrl),
+        remote: true,
       };
     }
 
     function _defaultTier(hasTier) {
-      if (hasTier.lite)  return 'lite';
-      if (hasTier.full)  return 'full';
-      return 'local';
+      return hasTier.remote ? 'remote' : 'local';
     }
 
     function _tierBarHtml() {
-      const _tierLabels = projects[_mk]?.tierLabels || {};
       const defs = [
-        { key: 'local', label: 'LOCAL' },
-        { key: 'lite',  label: 'LITE'  },
-        { key: 'full',  label: 'FULL'  },
-      ].filter(({ key }) => (projects[_mk]?.tiers ?? ['local', 'lite', 'full']).includes(key));
+        { key: 'local',  label: 'LOCAL'  },
+        { key: 'remote', label: 'REMOTE' },
+      ];
       const tabs = defs.map(({ key, label }) => {
-        label = _tierLabels[key] || label;
         const selected = _mt === key;
-        const ts = _tierStyles[key] || _tierStyles.full;
+        const ts = _tierStyles[key] || _tierStyles.remote;
         const bg  = selected ? ts.bg     : 'transparent';
         const bdr = selected ? ts.border  : 'rgba(255,255,255,0.1)';
         const clr = selected ? ts.text    : '#71717a';
@@ -1374,10 +1266,10 @@
         return `<span class="${base} opacity-30 cursor-not-allowed select-none" style="background:${col.btn};border:1px solid ${col.btnBorder};color:${col.btnText}">${addr}</span>`;
       }
 
-      // ── LITE / FULL mode ────────────────────────────────────────────────────
+      // ── Remote mode ──────────────────────────────────────────────────────────
       const projectKey = panelId.replace(/-(?:frontend|backend|extra)$/, '');
       const cls = 'flex items-center justify-center gap-1.5 w-full py-2 rounded-lg text-xs font-semibold transition-opacity hover:opacity-90 mt-auto';
-      const effectiveLiveUrl = c.liveUrlByTier?.[_mt] ?? c.liveUrl;
+      const effectiveLiveUrl = c.remoteUrl ?? '#';
 
       // requestAccessOnly: always show the access form, never the live button
       if (c.requestAccessOnly && c.liveLabel) {
@@ -1403,7 +1295,7 @@
       // Suppress Request Access on non-frontend panels when the frontend is already live for this tier
       if (!panelId.endsWith('-frontend')) {
         const projFe = projects[projectKey]?.frontend;
-        const projFeUrl = projFe && (projFe.liveUrlByTier?.[_mt] ?? projFe.liveUrl);
+        const projFeUrl = projFe && (projFe.remoteUrl ?? '#');
         if (projFeUrl && projFeUrl !== '#') return '';
       }
 

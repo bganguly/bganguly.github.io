@@ -703,7 +703,6 @@
     </div>
   </div>
 
-  <!-- <script src="live-urls.js"></script> -->
   <script>
     // ── Access-gate config (EmailJS) ─────────────────────────────────────
     // IDs live in localStorage only — nothing is ever committed to source.
@@ -1078,21 +1077,6 @@
         githubUrl: GH + '/react-springboot-fargate',
       },
     };
-
-    // live-urls.js override loop — disabled; remoteUrl/requestAccessOnly now inlined per panel
-    // const _lu = window._liveUrls || {};
-    // for (const [proj, panels] of Object.entries(_lu)) {
-    //   for (const [side, val] of Object.entries(panels)) {
-    //     const panelKey = side === 'fe' ? 'frontend' : side === 'be' ? 'backend' : 'extra';
-    //     if (!projects[proj]?.[panelKey]) continue;
-    //     if (val === 'rao') {
-    //       projects[proj][panelKey].requestAccessOnly = true;
-    //     } else {
-    //       projects[proj][panelKey].remoteUrl = val;
-    //     }
-    //   }
-    // }
-
 
     // Probe each project's live URLs at page load (no-cors HEAD, 8 s timeout).
     (function () {

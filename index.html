@@ -127,7 +127,7 @@
 
       <!-- RAG + pgvector Demo -->
       <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
-           onclick="openModal('rag')">
+           onclick="openModal('rag_pgvector')">
         <div class="flex items-start justify-between mb-4">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center"
@@ -213,7 +213,7 @@
 
       <!-- EDGAR 10-K Agent -->
       <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
-           onclick="openModal('edgarAgent')">
+           onclick="openModal('edgar_agent')">
         <div class="flex items-start justify-between mb-4">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center"
@@ -257,7 +257,7 @@
 
       <!-- Multi-Agent Orchestration -->
       <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
-           onclick="openModal('agent')">
+           onclick="openModal('multi_agent')">
         <div class="flex items-start justify-between mb-4">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center"
@@ -307,7 +307,7 @@
 
       <!-- SEC EDGAR RAG Demo -->
       <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
-           onclick="openModal('edgar')">
+           onclick="openModal('edgar_rag')">
         <div class="flex items-start justify-between mb-4">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center"
@@ -348,7 +348,7 @@
 
       <!-- Orders Dashboard — GCP -->
       <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
-           onclick="openModal('dashboard')">
+           onclick="openModal('orders_dashboard')">
         <div class="flex items-start justify-between mb-4">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center"
@@ -395,7 +395,7 @@
 
       <!-- Card: Next.js Dashboard — AWS -->
       <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
-           onclick="openModal('nextjs')">
+           onclick="openModal('nextjs_dashboard')">
         <div class="flex items-start justify-between mb-4">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center"
@@ -437,7 +437,7 @@
 
       <!-- NL-to-SQL -->
       <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
-           onclick="openModal('nlsql')">
+           onclick="openModal('nl_to_sql')">
         <div class="flex items-start justify-between mb-4">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center"
@@ -480,7 +480,7 @@
 
       <!-- PHI De-identification Pipeline -->
       <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
-           onclick="openModal('phi')">
+           onclick="openModal('phi_pipeline')">
         <div class="flex items-start justify-between mb-4">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center"
@@ -521,7 +521,7 @@
 
       <!-- Card: Serverless -->
       <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
-           onclick="openModal('serverless')">
+           onclick="openModal('event_pipeline')">
         <div class="flex items-start justify-between mb-4">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center"
@@ -566,7 +566,7 @@
 
       <!-- Card: AWS Fargate -->
       <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
-           onclick="openModal('fargate')">
+           onclick="openModal('job_runner')">
         <div class="flex items-start justify-between mb-4">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center"
@@ -764,195 +764,7 @@
     const GH = 'https://github.com/bganguly';
 
     const projects = {
-      dashboard: {
-        title: 'Orders Dashboard — GCP',
-        subtitle: 'millions of orders · sub-second search · serverless autoscaling',
-        description: 'Two independent GCP Cloud Run services — a Vite/React 19.2 SPA proxying /api/* to a Spring Boot 4.1 REST API via Nginx BFF. Schema migrations in Flyway 12, secrets in GCP Secret Manager, all infra declared in Pulumi TypeScript.',
-        accentClass: 'text-violet-400',
-        cloud: {
-          label: 'Cloud Provider',
-          color: 'gcp',
-          title: 'GCP · Cloud Run',
-          chips: ['Cloud Run', 'GCE Postgres VM', 'Secret Manager', 'Artifact Registry', 'Pulumi IaC'],
-          liveUrl: '#',
-          liveLabel: 'Open Live App',
-        },
-        // Local port assignments — all stored in project config, no CLI args needed:
-        //   frontend  → 3006  (Vite strictPort in dashboard-frontend-gcp/vite.config.ts)
-        //   backend   → 8080  (deploy.sh; run: ./scripts/deploy.sh)
-        backend: {
-          label: 'API',          color: 'emerald',
-          title: 'Spring Boot 4.1 · Java 21',
-          chips: ['Spring Boot 4.1', 'Java 21', 'Flyway 12.4', 'REST API'],
-          liveLabel: 'API Explorer',          localUrl: 'http://localhost:8080/explorer.html',
-          requestAccessOnly: true,
-          githubUrl: GH + '/springboot-dashboard-backend',
-        },
-        frontend: {
-          label: 'Frontend',          color: 'blue',
-          title: 'React 19.2 + Vite 6.4',
-          chips: ['React 19.2', 'TypeScript 5.9', 'Vite 6.4', 'Recharts 3.9'],
-          liveLabel: 'Open App',          localUrl: 'http://localhost:3006',
-          requestAccessOnly: true,
-          githubUrl: GH + '/dashboard-frontend',
-        },
-        githubUrl: GH,
-      },
-      nextjs: {
-        title: 'Next.js Dashboard — AWS',
-        subtitle: 'Full-stack · realtime · Postgres 16',
-        description: 'Explores Next.js as a unified full-stack platform: UI, realtime updates, and database-backed search all in one AWS-hosted service. Acts as an architectural comparison to the split-service GCP approach. Hosted on App Runner (scale-to-zero, wakes in ~15–30 s).',
-        accentClass: 'text-indigo-400',
-        cloud: {
-          label: 'Cloud Provider',
-          color: 'aws',
-          title: 'AWS · App Runner',
-          chips: ['App Runner', 'AWS RDS PG 16', 'Terraform', 'GitHub Actions'],
-          liveUrl: '#',
-          liveLabel: 'Open Live App',
-        },
-        backend: {
-          label: 'API',          color: 'slate',
-          title: 'PostgreSQL 16 · Prisma',
-          chips: ['PostgreSQL 16', 'Prisma', 'SSE'],
-          liveLabel: 'API Explorer',          localUrl: 'http://localhost:3004/api-explorer',
-          requestAccessOnly: true,
-          githubUrl: GH + '/nextjs-dashboard',
-        },
-        frontend: {
-          label: 'Frontend',          color: 'indigo',
-          title: 'Next.js 16.2 · TypeScript 5.9',
-          chips: ['Next.js 16.2', 'TypeScript 5.9', 'Tailwind CSS 4.3', 'RSC'],
-          liveLabel: 'Open App',          localUrl: 'http://localhost:3004',
-          requestAccessOnly: true,
-          githubUrl: GH + '/nextjs-dashboard',
-        },
-        githubUrl: GH + '/nextjs-dashboard',
-      },
-      clickhouse: {
-        title: 'ClickHouse Dashboard — AWS',
-        subtitle: 'Next.js 16 · ClickHouse Cloud · Materialized Views · SSE · App Runner',
-        description: 'Full-stack Next.js dashboard backed by ClickHouse Cloud. Aggregates maintained at INSERT time by four Materialized Views into SummingMergeTree tables — no worker process, no dual-write gap. Full-text search via positionCaseInsensitive on a denormalized searchText column; keyset cursor pagination for efficient deep pages. Real-time order events via in-process Node.js EventEmitter → SSE. Infra: App Runner (scale-to-zero) + CloudFront managed by Terraform; ClickHouse Cloud service lifecycle managed by deploy.sh via CH Cloud API.',
-        accentClass: 'text-sky-400',
-        cloud: {
-          label: 'Cloud Provider',
-          color: 'aws',
-          title: 'AWS · App Runner + CloudFront',
-          chips: ['App Runner', 'CloudFront', 'Terraform', 'GitHub Actions'],
-          liveUrl: '#',
-          liveLabel: 'Open Live App',
-        },
-        backend: {
-          label: 'API',          color: 'sky',
-          title: 'Next.js API routes · ClickHouse Cloud',
-          chips: ['ClickHouse Cloud', '@clickhouse/client', 'Materialized Views', 'SSE · EventEmitter'],
-          liveLabel: 'API Explorer',
-          remoteUrl: 'https://d1n8zhx1j8oymk.cloudfront.net/api-explorer',
-          localUrl: 'http://localhost:3004/api-explorer',
-          githubUrl: GH + '/clickhouse-dashboard',
-        },
-        frontend: {
-          label: 'App',          color: 'indigo',
-          title: 'Next.js 16.2 · TypeScript 5.9 · Recharts',
-          chips: ['Next.js 16.2', 'React 19', 'TypeScript 5.9', 'Tailwind CSS v4', 'Recharts', 'SSE'],
-          liveLabel: 'Open App',
-          remoteUrl: 'https://d1n8zhx1j8oymk.cloudfront.net',
-          healthPath: '/api/ch-warmup',
-          localUrl: 'http://localhost:3004',
-          githubUrl: GH + '/clickhouse-dashboard',
-        },
-        githubUrl: GH + '/clickhouse-dashboard',
-      },
-      fargate: {
-        title: 'Job Runner — AWS',
-        subtitle: 'React 19.2 · Spring Boot 4.1 · CloudFront · GitHub Actions',
-        description: 'AWS-native architecture: React SPA served via CloudFront, Spring Boot containerised on ECS Fargate, async job processing with DynamoDB + SQS. GitHub Actions builds and pushes container images to ECR on every commit.',
-        accentClass: 'text-amber-400',
-        cloud: {
-          label: 'Cloud Provider',
-          color: 'aws',
-          title: 'AWS',
-          chips: ['ECS Fargate', 'CloudFront', 'GitHub Actions', 'DynamoDB', 'SQS'],
-          liveUrl: '#',
-          liveLabel: 'Open Live App',
-        },
-        // Local ports — frontend 3008 (Vite strictPort in vite.config.ts),
-        // backend 3009 (application-local.yml; run: SPRING_PROFILES_ACTIVE=local ./mvnw spring-boot:run).
-        // Backend has no directly testable HTTP artifact — no localUrl.
-        backend: {
-          label: 'API',          color: 'amber',
-          title: 'Spring Boot 4.1 · Java 21 · ECS Fargate',
-          chips: ['Spring Boot 4.1', 'Java 21', 'ECS Fargate'],
-          liveLabel: 'API Explorer',
-          requestAccessOnly: true,
-          githubUrl: GH + '/react-springboot-fargate',
-        },
-        frontend: {
-          label: 'Frontend',          color: 'blue',
-          title: 'React 19.2 · CloudFront',
-          chips: ['React 19.2', 'TypeScript 5.8', 'S3', 'CloudFront'],
-          liveLabel: 'Open App',
-          remoteUrl: 'https://d3gn54w27kjodk.cloudfront.net',
-          localUrl: 'http://localhost:3008',
-          githubUrl: GH + '/react-springboot-fargate',
-        },
-        githubUrl: GH + '/react-springboot-fargate',
-      },
-      serverless: {
-        title: 'Event Pipeline — AWS',
-        subtitle: 'Lambda · SNS → SQS · DynamoDB · polling UI',
-        description: 'Event-driven async pipeline deployed with Serverless Framework. React polls a job status endpoint while Lambda functions process jobs through SNS fan-out → SQS consumption, with DynamoDB tracking state transitions.',
-        accentClass: 'text-teal-400',
-        cloud: {
-          label: 'Cloud Provider',
-          color: 'aws',
-          title: 'AWS Serverless',
-          chips: ['Lambda', 'API Gateway', 'SNS', 'SQS', 'DynamoDB'],
-          liveUrl: '#',
-          liveLabel: 'Open Live App',
-        },
-        // Local ports — frontend 3010 (Vite strictPort in vite.config.ts),
-        // backend 3011 (serverless-offline httpPort in serverless.yml; run: npx sls offline).
-        // Backend is event-driven (SNS→SQS→Lambda) — no directly testable HTTP artifact; no localUrl.
-        backend: {
-          label: 'API',          color: 'teal',
-          title: 'Lambda · SNS/SQS',
-          chips: ['AWS Lambda', 'SNS → SQS', 'Serverless 4.13'],
-          liveLabel: 'API Explorer',
-          remoteUrl: 'https://d3nbn0s3ea4m39.cloudfront.net/api-explorer.html',
-          githubUrl: GH + '/react-typescript-serverless',
-        },
-        frontend: {
-          label: 'Frontend',          color: 'blue',
-          title: 'React 19.2 · Vite 5.4',
-          chips: ['React 19.2', 'TypeScript 5.8', 'Vite 5.4', 'API Gateway', 'Job polling UI'],
-          liveLabel: 'Open App',
-          remoteUrl: 'https://d3nbn0s3ea4m39.cloudfront.net',
-          localUrl: 'http://localhost:3010',
-          githubUrl: GH + '/react-typescript-serverless',
-        },
-        githubUrl: GH + '/react-typescript-serverless',
-      },
-
-      // ── AI / LLM (local-only; hidden in production) ───────────────────────
-      nlsql: {
-        title: 'NL-to-SQL Comparison',        subtitle: 'Anthropic · OpenAI · DuckDB-WASM · H1B LCA data',
-        description: 'Compares natural-language-to-SQL generation across Anthropic and OpenAI models, executing generated SQL in-browser via DuckDB-WASM against a Parquet dataset of DOL H1B LCA disclosures. Schema is auto-detected from Parquet metadata; no backend required.',
-        accentClass: 'text-violet-400',
-        frontend: {
-          label: 'App',          color: 'violet',
-          title: 'React 19 · Vite · DuckDB-WASM',
-          chips: ['React 19', 'Vite', 'DuckDB-WASM', 'Anthropic', 'OpenAI', 'Parquet'],
-          liveLabel: 'Open App',
-          remoteUrl: 'https://natural-language-to-llm-query-comparison.vercel.app/nl-to-sql/',
-          localUrl: 'http://localhost:5173/nl-to-sql/',
-          githubUrl: GH + '/natural-language-to-llm-query-comparison',
-          apiKeyNote: 'Requires Anthropic &amp; OpenAI API keys',
-        },
-        githubUrl: GH + '/natural-language-to-llm-query-comparison',
-      },
-
-      rag: {
+      rag_pgvector: {
         title: 'RAG + pgvector Demo (GCP)',        subtitle: 'LangChain · pgvector · Vercel AI SDK · NVIDIA NIM',
         description: 'Ingest any unstructured text → chunk via LangChain RecursiveCharacterTextSplitter → embed via OpenAI → store in pgvector. Questions trigger cosine-similarity retrieval; answers stream token-by-token via Vercel AI SDK streamText. Provider toggle in the UI switches between Anthropic, OpenAI, and NVIDIA NIM (Nemotron) — same interface, just a base_url swap. FastAPI handles all vector operations; Next.js API routes handle LLM streaming.',
         accentClass: 'text-blue-400',
@@ -977,66 +789,39 @@
         },
         githubUrl: GH + '/rag-pgvector-demo',
       },
-
-      agent: {
-        title: 'Multi-Agent Orchestration (GCP)',        subtitle: 'LangGraph · 20-agent pipeline · React Flow DAG · MCP server',
-        description: '17-node LangGraph pipeline for complex queries: planner → 10 parallel specialist researchers → collect barrier → 4 domain synthesizers → fact-check → report writer. Simple queries short-circuit to 4 nodes. Each SSE event carries node/label/layer/parent for live React Flow DAG layout — nodes pulse while running, turn green on completion. Tools exposed as an MCP server (stdio) for Claude Desktop. GKE mode available alongside Cloud Run.',
-        accentClass: 'text-amber-400',
-        frontend: {
-          label: 'App',          color: 'amber',
-          title: 'Next.js 15 · React Flow DAG · SSE',
-          chips: ['Next.js 15', 'React Flow', 'SSE live DAG', 'TypeScript'],
-          localUrl: 'http://localhost:3011',
-          liveLabel: 'Open App',
-          remoteUrl: 'https://agent-frontend-77y7e2wykq-uc.a.run.app',
-          githubUrl: GH + '/agent-orchestration-demo',
-        },
-        backend: {
-          label: 'API',          color: 'emerald',
-          title: 'FastAPI · LangGraph · MCP server',
-          chips: ['FastAPI', 'LangGraph', 'MCP server', 'Wikipedia', 'DuckDuckGo', 'Anthropic'],
-          localUrl: 'http://localhost:8002/docs',
-          liveLabel: 'API Explorer',
-          requestAccessOnly: true,
-          githubUrl: GH + '/agent-orchestration-demo',
-        },
-        githubUrl: GH + '/agent-orchestration-demo',
-      },
-
-      edgar: {
-        title: 'SEC EDGAR RAG Demo',        subtitle: 'SEC 10-K / 10-Q · pgvector · LangChain · 4 LLM providers · Vercel AI SDK',
-        description: 'Index SEC 10-K / 10-Q filings by ticker and date range, then ask cross-filing questions with grounded LLM answers. OpenAI text-embedding-3-small embeddings (fixed at ingest and query time) stored in pgvector via cosine similarity. Runtime provider toggle across Anthropic, OpenAI, Google, and NVIDIA NIM — same interface, just a base_url swap. FastAPI + Mangum handles all vector operations and is Lambda-compatible; Next.js API routes handle LLM streaming via Vercel AI SDK streamText.',
-        accentClass: 'text-teal-400',
+      clickhouse: {
+        title: 'ClickHouse Dashboard — AWS',        subtitle: 'Next.js 16 · ClickHouse Cloud · Materialized Views · SSE · App Runner',
+        description: 'Full-stack Next.js dashboard backed by ClickHouse Cloud. Aggregates maintained at INSERT time by four Materialized Views into SummingMergeTree tables — no worker process, no dual-write gap. Full-text search via positionCaseInsensitive on a denormalized searchText column; keyset cursor pagination for efficient deep pages. Real-time order events via in-process Node.js EventEmitter → SSE. Infra: App Runner (scale-to-zero) + CloudFront managed by Terraform; ClickHouse Cloud service lifecycle managed by deploy.sh via CH Cloud API.',
+        accentClass: 'text-sky-400',
         cloud: {
           label: 'Cloud Provider',
           color: 'aws',
-          title: 'AWS Lambda + Neon + Vercel',
-          chips: ['Lambda', 'Neon pgvector', 'Vercel', 'Terraform', 'GitHub Actions'],
-          liveUrl: '#',
+          title: 'AWS · App Runner + CloudFront',
+          chips: ['App Runner', 'CloudFront', 'Terraform', 'GitHub Actions'],
           liveLabel: 'Open Live App',
         },
-        frontend: {
-          label: 'App',          color: 'teal',
-          title: 'Next.js 15 · Vercel AI SDK · Token SSE',
-          chips: ['Next.js 15', 'React 19', 'Vercel AI SDK', 'streamText', 'TypeScript 5.7', 'Tailwind'],
-          localUrl: 'http://localhost:3011',
-          liveLabel: 'Open App',
-          requestAccessOnly: true,
-          githubUrl: GH + '/edgar-rag-demo',
-        },
         backend: {
-          label: 'API',          color: 'emerald',
-          title: 'FastAPI · LangChain · pgvector · Mangum',
-          chips: ['FastAPI 0.115', 'LangChain', 'pgvector', 'OpenAI embeddings', 'Mangum', 'SEC EDGAR API'],
-          localUrl: 'http://localhost:8002/docs',
+          label: 'API',          color: 'sky',
+          title: 'Next.js API routes · ClickHouse Cloud',
+          chips: ['ClickHouse Cloud', '@clickhouse/client', 'Materialized Views', 'SSE · EventEmitter'],
           liveLabel: 'API Explorer',
-          requestAccessOnly: true,
-          githubUrl: GH + '/edgar-rag-demo',
+          remoteUrl: 'https://d1n8zhx1j8oymk.cloudfront.net/api-explorer',
+          localUrl: 'http://localhost:3004/api-explorer',
+          githubUrl: GH + '/clickhouse-dashboard',
         },
-        githubUrl: GH + '/edgar-rag-demo',
+        frontend: {
+          label: 'App',          color: 'indigo',
+          title: 'Next.js 16.2 · TypeScript 5.9 · Recharts',
+          chips: ['Next.js 16.2', 'React 19', 'TypeScript 5.9', 'Tailwind CSS v4', 'Recharts', 'SSE'],
+          liveLabel: 'Open App',
+          remoteUrl: 'https://d1n8zhx1j8oymk.cloudfront.net',
+          healthPath: '/api/ch-warmup',
+          localUrl: 'http://localhost:3004',
+          githubUrl: GH + '/clickhouse-dashboard',
+        },
+        githubUrl: GH + '/clickhouse-dashboard',
       },
-
-      edgarAgent: {
+      edgar_agent: {
         title: 'EDGAR 10-K Agent',        subtitle: 'Agent Loop · Tool Use · live EDGAR retrieval · Anthropic Claude · NVIDIA NIM · Eval',
         description: 'Agentic loop written from scratch — no LangChain, no pre-ingested data. The model decides at runtime when and how to invoke SEC EDGAR tools; each call fetches live 10-K filings, extracts specific sections (Risk Factors, MD&A, financials), and parses structured figures. Multi-turn reasoning continues until a final answer is emitted. An eval harness benchmarks answer quality (faithfulness, completeness, citation accuracy) across providers. FastAPI streams every tool-call event and token to the React UI via SSE. Provider toggle switches between Anthropic Claude and NVIDIA NIM — same agent loop, same tools, different model.',
         accentClass: 'text-indigo-400',
@@ -1060,8 +845,141 @@
         },
         githubUrl: GH + '/edgar-agent',
       },
-
-      phi: {
+      multi_agent: {
+        title: 'Multi-Agent Orchestration (GCP)',        subtitle: 'LangGraph · 20-agent pipeline · React Flow DAG · MCP server',
+        description: '17-node LangGraph pipeline for complex queries: planner → 10 parallel specialist researchers → collect barrier → 4 domain synthesizers → fact-check → report writer. Simple queries short-circuit to 4 nodes. Each SSE event carries node/label/layer/parent for live React Flow DAG layout — nodes pulse while running, turn green on completion. Tools exposed as an MCP server (stdio) for Claude Desktop. GKE mode available alongside Cloud Run.',
+        accentClass: 'text-amber-400',
+        frontend: {
+          label: 'App',          color: 'amber',
+          title: 'Next.js 15 · React Flow DAG · SSE',
+          chips: ['Next.js 15', 'React Flow', 'SSE live DAG', 'TypeScript'],
+          localUrl: 'http://localhost:3011',
+          liveLabel: 'Open App',
+          remoteUrl: 'https://agent-frontend-77y7e2wykq-uc.a.run.app',
+          githubUrl: GH + '/agent-orchestration-demo',
+        },
+        backend: {
+          label: 'API',          color: 'emerald',
+          title: 'FastAPI · LangGraph · MCP server',
+          chips: ['FastAPI', 'LangGraph', 'MCP server', 'Wikipedia', 'DuckDuckGo', 'Anthropic'],
+          localUrl: 'http://localhost:8002/docs',
+          liveLabel: 'API Explorer',
+          requestAccessOnly: true,
+          githubUrl: GH + '/agent-orchestration-demo',
+        },
+        githubUrl: GH + '/agent-orchestration-demo',
+      },
+      edgar_rag: {
+        title: 'SEC EDGAR RAG Demo',        subtitle: 'SEC 10-K / 10-Q · pgvector · LangChain · 4 LLM providers · Vercel AI SDK',
+        description: 'Index SEC 10-K / 10-Q filings by ticker and date range, then ask cross-filing questions with grounded LLM answers. OpenAI text-embedding-3-small embeddings (fixed at ingest and query time) stored in pgvector via cosine similarity. Runtime provider toggle across Anthropic, OpenAI, Google, and NVIDIA NIM — same interface, just a base_url swap. FastAPI + Mangum handles all vector operations and is Lambda-compatible; Next.js API routes handle LLM streaming via Vercel AI SDK streamText.',
+        accentClass: 'text-teal-400',
+        cloud: {
+          label: 'Cloud Provider',
+          color: 'aws',
+          title: 'AWS Lambda + Neon + Vercel',
+          chips: ['Lambda', 'Neon pgvector', 'Vercel', 'Terraform', 'GitHub Actions'],
+          liveLabel: 'Open Live App',
+        },
+        frontend: {
+          label: 'App',          color: 'teal',
+          title: 'Next.js 15 · Vercel AI SDK · Token SSE',
+          chips: ['Next.js 15', 'React 19', 'Vercel AI SDK', 'streamText', 'TypeScript 5.7', 'Tailwind'],
+          localUrl: 'http://localhost:3011',
+          liveLabel: 'Open App',
+          requestAccessOnly: true,
+          githubUrl: GH + '/edgar-rag-demo',
+        },
+        backend: {
+          label: 'API',          color: 'emerald',
+          title: 'FastAPI · LangChain · pgvector · Mangum',
+          chips: ['FastAPI 0.115', 'LangChain', 'pgvector', 'OpenAI embeddings', 'Mangum', 'SEC EDGAR API'],
+          localUrl: 'http://localhost:8002/docs',
+          liveLabel: 'API Explorer',
+          requestAccessOnly: true,
+          githubUrl: GH + '/edgar-rag-demo',
+        },
+        githubUrl: GH + '/edgar-rag-demo',
+      },
+      orders_dashboard: {
+        title: 'Orders Dashboard — GCP',
+        subtitle: 'millions of orders · sub-second search · serverless autoscaling',
+        description: 'Two independent GCP Cloud Run services — a Vite/React 19.2 SPA proxying /api/* to a Spring Boot 4.1 REST API via Nginx BFF. Schema migrations in Flyway 12, secrets in GCP Secret Manager, all infra declared in Pulumi TypeScript.',
+        accentClass: 'text-violet-400',
+        cloud: {
+          label: 'Cloud Provider',
+          color: 'gcp',
+          title: 'GCP · Cloud Run',
+          chips: ['Cloud Run', 'GCE Postgres VM', 'Secret Manager', 'Artifact Registry', 'Pulumi IaC'],
+          liveLabel: 'Open Live App',
+        },
+        // Local port assignments — all stored in project config, no CLI args needed:
+        //   frontend  → 3006  (Vite strictPort in dashboard-frontend-gcp/vite.config.ts)
+        //   backend   → 8080  (deploy.sh; run: ./scripts/deploy.sh)
+        backend: {
+          label: 'API',          color: 'emerald',
+          title: 'Spring Boot 4.1 · Java 21',
+          chips: ['Spring Boot 4.1', 'Java 21', 'Flyway 12.4', 'REST API'],
+          liveLabel: 'API Explorer',          localUrl: 'http://localhost:8080/explorer.html',
+          requestAccessOnly: true,
+          githubUrl: GH + '/springboot-dashboard-backend',
+        },
+        frontend: {
+          label: 'Frontend',          color: 'blue',
+          title: 'React 19.2 + Vite 6.4',
+          chips: ['React 19.2', 'TypeScript 5.9', 'Vite 6.4', 'Recharts 3.9'],
+          liveLabel: 'Open App',          localUrl: 'http://localhost:3006',
+          requestAccessOnly: true,
+          githubUrl: GH + '/dashboard-frontend',
+        },
+        githubUrl: GH,
+      },
+      nextjs_dashboard: {
+        title: 'Next.js Dashboard — AWS',
+        subtitle: 'Full-stack · realtime · Postgres 16',
+        description: 'Explores Next.js as a unified full-stack platform: UI, realtime updates, and database-backed search all in one AWS-hosted service. Acts as an architectural comparison to the split-service GCP approach. Hosted on App Runner (scale-to-zero, wakes in ~15–30 s).',
+        accentClass: 'text-indigo-400',
+        cloud: {
+          label: 'Cloud Provider',
+          color: 'aws',
+          title: 'AWS · App Runner',
+          chips: ['App Runner', 'AWS RDS PG 16', 'Terraform', 'GitHub Actions'],
+          liveLabel: 'Open Live App',
+        },
+        backend: {
+          label: 'API',          color: 'slate',
+          title: 'PostgreSQL 16 · Prisma',
+          chips: ['PostgreSQL 16', 'Prisma', 'SSE'],
+          liveLabel: 'API Explorer',          localUrl: 'http://localhost:3004/api-explorer',
+          requestAccessOnly: true,
+          githubUrl: GH + '/nextjs-dashboard',
+        },
+        frontend: {
+          label: 'Frontend',          color: 'indigo',
+          title: 'Next.js 16.2 · TypeScript 5.9',
+          chips: ['Next.js 16.2', 'TypeScript 5.9', 'Tailwind CSS 4.3', 'RSC'],
+          liveLabel: 'Open App',          localUrl: 'http://localhost:3004',
+          requestAccessOnly: true,
+          githubUrl: GH + '/nextjs-dashboard',
+        },
+        githubUrl: GH + '/nextjs-dashboard',
+      },
+      nl_to_sql: {
+        title: 'NL-to-SQL Comparison',        subtitle: 'Anthropic · OpenAI · DuckDB-WASM · H1B LCA data',
+        description: 'Compares natural-language-to-SQL generation across Anthropic and OpenAI models, executing generated SQL in-browser via DuckDB-WASM against a Parquet dataset of DOL H1B LCA disclosures. Schema is auto-detected from Parquet metadata; no backend required.',
+        accentClass: 'text-violet-400',
+        frontend: {
+          label: 'App',          color: 'violet',
+          title: 'React 19 · Vite · DuckDB-WASM',
+          chips: ['React 19', 'Vite', 'DuckDB-WASM', 'Anthropic', 'OpenAI', 'Parquet'],
+          liveLabel: 'Open App',
+          remoteUrl: 'https://natural-language-to-llm-query-comparison.vercel.app/nl-to-sql/',
+          localUrl: 'http://localhost:5173/nl-to-sql/',
+          githubUrl: GH + '/natural-language-to-llm-query-comparison',
+          apiKeyNote: 'Requires Anthropic &amp; OpenAI API keys',
+        },
+        githubUrl: GH + '/natural-language-to-llm-query-comparison',
+      },
+      phi_pipeline: {
         title: 'PHI De-identification Pipeline',        subtitle: 'spaCy · Claude Haiku 4.5 · FastAPI · Celery · Redis · PostgreSQL',
         description: 'Healthcare PHI detection and synthetic substitution pipeline. spaCy biomedical NER (en_core_sci_md) handles ~90% of records as tier-1; Claude Haiku 4.5 covers ambiguous fallbacks. Each detected entity (name, SSN, MRN, date, phone, email, location) is replaced with a Faker-generated synthetic equivalent — not blank redaction — preserving analytical signal. SHA-256 hashes of originals stored in a PostgreSQL redaction log for auditing. Full observability: structured JSON logs, Prometheus metrics, OpenTelemetry traces → Jaeger. The browser demo runs Claude directly for PHI detection; full pipeline adds spaCy tier-1 + Celery workers.',
         accentClass: 'text-teal-400',
@@ -1090,6 +1008,74 @@
           githubUrl: GH + '/phi-deidentification-pipeline',
         },
         githubUrl: GH + '/phi-deidentification-pipeline',
+      },
+      event_pipeline: {
+        title: 'Event Pipeline — AWS',
+        subtitle: 'Lambda · SNS → SQS · DynamoDB · polling UI',
+        description: 'Event-driven async pipeline deployed with Serverless Framework. React polls a job status endpoint while Lambda functions process jobs through SNS fan-out → SQS consumption, with DynamoDB tracking state transitions.',
+        accentClass: 'text-teal-400',
+        cloud: {
+          label: 'Cloud Provider',
+          color: 'aws',
+          title: 'AWS Serverless',
+          chips: ['Lambda', 'API Gateway', 'SNS', 'SQS', 'DynamoDB'],
+          liveLabel: 'Open Live App',
+        },
+        // Local ports — frontend 3010 (Vite strictPort in vite.config.ts),
+        // backend 3011 (serverless-offline httpPort in serverless.yml; run: npx sls offline).
+        // Backend is event-driven (SNS→SQS→Lambda) — no directly testable HTTP artifact; no localUrl.
+        backend: {
+          label: 'API',          color: 'teal',
+          title: 'Lambda · SNS/SQS',
+          chips: ['AWS Lambda', 'SNS → SQS', 'Serverless 4.13'],
+          liveLabel: 'API Explorer',
+          remoteUrl: 'https://d3nbn0s3ea4m39.cloudfront.net/api-explorer.html',
+          githubUrl: GH + '/react-typescript-serverless',
+        },
+        frontend: {
+          label: 'Frontend',          color: 'blue',
+          title: 'React 19.2 · Vite 5.4',
+          chips: ['React 19.2', 'TypeScript 5.8', 'Vite 5.4', 'API Gateway', 'Job polling UI'],
+          liveLabel: 'Open App',
+          remoteUrl: 'https://d3nbn0s3ea4m39.cloudfront.net',
+          localUrl: 'http://localhost:3010',
+          githubUrl: GH + '/react-typescript-serverless',
+        },
+        githubUrl: GH + '/react-typescript-serverless',
+      },
+      job_runner: {
+        title: 'Job Runner — AWS',
+        subtitle: 'React 19.2 · Spring Boot 4.1 · CloudFront · GitHub Actions',
+        description: 'AWS-native architecture: React SPA served via CloudFront, Spring Boot containerised on ECS Fargate, async job processing with DynamoDB + SQS. GitHub Actions builds and pushes container images to ECR on every commit.',
+        accentClass: 'text-amber-400',
+        cloud: {
+          label: 'Cloud Provider',
+          color: 'aws',
+          title: 'AWS',
+          chips: ['ECS Fargate', 'CloudFront', 'GitHub Actions', 'DynamoDB', 'SQS'],
+          liveLabel: 'Open Live App',
+        },
+        // Local ports — frontend 3008 (Vite strictPort in vite.config.ts),
+        // backend 3009 (application-local.yml; run: SPRING_PROFILES_ACTIVE=local ./mvnw spring-boot:run).
+        // Backend has no directly testable HTTP artifact — no localUrl.
+        backend: {
+          label: 'API',          color: 'amber',
+          title: 'Spring Boot 4.1 · Java 21 · ECS Fargate',
+          chips: ['Spring Boot 4.1', 'Java 21', 'ECS Fargate'],
+          liveLabel: 'API Explorer',
+          requestAccessOnly: true,
+          githubUrl: GH + '/react-springboot-fargate',
+        },
+        frontend: {
+          label: 'Frontend',          color: 'blue',
+          title: 'React 19.2 · CloudFront',
+          chips: ['React 19.2', 'TypeScript 5.8', 'S3', 'CloudFront'],
+          liveLabel: 'Open App',
+          remoteUrl: 'https://d3gn54w27kjodk.cloudfront.net',
+          localUrl: 'http://localhost:3008',
+          githubUrl: GH + '/react-springboot-fargate',
+        },
+        githubUrl: GH + '/react-springboot-fargate',
       },
     };
 

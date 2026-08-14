@@ -1,7 +1,7 @@
 window._liveUrls = {
   rag:        { fe: 'https://frontend-sigma-ten-30.vercel.app',                                        be: 'https://frontend-sigma-ten-30.vercel.app/api-explorer.html' },
   clickhouse: { fe: 'https://d1n8zhx1j8oymk.cloudfront.net',                                          be: 'https://d1n8zhx1j8oymk.cloudfront.net/api-explorer' },
-  edgarAgent: { fe: 'https://edgar-frontend-77y7e2wykq-uc.a.run.app',                                  be: 'https://edgar-backend-77y7e2wykq-uc.a.run.app' },
+  edgarAgent: { fe: 'https://edgar-frontend-77y7e2wykq-uc.a.run.app',                                  be: 'https://edgar-frontend-77y7e2wykq-uc.a.run.app/api-explorer' },
   agent:      { fe: 'https://agent-frontend-77y7e2wykq-uc.a.run.app',                                  be: 'rao' },
   edgar:      { fe: 'rao',                                                                              be: 'rao' },
   dashboard:  { fe: 'rao',                                                                              be: 'rao' },

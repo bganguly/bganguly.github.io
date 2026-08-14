@@ -703,7 +703,7 @@
     </div>
   </div>
 
-  <script src="live-urls.js"></script>
+  <!-- <script src="live-urls.js"></script> -->
   <script>
     // ── Access-gate config (EmailJS) ─────────────────────────────────────
     // IDs live in localStorage only — nothing is ever committed to source.
@@ -785,6 +785,7 @@
           title: 'Spring Boot 4.1 · Java 21',
           chips: ['Spring Boot 4.1', 'Java 21', 'Flyway 12.4', 'REST API'],
           liveLabel: 'API Explorer',          localUrl: 'http://localhost:8080/explorer.html',
+          requestAccessOnly: true,
           githubUrl: GH + '/springboot-dashboard-backend',
         },
         frontend: {
@@ -792,6 +793,7 @@
           title: 'React 19.2 + Vite 6.4',
           chips: ['React 19.2', 'TypeScript 5.9', 'Vite 6.4', 'Recharts 3.9'],
           liveLabel: 'Open App',          localUrl: 'http://localhost:3006',
+          requestAccessOnly: true,
           githubUrl: GH + '/dashboard-frontend',
         },
         githubUrl: GH,
@@ -814,6 +816,7 @@
           title: 'PostgreSQL 16 · Prisma',
           chips: ['PostgreSQL 16', 'Prisma', 'SSE'],
           liveLabel: 'API Explorer',          localUrl: 'http://localhost:3004/api-explorer',
+          requestAccessOnly: true,
           githubUrl: GH + '/nextjs-dashboard',
         },
         frontend: {
@@ -821,6 +824,7 @@
           title: 'Next.js 16.2 · TypeScript 5.9',
           chips: ['Next.js 16.2', 'TypeScript 5.9', 'Tailwind CSS 4.3', 'RSC'],
           liveLabel: 'Open App',          localUrl: 'http://localhost:3004',
+          requestAccessOnly: true,
           githubUrl: GH + '/nextjs-dashboard',
         },
         githubUrl: GH + '/nextjs-dashboard',
@@ -842,8 +846,8 @@
           label: 'API',          color: 'sky',
           title: 'Next.js API routes · ClickHouse Cloud',
           chips: ['ClickHouse Cloud', '@clickhouse/client', 'Materialized Views', 'SSE · EventEmitter'],
-          liveUrl: '#',
           liveLabel: 'API Explorer',
+          remoteUrl: 'https://d1n8zhx1j8oymk.cloudfront.net/api-explorer',
           localUrl: 'http://localhost:3004/api-explorer',
           githubUrl: GH + '/clickhouse-dashboard',
         },
@@ -851,8 +855,8 @@
           label: 'App',          color: 'indigo',
           title: 'Next.js 16.2 · TypeScript 5.9 · Recharts',
           chips: ['Next.js 16.2', 'React 19', 'TypeScript 5.9', 'Tailwind CSS v4', 'Recharts', 'SSE'],
-          liveUrl: '#',
           liveLabel: 'Open App',
+          remoteUrl: 'https://d1n8zhx1j8oymk.cloudfront.net',
           healthPath: '/api/ch-warmup',
           localUrl: 'http://localhost:3004',
           githubUrl: GH + '/clickhouse-dashboard',
@@ -879,14 +883,16 @@
           label: 'API',          color: 'amber',
           title: 'Spring Boot 4.1 · Java 21 · ECS Fargate',
           chips: ['Spring Boot 4.1', 'Java 21', 'ECS Fargate'],
+          liveLabel: 'API Explorer',
+          requestAccessOnly: true,
           githubUrl: GH + '/react-springboot-fargate',
-          liveLabel: 'API Explorer',        },
+        },
         frontend: {
           label: 'Frontend',          color: 'blue',
           title: 'React 19.2 · CloudFront',
           chips: ['React 19.2', 'TypeScript 5.8', 'S3', 'CloudFront'],
-          liveUrl: '#',
           liveLabel: 'Open App',
+          remoteUrl: 'https://d3gn54w27kjodk.cloudfront.net',
           localUrl: 'http://localhost:3008',
           githubUrl: GH + '/react-springboot-fargate',
         },
@@ -912,16 +918,16 @@
           label: 'API',          color: 'teal',
           title: 'Lambda · SNS/SQS',
           chips: ['AWS Lambda', 'SNS → SQS', 'Serverless 4.13'],
-          liveUrl: '#',
           liveLabel: 'API Explorer',
+          remoteUrl: 'https://d3nbn0s3ea4m39.cloudfront.net/api-explorer.html',
           githubUrl: GH + '/react-typescript-serverless',
         },
         frontend: {
           label: 'Frontend',          color: 'blue',
           title: 'React 19.2 · Vite 5.4',
           chips: ['React 19.2', 'TypeScript 5.8', 'Vite 5.4', 'API Gateway', 'Job polling UI'],
-          liveUrl: '#',
           liveLabel: 'Open App',
+          remoteUrl: 'https://d3nbn0s3ea4m39.cloudfront.net',
           localUrl: 'http://localhost:3010',
           githubUrl: GH + '/react-typescript-serverless',
         },
@@ -937,8 +943,8 @@
           label: 'App',          color: 'violet',
           title: 'React 19 · Vite · DuckDB-WASM',
           chips: ['React 19', 'Vite', 'DuckDB-WASM', 'Anthropic', 'OpenAI', 'Parquet'],
-          liveUrl: '#',
           liveLabel: 'Open App',
+          remoteUrl: 'https://natural-language-to-llm-query-comparison.vercel.app/nl-to-sql/',
           localUrl: 'http://localhost:5173/nl-to-sql/',
           githubUrl: GH + '/natural-language-to-llm-query-comparison',
           apiKeyNote: 'Requires Anthropic &amp; OpenAI API keys',
@@ -955,8 +961,8 @@
           title: 'Next.js 15 · Vercel AI SDK · Token SSE',
           chips: ['Next.js 15', 'Vercel AI SDK', 'streamText', 'Provider toggle', 'Tailwind'],
           localUrl: 'http://localhost:3010',
-          liveUrl: '#',
           liveLabel: 'Open App',
+          remoteUrl: 'https://frontend-sigma-ten-30.vercel.app',
           healthPath: '/api/health',
           githubUrl: GH + '/rag-pgvector-demo',
         },
@@ -966,6 +972,7 @@
           chips: ['FastAPI', 'LangChain', 'pgvector', 'OpenAI embeddings', 'Redis', 'Docker'],
           localUrl: 'http://localhost:8001/docs',
           liveLabel: 'API Explorer',
+          remoteUrl: 'https://frontend-sigma-ten-30.vercel.app/api-explorer.html',
           githubUrl: GH + '/rag-pgvector-demo',
         },
         githubUrl: GH + '/rag-pgvector-demo',
@@ -980,8 +987,8 @@
           title: 'Next.js 15 · React Flow DAG · SSE',
           chips: ['Next.js 15', 'React Flow', 'SSE live DAG', 'TypeScript'],
           localUrl: 'http://localhost:3011',
-          liveUrl: '#',
           liveLabel: 'Open App',
+          remoteUrl: 'https://agent-frontend-77y7e2wykq-uc.a.run.app',
           githubUrl: GH + '/agent-orchestration-demo',
         },
         backend: {
@@ -989,8 +996,9 @@
           title: 'FastAPI · LangGraph · MCP server',
           chips: ['FastAPI', 'LangGraph', 'MCP server', 'Wikipedia', 'DuckDuckGo', 'Anthropic'],
           localUrl: 'http://localhost:8002/docs',
-          liveUrl: '#',
-          liveLabel: 'API Explorer',          githubUrl: GH + '/agent-orchestration-demo',
+          liveLabel: 'API Explorer',
+          requestAccessOnly: true,
+          githubUrl: GH + '/agent-orchestration-demo',
         },
         githubUrl: GH + '/agent-orchestration-demo',
       },
@@ -1012,14 +1020,18 @@
           title: 'Next.js 15 · Vercel AI SDK · Token SSE',
           chips: ['Next.js 15', 'React 19', 'Vercel AI SDK', 'streamText', 'TypeScript 5.7', 'Tailwind'],
           localUrl: 'http://localhost:3011',
-          liveLabel: 'Open App',          githubUrl: GH + '/edgar-rag-demo',
+          liveLabel: 'Open App',
+          requestAccessOnly: true,
+          githubUrl: GH + '/edgar-rag-demo',
         },
         backend: {
           label: 'API',          color: 'emerald',
           title: 'FastAPI · LangChain · pgvector · Mangum',
           chips: ['FastAPI 0.115', 'LangChain', 'pgvector', 'OpenAI embeddings', 'Mangum', 'SEC EDGAR API'],
           localUrl: 'http://localhost:8002/docs',
-          liveLabel: 'API Explorer',          githubUrl: GH + '/edgar-rag-demo',
+          liveLabel: 'API Explorer',
+          requestAccessOnly: true,
+          githubUrl: GH + '/edgar-rag-demo',
         },
         githubUrl: GH + '/edgar-rag-demo',
       },
@@ -1033,8 +1045,8 @@
           title: 'React · Vite · live tool-call stream',
           chips: ['React', 'Vite', 'SSE', 'tool-call events', 'TypeScript'],
           localUrl: 'http://localhost:5173',
-          liveUrl: '#',
           liveLabel: 'Open App',
+          remoteUrl: 'https://edgar-frontend-77y7e2wykq-uc.a.run.app',
           githubUrl: GH + '/edgar-agent',
         },
         backend: {
@@ -1042,8 +1054,8 @@
           title: 'FastAPI · agent loop · EDGAR tools · Eval',
           chips: ['FastAPI', 'Agent Loop', 'Tool Use', 'SEC EDGAR API', 'Anthropic', 'NVIDIA NIM', 'Eval harness'],
           localUrl: 'http://localhost:5173/api-explorer.html',
-          liveUrl: 'https://edgar-frontend-77y7e2wykq-uc.a.run.app/api-explorer',
           liveLabel: 'API Explorer',
+          remoteUrl: 'https://edgar-frontend-77y7e2wykq-uc.a.run.app/api-explorer',
           githubUrl: GH + '/edgar-agent',
         },
         githubUrl: GH + '/edgar-agent',
@@ -1057,38 +1069,43 @@
           label: 'Pipeline',          color: 'teal',
           title: 'Architecture · Trace · Example',
           chips: ['spaCy tier-1', 'Claude Haiku 4.5', 'OTel → Jaeger', 'Synthetic substitution'],
-          liveLabel: 'View Pipeline',          githubUrl: GH + '/phi-deidentification-pipeline',
+          liveLabel: 'View Pipeline',
+          requestAccessOnly: true,
+          githubUrl: GH + '/phi-deidentification-pipeline',
         },
         backend: {
           label: 'Demo',          color: 'emerald',
           title: 'Browser Demo — Claude Haiku 4.5',
           chips: ['claude-haiku-4-5', 'PHI detection', 'SHA-256 audit log'],
           liveLabel: 'Open Demo',          localUrl: 'http://localhost:8000/docs',
+          requestAccessOnly: true,
           githubUrl: GH + '/phi-deidentification-pipeline',
         },
         extra: {
           label: 'Batch Run',          color: 'amber',
           title: '50 Records · 3 Workers · Live',
           chips: ['real-time progress', 'parallel workers', 'fast vs Claude trace'],
-          liveLabel: 'Run Batch',          githubUrl: GH + '/phi-deidentification-pipeline',
+          liveLabel: 'Run Batch',
+          requestAccessOnly: true,
+          githubUrl: GH + '/phi-deidentification-pipeline',
         },
         githubUrl: GH + '/phi-deidentification-pipeline',
       },
     };
 
-    // live-urls.js is the single source of truth: per-project/panel, either a URL or 'rao'
-    const _lu = window._liveUrls || {};
-    for (const [proj, panels] of Object.entries(_lu)) {
-      for (const [side, val] of Object.entries(panels)) {
-        const panelKey = side === 'fe' ? 'frontend' : side === 'be' ? 'backend' : 'extra';
-        if (!projects[proj]?.[panelKey]) continue;
-        if (val === 'rao') {
-          projects[proj][panelKey].requestAccessOnly = true;
-        } else {
-          projects[proj][panelKey].remoteUrl = val;
-        }
-      }
-    }
+    // live-urls.js override loop — disabled; remoteUrl/requestAccessOnly now inlined per panel
+    // const _lu = window._liveUrls || {};
+    // for (const [proj, panels] of Object.entries(_lu)) {
+    //   for (const [side, val] of Object.entries(panels)) {
+    //     const panelKey = side === 'fe' ? 'frontend' : side === 'be' ? 'backend' : 'extra';
+    //     if (!projects[proj]?.[panelKey]) continue;
+    //     if (val === 'rao') {
+    //       projects[proj][panelKey].requestAccessOnly = true;
+    //     } else {
+    //       projects[proj][panelKey].remoteUrl = val;
+    //     }
+    //   }
+    // }
 
 
     // Probe each project's live URLs at page load (no-cors HEAD, 8 s timeout).

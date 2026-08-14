@@ -213,7 +213,7 @@
 
       <!-- EDGAR 10-K Agent -->
       <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
-           onclick="openModal('edgar_agent')">
+           onclick="openModal('edgar_10k_agent')">
         <div class="flex items-start justify-between mb-4">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center"
@@ -307,7 +307,7 @@
 
       <!-- SEC EDGAR RAG Demo -->
       <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
-           onclick="openModal('edgar_rag')">
+           onclick="openModal('sec_edgar_rag')">
         <div class="flex items-start justify-between mb-4">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center"
@@ -480,7 +480,7 @@
 
       <!-- PHI De-identification Pipeline -->
       <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
-           onclick="openModal('phi_pipeline')">
+           onclick="openModal('phi_deidentification')">
         <div class="flex items-start justify-between mb-4">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center"
@@ -821,7 +821,7 @@
         },
         githubUrl: GH + '/clickhouse-dashboard',
       },
-      edgar_agent: {
+      edgar_10k_agent: {
         title: 'EDGAR 10-K Agent',        subtitle: 'Agent Loop · Tool Use · live EDGAR retrieval · Anthropic Claude · NVIDIA NIM · Eval',
         description: 'Agentic loop written from scratch — no LangChain, no pre-ingested data. The model decides at runtime when and how to invoke SEC EDGAR tools; each call fetches live 10-K filings, extracts specific sections (Risk Factors, MD&A, financials), and parses structured figures. Multi-turn reasoning continues until a final answer is emitted. An eval harness benchmarks answer quality (faithfulness, completeness, citation accuracy) across providers. FastAPI streams every tool-call event and token to the React UI via SSE. Provider toggle switches between Anthropic Claude and NVIDIA NIM — same agent loop, same tools, different model.',
         accentClass: 'text-indigo-400',
@@ -869,7 +869,7 @@
         },
         githubUrl: GH + '/agent-orchestration-demo',
       },
-      edgar_rag: {
+      sec_edgar_rag: {
         title: 'SEC EDGAR RAG Demo',        subtitle: 'SEC 10-K / 10-Q · pgvector · LangChain · 4 LLM providers · Vercel AI SDK',
         description: 'Index SEC 10-K / 10-Q filings by ticker and date range, then ask cross-filing questions with grounded LLM answers. OpenAI text-embedding-3-small embeddings (fixed at ingest and query time) stored in pgvector via cosine similarity. Runtime provider toggle across Anthropic, OpenAI, Google, and NVIDIA NIM — same interface, just a base_url swap. FastAPI + Mangum handles all vector operations and is Lambda-compatible; Next.js API routes handle LLM streaming via Vercel AI SDK streamText.',
         accentClass: 'text-teal-400',
@@ -979,7 +979,7 @@
         },
         githubUrl: GH + '/natural-language-to-llm-query-comparison',
       },
-      phi_pipeline: {
+      phi_deidentification: {
         title: 'PHI De-identification Pipeline',        subtitle: 'spaCy · Claude Haiku 4.5 · FastAPI · Celery · Redis · PostgreSQL',
         description: 'Healthcare PHI detection and synthetic substitution pipeline. spaCy biomedical NER (en_core_sci_md) handles ~90% of records as tier-1; Claude Haiku 4.5 covers ambiguous fallbacks. Each detected entity (name, SSN, MRN, date, phone, email, location) is replaced with a Faker-generated synthetic equivalent — not blank redaction — preserving analytical signal. SHA-256 hashes of originals stored in a PostgreSQL redaction log for auditing. Full observability: structured JSON logs, Prometheus metrics, OpenTelemetry traces → Jaeger. The browser demo runs Claude directly for PHI detection; full pipeline adds spaCy tier-1 + Celery workers.',
         accentClass: 'text-teal-400',

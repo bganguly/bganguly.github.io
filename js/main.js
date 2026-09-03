@@ -364,7 +364,7 @@
           title: 'React 19.2 · CloudFront',
           chips: ['React 19.2', 'TypeScript 5.8', 'S3', 'CloudFront'],
           liveLabel: 'Open App',
-          remoteUrl: 'https://d3gn54w27kjodk.cloudfront.net',
+          requestAccessOnly: true,
           localUrl: 'http://localhost:3008',
           githubUrl: GH + '/react-springboot-fargate',
         },

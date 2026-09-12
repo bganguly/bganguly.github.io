@@ -180,7 +180,7 @@
           title: 'Next.js 15 · App Router · Server Components',
           chips: ['Next.js 15', 'App Router', 'RSC', 'TypeScript 5.9', 'Recharts', 'Tailwind'],
           liveLabel: 'Open App',          localUrl: 'http://localhost:3001',
-          requestAccessOnly: true,
+          remoteUrl: 'https://dash-frontend-77y7e2wykq-uc.a.run.app/',
           githubUrl: GH + '/dashboard-nextjs',
         },
         githubUrl: GH,

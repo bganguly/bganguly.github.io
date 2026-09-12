@@ -172,7 +172,7 @@
           title: 'Spring Boot 4.1 · Java 21 · Neon PostgreSQL',
           chips: ['Spring Boot 4.1', 'Java 21', 'Neon PostgreSQL', 'Flyway 12', 'REST API'],
           liveLabel: 'API Explorer',          localUrl: 'http://localhost:8080/explorer.html',
-          requestAccessOnly: true,
+          remoteUrl: 'https://dash-frontend-77y7e2wykq-uc.a.run.app/api-explorer',
           githubUrl: GH + '/springboot-dashboard-backend',
         },
         frontend: {

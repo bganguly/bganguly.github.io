@@ -164,7 +164,7 @@
       },
       nextjs_springboot: {
         title: 'Next.js + Spring Boot Dashboard · GCP',
-        subtitle: 'Next.js 16 App Router · Server Components · Spring Boot 4.1 · Neon PostgreSQL',
+        subtitle: 'Next.js 16.3 App Router · Server Components · Spring Boot 4.1 · Neon PostgreSQL',
         description: 'Next.js App Router frontend consuming the same Spring Boot REST API as the GCP Orders Dashboard — demonstrating Next.js as a frontend framework in a split-service architecture rather than a full-stack monolith. The initial /api/aggregates call is a Server Component fetch: the page arrives pre-populated with the chart, no client-side spinner. Filters, search, and keyset-cursor pagination stay as Client Components. API calls are proxied through next.config.ts rewrites so the frontend never hardcodes the backend host.',
         accentClass: 'text-sky-400',
         backend: {
@@ -177,8 +177,8 @@
         },
         frontend: {
           label: 'Frontend',          color: 'sky',
-          title: 'Next.js 16 · App Router · Server Components',
-          chips: ['Next.js 16', 'App Router', 'RSC', 'TypeScript 5.9', 'Recharts', 'Tailwind'],
+          title: 'Next.js 16.3 · App Router · Server Components',
+          chips: ['Next.js 16.3', 'App Router', 'RSC', 'TypeScript 5.9', 'Recharts', 'Tailwind'],
           liveLabel: 'Open App',          localUrl: 'http://localhost:3001',
           remoteUrl: 'https://dash-nextjs-full-frontend-77y7e2wykq-uc.a.run.app/',
           githubUrl: GH + '/dashboard-nextjs',

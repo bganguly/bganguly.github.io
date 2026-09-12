@@ -163,7 +163,7 @@
         githubUrl: GH + '/agent-orchestration-demo',
       },
       nextjs_springboot: {
-        title: 'Next.js + Spring Boot Dashboard · GCP',
+        title: 'Next.js + Spring Boot Dashboard — GCP',
         subtitle: 'Next.js 16.3 App Router · Server Components · Spring Boot 4.1 · Neon PostgreSQL',
         description: 'Next.js App Router frontend consuming the same Spring Boot REST API as the GCP Orders Dashboard — demonstrating Next.js as a frontend framework in a split-service architecture rather than a full-stack monolith. The initial /api/aggregates call is a Server Component fetch: the page arrives pre-populated with the chart, no client-side spinner. Filters, search, and keyset-cursor pagination stay as Client Components. API calls are proxied through next.config.ts rewrites so the frontend never hardcodes the backend host.',
         accentClass: 'text-sky-400',

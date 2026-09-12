@@ -172,7 +172,7 @@
           title: 'Spring Boot 4.1 · Java 21 · Neon PostgreSQL',
           chips: ['Spring Boot 4.1', 'Java 21', 'Neon PostgreSQL', 'Flyway 12', 'REST API'],
           liveLabel: 'API Explorer',          localUrl: 'http://localhost:8080/explorer.html',
-          remoteUrl: 'https://dash-frontend-77y7e2wykq-uc.a.run.app/api-explorer',
+          remoteUrl: 'https://dash-nextjs-full-frontend-77y7e2wykq-uc.a.run.app/api-explorer',
           githubUrl: GH + '/springboot-dashboard-backend',
         },
         frontend: {
@@ -180,7 +180,7 @@
           title: 'Next.js 15 · App Router · Server Components',
           chips: ['Next.js 15', 'App Router', 'RSC', 'TypeScript 5.9', 'Recharts', 'Tailwind'],
           liveLabel: 'Open App',          localUrl: 'http://localhost:3001',
-          remoteUrl: 'https://dash-frontend-77y7e2wykq-uc.a.run.app/',
+          remoteUrl: 'https://dash-nextjs-full-frontend-77y7e2wykq-uc.a.run.app/',
           githubUrl: GH + '/dashboard-nextjs',
         },
         githubUrl: GH,

@@ -232,9 +232,8 @@
           label: 'API',          color: 'emerald',
           title: 'Spring Boot 4.1 · Java 21',
           chips: ['Spring Boot 4.1', 'Java 21', 'Flyway 12.4', 'REST API'],
-          liveLabel: 'API Explorer',          localUrl: 'http://localhost:8080/explorer.html',
-          remoteUrl: 'https://dash-full-backend-77y7e2wykq-uc.a.run.app/explorer.html',
-          healthPath: '/actuator/health',
+          liveLabel: 'API Explorer',          localUrl: 'http://localhost:3006/api-explorer',
+          remoteUrl: 'https://dash-react-frontend-77y7e2wykq-uc.a.run.app/api-explorer',
           githubUrl: GH + '/springboot-dashboard-backend',
         },
         frontend: {

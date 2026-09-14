@@ -234,6 +234,7 @@
           chips: ['Spring Boot 4.1', 'Java 21', 'Flyway 12.4', 'REST API'],
           liveLabel: 'API Explorer',          localUrl: 'http://localhost:8080/explorer.html',
           remoteUrl: 'https://dash-full-backend-77y7e2wykq-uc.a.run.app/explorer.html',
+          healthPath: '/actuator/health',
           githubUrl: GH + '/springboot-dashboard-backend',
         },
         frontend: {
@@ -416,6 +417,20 @@
               LOCAL_LIVE[origin] = true;
               if (_mt === 'local' && _mk) { const el = document.getElementById('modal-body'); if (el) el.innerHTML = _tierBarHtml() + _panelsHtml(projects[_mk]); }
             });
+          });
+        });
+      } else {
+        const seen = new Set();
+        Object.values(projects).forEach(p => {
+          [p.frontend, p.backend].filter(Boolean).forEach(c => {
+            if (!c.remoteUrl || c.requestAccessOnly) return;
+            try {
+              const origin = new URL(c.remoteUrl).origin;
+              if (seen.has(origin)) return;
+              seen.add(origin);
+              const path = c.healthPath ? c.healthPath + '?_=' + Date.now() : '/?_=' + Date.now();
+              fetch(origin + path, { method: 'GET', mode: 'no-cors', cache: 'no-store' }).catch(() => {});
+            } catch (_) {}
           });
         });
       }

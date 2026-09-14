@@ -58,7 +58,7 @@
 
     const projects = {
       rag_pgvector: {
-        title: 'RAG + pgvector Demo (GCP)',        subtitle: 'LangChain · pgvector · Vercel AI SDK · NVIDIA NIM',
+        title: 'RAG + pgvector Demo — GCP',        subtitle: 'LangChain · pgvector · Vercel AI SDK · NVIDIA NIM',
         description: 'Ingest any unstructured text → chunk via LangChain RecursiveCharacterTextSplitter → embed via OpenAI → store in pgvector. Questions trigger cosine-similarity retrieval; answers stream token-by-token via Vercel AI SDK streamText. Provider toggle in the UI switches between Anthropic, OpenAI, and NVIDIA NIM (Nemotron) — same interface, just a base_url swap. FastAPI handles all vector operations; Next.js API routes handle LLM streaming.',
         accentClass: 'text-blue-400',
         frontend: {
@@ -83,7 +83,7 @@
         githubUrl: GH + '/rag-pgvector-demo',
       },
       clickhouse: {
-        title: 'ClickHouse Dashboard — AWS',        subtitle: 'Next.js 16 · ClickHouse Cloud · Materialized Views · SSE · App Runner',
+        title: 'ClickHouse Dashboard (50M rows) — AWS',        subtitle: 'Next.js 16 · ClickHouse Cloud · Materialized Views · SSE · App Runner',
         description: 'Full-stack Next.js dashboard backed by ClickHouse Cloud. Aggregates maintained at INSERT time by four Materialized Views into SummingMergeTree tables — no worker process, no dual-write gap. Full-text search via positionCaseInsensitive on a denormalized searchText column; keyset cursor pagination for efficient deep pages. Real-time order events via in-process Node.js EventEmitter → SSE. Infra: App Runner (scale-to-zero) + CloudFront managed by Terraform; ClickHouse Cloud service lifecycle managed by deploy.sh via CH Cloud API.',
         accentClass: 'text-sky-400',
         cloud: {
@@ -115,7 +115,7 @@
         githubUrl: GH + '/clickhouse-dashboard',
       },
       edgar_10k_agent: {
-        title: 'EDGAR 10-K Agent',        subtitle: 'Agent Loop · Tool Use · live EDGAR retrieval · Anthropic Claude · NVIDIA NIM · Eval',
+        title: 'EDGAR 10-K Agent — GCP',        subtitle: 'Agent Loop · Tool Use · live EDGAR retrieval · Anthropic Claude · NVIDIA NIM · Eval',
         description: 'Agentic loop written from scratch — no LangChain, no pre-ingested data. The model decides at runtime when and how to invoke SEC EDGAR tools; each call fetches live 10-K filings, extracts specific sections (Risk Factors, MD&A, financials), and parses structured figures. Multi-turn reasoning continues until a final answer is emitted. An eval harness benchmarks answer quality (faithfulness, completeness, citation accuracy) across providers. FastAPI streams every tool-call event and token to the React UI via SSE. Provider toggle switches between Anthropic Claude and NVIDIA NIM — same agent loop, same tools, different model.',
         accentClass: 'text-indigo-400',
         frontend: {
@@ -139,7 +139,7 @@
         githubUrl: GH + '/edgar-agent',
       },
       multi_agent: {
-        title: 'Multi-Agent Orchestration (GCP)',        subtitle: 'LangGraph · 20-agent pipeline · React Flow DAG · MCP server',
+        title: 'Multi-Agent Orchestration — GCP',        subtitle: 'LangGraph · 20-agent pipeline · React Flow DAG · MCP server',
         description: '17-node LangGraph pipeline for complex queries: planner → 10 parallel specialist researchers → collect barrier → 4 domain synthesizers → fact-check → report writer. Simple queries short-circuit to 4 nodes. Each SSE event carries node/label/layer/parent for live React Flow DAG layout — nodes pulse while running, turn green on completion. Tools exposed as an MCP server (stdio) for Claude Desktop. GKE mode available alongside Cloud Run.',
         accentClass: 'text-amber-400',
         frontend: {
@@ -163,7 +163,7 @@
         githubUrl: GH + '/agent-orchestration-demo',
       },
       nextjs_springboot: {
-        title: 'Next.js + Spring Boot Dashboard — GCP',
+        title: 'Next.js + Spring Boot (4M rows) — GCP',
         subtitle: 'Next.js 16.3 App Router · Server Components · Spring Boot 4.1 · Neon PostgreSQL',
         description: 'Next.js App Router frontend consuming the same Spring Boot REST API as the GCP Orders Dashboard — demonstrating Next.js as a frontend framework in a split-service architecture rather than a full-stack monolith. The initial /api/aggregates call is a Server Component fetch: the page arrives pre-populated with the chart, no client-side spinner. Filters, search, and keyset-cursor pagination stay as Client Components. API calls are proxied through next.config.ts rewrites so the frontend never hardcodes the backend host.',
         accentClass: 'text-sky-400',
@@ -186,7 +186,7 @@
         githubUrl: GH,
       },
       sec_edgar_rag: {
-        title: 'SEC EDGAR RAG Demo',        subtitle: 'SEC 10-K / 10-Q · pgvector · LangChain · 4 LLM providers · Vercel AI SDK',
+        title: 'SEC EDGAR RAG — AWS',        subtitle: 'SEC 10-K / 10-Q · pgvector · LangChain · 4 LLM providers · Vercel AI SDK',
         description: 'Index SEC 10-K / 10-Q filings by ticker and date range, then ask cross-filing questions with grounded LLM answers. OpenAI text-embedding-3-small embeddings (fixed at ingest and query time) stored in pgvector via cosine similarity. Runtime provider toggle across Anthropic, OpenAI, Google, and NVIDIA NIM — same interface, just a base_url swap. FastAPI + Mangum handles all vector operations and is Lambda-compatible; Next.js API routes handle LLM streaming via Vercel AI SDK streamText.',
         accentClass: 'text-teal-400',
         cloud: {
@@ -217,7 +217,7 @@
         githubUrl: GH + '/edgar-rag-demo',
       },
       orders_dashboard: {
-        title: 'Orders Dashboard — GCP',
+        title: 'React + Spring Boot (4M rows) — GCP',
         subtitle: 'millions of orders · sub-second search · serverless autoscaling',
         description: 'Two independent GCP Cloud Run services — a Vite/React 19.2 SPA proxying /api/* to a Spring Boot 4.1 REST API via Nginx BFF. Schema migrations in Flyway 12, secrets in GCP Secret Manager, all infra declared in Pulumi TypeScript.',
         accentClass: 'text-violet-400',
@@ -247,7 +247,7 @@
         githubUrl: GH,
       },
       nextjs_dashboard: {
-        title: 'Next.js Dashboard — AWS',
+        title: 'Next.js + PostgreSQL 16 Dashboard (4M rows) — AWS',
         subtitle: 'Full-stack · realtime · Postgres 16',
         description: 'Explores Next.js as a unified full-stack platform: UI, realtime updates, and database-backed search all in one AWS-hosted service. Acts as an architectural comparison to the split-service GCP approach. Hosted on App Runner (scale-to-zero, wakes in ~15–30 s).',
         accentClass: 'text-indigo-400',
@@ -277,7 +277,7 @@
         githubUrl: GH + '/nextjs-dashboard',
       },
       nl_to_sql: {
-        title: 'NL-to-SQL Comparison',        subtitle: 'Anthropic · OpenAI · DuckDB-WASM · H1B LCA data',
+        title: 'NL-to-SQL — Vercel',        subtitle: 'Anthropic · OpenAI · DuckDB-WASM · H1B LCA data',
         description: 'Compares natural-language-to-SQL generation across Anthropic and OpenAI models, executing generated SQL in-browser via DuckDB-WASM against a Parquet dataset of DOL H1B LCA disclosures. Schema is auto-detected from Parquet metadata; no backend required.',
         accentClass: 'text-violet-400',
         frontend: {
@@ -293,7 +293,7 @@
         githubUrl: GH + '/natural-language-to-llm-query-comparison',
       },
       phi_deidentification: {
-        title: 'PHI De-identification Pipeline',        subtitle: 'spaCy · Claude Haiku 4.5 · FastAPI · Celery · Redis · PostgreSQL',
+        title: 'PHI De-identification — AWS',        subtitle: 'spaCy · Claude Haiku 4.5 · FastAPI · Celery · Redis · PostgreSQL',
         description: 'Healthcare PHI detection and synthetic substitution pipeline. spaCy biomedical NER (en_core_sci_md) handles ~90% of records as tier-1; Claude Haiku 4.5 covers ambiguous fallbacks. Each detected entity (name, SSN, MRN, date, phone, email, location) is replaced with a Faker-generated synthetic equivalent — not blank redaction — preserving analytical signal. SHA-256 hashes of originals stored in a PostgreSQL redaction log for auditing. Full observability: structured JSON logs, Prometheus metrics, OpenTelemetry traces → Jaeger. The browser demo runs Claude directly for PHI detection; full pipeline adds spaCy tier-1 + Celery workers.',
         accentClass: 'text-teal-400',
         frontend: {

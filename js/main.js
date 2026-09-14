@@ -228,15 +228,12 @@
           chips: ['Cloud Run', 'GCE Postgres VM', 'Secret Manager', 'Artifact Registry', 'Pulumi IaC'],
           liveLabel: 'Open Live App',
         },
-        // Local port assignments — all stored in project config, no CLI args needed:
-        //   frontend  → 3006  (Vite strictPort in dashboard-frontend-gcp/vite.config.ts)
-        //   backend   → 8080  (deploy.sh; run: ./scripts/deploy.sh)
         backend: {
           label: 'API',          color: 'emerald',
           title: 'Spring Boot 4.1 · Java 21',
           chips: ['Spring Boot 4.1', 'Java 21', 'Flyway 12.4', 'REST API'],
           liveLabel: 'API Explorer',          localUrl: 'http://localhost:8080/explorer.html',
-          requestAccessOnly: true,
+          remoteUrl: 'https://dash-full-backend-77y7e2wykq-uc.a.run.app/explorer.html',
           githubUrl: GH + '/springboot-dashboard-backend',
         },
         frontend: {
@@ -244,7 +241,7 @@
           title: 'React 19.2 + Vite 6.4',
           chips: ['React 19.2', 'TypeScript 5.9', 'Vite 6.4', 'Recharts 3.9'],
           liveLabel: 'Open App',          localUrl: 'http://localhost:3006',
-          requestAccessOnly: true,
+          remoteUrl: 'https://dash-react-frontend-77y7e2wykq-uc.a.run.app',
           githubUrl: GH + '/dashboard-frontend',
         },
         githubUrl: GH,

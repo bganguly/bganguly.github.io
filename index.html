@@ -339,6 +339,53 @@
         </div>
       </div>
 
+      <!-- Orders Dashboard — GCP -->
+      <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
+           onclick="openModal('orders_dashboard')">
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                 style="background:linear-gradient(135deg,#7c3aed22,#2563eb22);border:1px solid rgba(124,58,237,0.3)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-violet-400"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 17.5h7M17.5 14v7"/></svg>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="font-semibold text-zinc-100">React + Spring Boot (4M rows) — GCP</h2>
+                <span class="chip bg-violet-500/15 text-violet-300 border border-violet-500/25 text-[10px]">Featured</span>
+              </div>
+              <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
+                  <span class="flex items-center gap-1 text-[11px] font-medium text-blue-400"><span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>React 19.2 + Vite 6.4</span>
+                  <span class="text-zinc-700 text-[10px]">·</span>
+                  <span class="flex items-center gap-1 text-[11px] font-medium text-emerald-400"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Spring Boot 4.1 · Java 21</span>
+                  <span class="text-zinc-700 text-[10px]">·</span>
+                  <span class="flex items-center gap-1 text-[11px] font-medium text-violet-400"><span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>Pulumi IaC · PostgreSQL 16</span>
+                  <span class="text-zinc-700 text-[10px]">·</span>
+                  <span class="flex items-center gap-1 text-[11px] font-medium text-orange-400"><span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span><span id="deploy-target-card-label">GCP · Cloud Run</span></span>
+              </div>
+            </div>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               class="text-zinc-600 group-hover:text-violet-400 transition-colors mt-1 flex-shrink-0">
+            <path d="M7 17L17 7M17 7H7M17 7v10"/>
+          </svg>
+        </div>
+        <p class="text-sm text-zinc-400 leading-relaxed mb-5 card-desc">
+          Production-grade analytics dashboard over millions of orders — sub-second full-text search via GIN trigram index,
+          millisecond chart queries from pre-aggregated Cloud SQL tables. Deployed as two independent services
+          as two Cloud Run services with Pulumi TypeScript IaC — ~$1-2/month at demo traffic, 30s deploys via gcloud run deploy.
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <div class="flex items-center gap-2 px-3 py-2 rounded-lg" style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2)">
+            <div class="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
+            <span class="text-xs text-blue-300 font-medium">React 19.2 · Vite 6.4 · TypeScript 5.9 · Recharts 3.9</span>
+          </div>
+          <div class="flex items-center gap-2 px-3 py-2 rounded-lg" style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2)">
+            <div class="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>
+            <span class="text-xs text-emerald-300 font-medium">Spring Boot 4.1 · Java 21 · PostgreSQL 16 · Pulumi IaC · GCP</span>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -385,53 +432,6 @@
           <span class="chip bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">FastAPI · Mangum</span>
           <span class="chip bg-sky-500/10 text-sky-400 border border-sky-500/20">Next.js 15 · SSE</span>
           <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">SEC EDGAR API</span>
-        </div>
-      </div>
-
-      <!-- Orders Dashboard — GCP -->
-      <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
-           onclick="openModal('orders_dashboard')">
-        <div class="flex items-start justify-between mb-4">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center"
-                 style="background:linear-gradient(135deg,#7c3aed22,#2563eb22);border:1px solid rgba(124,58,237,0.3)">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-violet-400"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 17.5h7M17.5 14v7"/></svg>
-            </div>
-            <div>
-              <div class="flex items-center gap-2">
-                <h2 class="font-semibold text-zinc-100">React + Spring Boot (4M rows) — GCP</h2>
-                <span class="chip bg-violet-500/15 text-violet-300 border border-violet-500/25 text-[10px]">Featured</span>
-              </div>
-              <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
-                  <span class="flex items-center gap-1 text-[11px] font-medium text-blue-400"><span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>React 19.2 + Vite 6.4</span>
-                  <span class="text-zinc-700 text-[10px]">·</span>
-                  <span class="flex items-center gap-1 text-[11px] font-medium text-emerald-400"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Spring Boot 4.1 · Java 21</span>
-                  <span class="text-zinc-700 text-[10px]">·</span>
-                  <span class="flex items-center gap-1 text-[11px] font-medium text-violet-400"><span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>Pulumi IaC · PostgreSQL 16</span>
-                  <span class="text-zinc-700 text-[10px]">·</span>
-                  <span class="flex items-center gap-1 text-[11px] font-medium text-orange-400"><span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span><span id="deploy-target-card-label">GCP · Cloud Run</span></span>
-              </div>
-            </div>
-          </div>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-               class="text-zinc-600 group-hover:text-violet-400 transition-colors mt-1 flex-shrink-0">
-            <path d="M7 17L17 7M17 7H7M17 7v10"/>
-          </svg>
-        </div>
-        <p class="text-sm text-zinc-400 leading-relaxed mb-5 card-desc">
-          Production-grade analytics dashboard over millions of orders — sub-second full-text search via GIN trigram index,
-          millisecond chart queries from pre-aggregated Cloud SQL tables. Deployed as two independent services
-          as two Cloud Run services with Pulumi TypeScript IaC — ~$1-2/month at demo traffic, 30s deploys via gcloud run deploy.
-        </p>
-        <div class="flex flex-wrap gap-3">
-          <div class="flex items-center gap-2 px-3 py-2 rounded-lg" style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2)">
-            <div class="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
-            <span class="text-xs text-blue-300 font-medium">React 19.2 · Vite 6.4 · TypeScript 5.9 · Recharts 3.9</span>
-          </div>
-          <div class="flex items-center gap-2 px-3 py-2 rounded-lg" style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2)">
-            <div class="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>
-            <span class="text-xs text-emerald-300 font-medium">Spring Boot 4.1 · Java 21 · PostgreSQL 16 · Pulumi IaC · GCP</span>
-          </div>
         </div>
       </div>
 

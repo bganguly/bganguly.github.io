@@ -391,7 +391,7 @@
         githubUrl: GH + '/react-springboot-fargate',
       },
       angular_dashboard: {
-        title: 'Angular 19 Dashboard (4M rows) — Azure',
+        title: 'Angular 19 + Spring Boot (4M rows) — Azure',
         subtitle: 'Angular 19 · Bootstrap 5.3 · Chart.js 4.4 · Azure Container Apps · Terraform',
         description: 'Production-grade Angular 19 SPA backed by the GCP Spring Boot REST API — same 4M+ orders dataset as the React frontend, different stack. Built as a multi-stage Docker image (Angular → Nginx), deployed to Azure Container Apps via Terraform IaC. Nginx serves the compiled SPA and proxies /api/* to the Cloud Run backend. Features stacked bar chart (Chart.js via ng2-charts), full-text orders search, cursor-based customer pagination, and a dark-mode toggle persisted to localStorage.',
         accentClass: 'text-blue-400',

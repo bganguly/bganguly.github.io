@@ -390,6 +390,38 @@
         },
         githubUrl: GH + '/react-springboot-fargate',
       },
+      angular_dashboard: {
+        title: 'Angular 19 Dashboard (4M rows) — Azure',
+        subtitle: 'Angular 19 · Bootstrap 5.3 · Chart.js 4.4 · Azure Container Apps · Terraform',
+        description: 'Production-grade Angular 19 SPA backed by the GCP Spring Boot REST API — same 4M+ orders dataset as the React frontend, different stack. Built as a multi-stage Docker image (Angular → Nginx), deployed to Azure Container Apps via Terraform IaC. Nginx serves the compiled SPA and proxies /api/* to the Cloud Run backend. Features stacked bar chart (Chart.js via ng2-charts), full-text orders search, cursor-based customer pagination, and a dark-mode toggle persisted to localStorage.',
+        accentClass: 'text-blue-400',
+        cloud: {
+          label: 'Cloud Provider',
+          color: 'sky',
+          title: 'Azure Container Apps',
+          chips: ['Azure Container Apps', 'Azure Container Registry', 'Terraform', 'Nginx BFF'],
+          liveLabel: 'Open Live App',
+        },
+        frontend: {
+          label: 'Frontend',          color: 'blue',
+          title: 'Angular 19.0 · Bootstrap 5.3 · Chart.js 4.4',
+          chips: ['Angular 19', 'TypeScript 5.6', 'Bootstrap 5.3', 'ng-bootstrap', 'Chart.js 4.4', 'ng2-charts', 'NX', 'Storybook 8.4'],
+          liveLabel: 'Open App',
+          localUrl: 'http://localhost:4200',
+          remoteUrl: 'https://ang-dash-app.redcoast-11711a6b.eastus.azurecontainerapps.io',
+          githubUrl: GH + '/angular-dashboard',
+        },
+        backend: {
+          label: 'API',          color: 'emerald',
+          title: 'Spring Boot 4.1 · Java 21',
+          chips: ['Spring Boot 4.1', 'Java 21', 'Flyway 12.4', 'Cloud Run', 'Cloud SQL'],
+          liveLabel: 'API Explorer',
+          localUrl: 'http://localhost:3006/api-explorer',
+          remoteUrl: 'https://dash-react-frontend-77y7e2wykq-uc.a.run.app/api-explorer',
+          githubUrl: GH + '/springboot-dashboard-backend',
+        },
+        githubUrl: GH + '/angular-dashboard',
+      },
     };
 
     // Probe each project's live URLs at page load (no-cors HEAD, 8 s timeout).

@@ -649,6 +649,49 @@
         </div>
       </div>
 
+      <!-- Card: Angular 19 Dashboard — Azure -->
+      <div class="glass rounded-2xl p-6 card-hover cursor-pointer group"
+           onclick="openModal('angular_dashboard')">
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                 style="background:linear-gradient(135deg,#3b82f622,#0ea5e922);border:1px solid rgba(59,130,246,0.3)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#93c5fd" stroke-width="1.5"><path d="M12 2L3 7v5c0 5.25 3.84 10.15 9 11.34C17.16 22.15 21 17.25 21 12V7L12 2z"/><path d="M9 15l1.5-3.5h3L15 15M10.5 12.5h3"/></svg>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="font-semibold text-zinc-100">Angular 19 Dashboard (4M rows) — Azure</h2>
+                <span class="chip bg-blue-500/15 text-blue-300 border border-blue-500/25 text-[10px]">TypeScript</span>
+              </div>
+              <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
+                <span class="flex items-center gap-1 text-[11px] font-medium text-blue-400"><span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>Angular 19 · Bootstrap 5.3 · Chart.js</span>
+                <span class="text-zinc-700 text-[10px]">·</span>
+                <span class="flex items-center gap-1 text-[11px] font-medium text-emerald-400"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Spring Boot 4.1 · Cloud SQL</span>
+                <span class="text-zinc-700 text-[10px]">·</span>
+                <span class="flex items-center gap-1 text-[11px] font-medium text-sky-400"><span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>Azure Container Apps · Terraform</span>
+              </div>
+            </div>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               class="text-zinc-600 group-hover:text-blue-400 transition-colors mt-1 flex-shrink-0">
+            <path d="M7 17L17 7M17 7H7M17 7v10"/>
+          </svg>
+        </div>
+        <p class="text-sm text-zinc-400 leading-relaxed mb-5 card-desc">
+          Production-grade Angular 19 SPA backed by the GCP Spring Boot REST API — same 4M+ orders dataset as the React frontend, different stack. Built as a multi-stage Docker image (Angular → Nginx), deployed to Azure Container Apps via Terraform IaC. Nginx serves the compiled SPA and proxies /api/* to the Cloud Run backend. Features stacked bar chart (Chart.js via ng2-charts), full-text orders search, cursor-based customer pagination, and dark-mode toggle.
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">Angular 19</span>
+          <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">Bootstrap 5.3</span>
+          <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">Chart.js 4.4</span>
+          <span class="chip bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Spring Boot 4.1 · Java 21</span>
+          <span class="chip bg-sky-500/10 text-sky-400 border border-sky-500/20">Azure Container Apps</span>
+          <span class="chip bg-sky-500/10 text-sky-400 border border-sky-500/20">Terraform</span>
+          <span class="chip bg-slate-500/10 text-slate-400 border border-slate-500/20">TypeScript 5.6</span>
+          <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">NX · Storybook</span>
+        </div>
+      </div>
+
     </div>
   </section>
 

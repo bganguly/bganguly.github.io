@@ -392,14 +392,14 @@
       },
       angular_dashboard: {
         title: 'Angular 19 + Spring Boot (4M rows) — Azure',
-        subtitle: 'Angular 19 · Bootstrap 5.3 · Chart.js 4.4 · Azure Container Apps · Terraform',
-        description: 'Production-grade Angular 19 SPA backed by the GCP Spring Boot REST API — same 4M+ orders dataset as the React frontend, different stack. Built as a multi-stage Docker image (Angular → Nginx), deployed to Azure Container Apps via Terraform IaC. Nginx serves the compiled SPA and proxies /api/* to the Cloud Run backend. Features stacked bar chart (Chart.js via ng2-charts), full-text orders search, cursor-based customer pagination, and a dark-mode toggle persisted to localStorage.',
+        subtitle: 'Angular 19 · Bootstrap 5.3 · Chart.js 4.4 · Azure Static Web Apps · Terraform',
+        description: 'Production-grade Angular 19 SPA backed by the GCP Spring Boot REST API — same 4M+ orders dataset as the React frontend, different stack. Deployed to Azure Static Web Apps (CDN edge, always-on, free tier) via Terraform IaC; API calls go directly to the Cloud Run backend over HTTPS. Features stacked bar chart (Chart.js via ng2-charts), full-text orders search, cursor-based customer pagination, and a dark-mode toggle persisted to localStorage.',
         accentClass: 'text-blue-400',
         cloud: {
           label: 'Cloud Provider',
           color: 'sky',
-          title: 'Azure Container Apps',
-          chips: ['Azure Container Apps', 'Azure Container Registry', 'Terraform', 'Nginx BFF'],
+          title: 'Azure Static Web Apps',
+          chips: ['Azure Static Web Apps', 'Terraform', 'CDN Edge'],
           liveLabel: 'Open Live App',
         },
         frontend: {
@@ -408,7 +408,7 @@
           chips: ['Angular 19', 'TypeScript 5.6', 'Bootstrap 5.3', 'ng-bootstrap', 'Chart.js 4.4', 'ng2-charts', 'NX', 'Storybook 8.4'],
           liveLabel: 'Open App',
           localUrl: 'http://localhost:4200',
-          remoteUrl: 'https://ang-dash-app.redcoast-11711a6b.eastus.azurecontainerapps.io',
+          remoteUrl: 'https://salmon-wave-01f721c0f.6.azurestaticapps.net',
           githubUrl: GH + '/angular-dashboard',
         },
         backend: {

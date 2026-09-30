@@ -247,15 +247,15 @@
         githubUrl: GH,
       },
       go_dashboard: {
-        title: 'React + Go (4M rows) — GCP',
+        title: 'React + Go (4M rows) — AWS',
         subtitle: 'millions of orders · sub-second search · Go 1.23 backend',
-        description: 'Two independent GCP Cloud Run services — a Vite/React 19 SPA proxying /api/* to a Go 1.23 REST API (Gin + pgx) via Nginx BFF. Schema migrations via custom Go migration runner, database on Neon serverless Postgres. No IaC framework — gcloud run deploy direct from deploy.sh.',
+        description: 'Two independent AWS App Runner services — a Vite/React 19 SPA proxying /api/* to a Go 1.23 REST API (Gin + pgx) via Nginx BFF. Schema migrations via custom Go migration runner, database on Neon serverless Postgres. No IaC framework — AWS CLI direct from deploy.sh, images built via CodeBuild.',
         accentClass: 'text-cyan-400',
         cloud: {
           label: 'Cloud Provider',
-          color: 'gcp',
-          title: 'GCP · Cloud Run',
-          chips: ['Cloud Run', 'Neon Postgres', 'Artifact Registry', 'Cloud Build'],
+          color: 'aws',
+          title: 'AWS · App Runner',
+          chips: ['App Runner', 'Neon Postgres', 'ECR', 'CodeBuild'],
           liveLabel: 'Open Live App',
         },
         backend: {
@@ -263,7 +263,6 @@
           title: 'Go 1.23 · Gin · pgx',
           chips: ['Go 1.23', 'Gin', 'pgx v5', 'Custom migrations'],
           liveLabel: 'API Explorer',          localUrl: 'http://localhost:5173/api-explorer',
-          remoteUrl: 'https://go-dash-lite-frontend-77y7e2wykq-uc.a.run.app/api-explorer',
           githubUrl: GH + '/go-dashboard-backend',
         },
         frontend: {
@@ -271,7 +270,6 @@
           title: 'React 19 + Vite 6',
           chips: ['React 19', 'TypeScript 5.7', 'Vite 6', 'Recharts 3.8'],
           liveLabel: 'Open App',          localUrl: 'http://localhost:5173',
-          remoteUrl: 'https://go-dash-lite-frontend-77y7e2wykq-uc.a.run.app',
           githubUrl: GH + '/go-dashboard-frontend',
         },
         githubUrl: GH,

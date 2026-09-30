@@ -292,7 +292,8 @@
           label: 'API',          color: 'orange',
           title: 'Rust · Actix-web 4 · sqlx',
           chips: ['Rust', 'Actix-web 4', 'sqlx', 'tokio', 'Custom migrations'],
-          liveLabel: 'API Explorer',          localUrl: 'http://localhost:8080/api/runtime',
+          liveLabel: 'API Explorer',          localUrl: 'http://localhost:5173/api-explorer',
+          remoteUrl: 'https://9vicazj2md.us-east-1.awsapprunner.com/api-explorer',
           githubUrl: GH + '/rust-dashboard-backend',
         },
         frontend: {
@@ -300,6 +301,7 @@
           title: 'React 19 + Vite 6',
           chips: ['React 19', 'TypeScript 5.7', 'Vite 6', 'Recharts 3.8'],
           liveLabel: 'Open App',          localUrl: 'http://localhost:5173',
+          remoteUrl: 'https://9vicazj2md.us-east-1.awsapprunner.com',
           githubUrl: GH + '/rust-dashboard-frontend',
         },
         githubUrl: GH,

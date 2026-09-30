@@ -263,7 +263,7 @@
           title: 'Go 1.23 · Gin · pgx',
           chips: ['Go 1.23', 'Gin', 'pgx v5', 'Custom migrations'],
           liveLabel: 'API Explorer',          localUrl: 'http://localhost:5173/api-explorer',
-          requestAccessOnly: true,
+          remoteUrl: 'https://go-dash-lite-backend-77y7e2wykq-uc.a.run.app',
           githubUrl: GH + '/go-dashboard-backend',
         },
         frontend: {
@@ -271,7 +271,7 @@
           title: 'React 19 + Vite 6',
           chips: ['React 19', 'TypeScript 5.7', 'Vite 6', 'Recharts 3.8'],
           liveLabel: 'Open App',          localUrl: 'http://localhost:5173',
-          requestAccessOnly: true,
+          remoteUrl: 'https://go-dash-lite-frontend-77y7e2wykq-uc.a.run.app',
           githubUrl: GH + '/go-dashboard-frontend',
         },
         githubUrl: GH,

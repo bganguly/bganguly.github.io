@@ -263,7 +263,7 @@
           title: 'Go 1.23 · Gin · pgx',
           chips: ['Go 1.23', 'Gin', 'pgx v5', 'Custom migrations'],
           liveLabel: 'API Explorer',          localUrl: 'http://localhost:5173/api-explorer',
-          remoteUrl: 'https://go-dash-lite-backend-77y7e2wykq-uc.a.run.app',
+          remoteUrl: 'https://go-dash-lite-frontend-77y7e2wykq-uc.a.run.app/api-explorer',
           githubUrl: GH + '/go-dashboard-backend',
         },
         frontend: {

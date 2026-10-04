@@ -309,7 +309,7 @@
             </div>
             <div>
               <div class="flex items-center gap-2">
-                <h2 class="font-semibold text-zinc-100">React + Go (4M rows) — GCP</h2>
+                <h2 class="font-semibold text-zinc-100">React + Go (4M rows) — AWS</h2>
                 <span class="chip bg-cyan-500/15 text-cyan-300 border border-cyan-500/25 text-[10px]">Featured</span>
               </div>
               <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
@@ -317,7 +317,7 @@
                   <span class="text-zinc-700 text-[10px]">·</span>
                   <span class="flex items-center gap-1 text-[11px] font-medium text-cyan-400"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>Go 1.23 · Gin · pgx</span>
                   <span class="text-zinc-700 text-[10px]">·</span>
-                  <span class="flex items-center gap-1 text-[11px] font-medium text-teal-400"><span class="w-1.5 h-1.5 rounded-full bg-teal-400"></span>Neon Postgres · Cloud Run</span>
+                  <span class="flex items-center gap-1 text-[11px] font-medium text-teal-400"><span class="w-1.5 h-1.5 rounded-full bg-teal-400"></span>Neon Postgres · App Runner</span>
               </div>
             </div>
           </div>
@@ -329,7 +329,7 @@
         <p class="text-sm text-zinc-400 leading-relaxed mb-5 card-desc">
           Same 4M-order analytics problem as the Spring Boot card — reimplemented with a Go 1.23 backend (Gin + pgx).
           Sub-second full-text search via GIN trigram index, millisecond chart queries from pre-aggregated tables.
-          Two Cloud Run services deployed via <code class="text-zinc-300">gcloud run deploy</code> — no IaC framework; ~$1-2/month at demo traffic.
+          Two App Runner services deployed via AWS CodeBuild → ECR — no IaC framework; ~$5/month at idle.
         </p>
         <div class="flex flex-wrap gap-2">
           <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">React 19 · Vite 6</span>
@@ -337,7 +337,7 @@
           <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">Recharts 3.8</span>
           <span class="chip bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">Go 1.23 · Gin · pgx</span>
           <span class="chip bg-teal-500/10 text-teal-400 border border-teal-500/20">Neon Postgres</span>
-          <span class="chip bg-orange-500/10 text-orange-400 border border-orange-500/20">GCP · Cloud Run</span>
+          <span class="chip bg-amber-500/10 text-amber-400 border border-amber-500/20">AWS · App Runner</span>
         </div>
       </div>
 

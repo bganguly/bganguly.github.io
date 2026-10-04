@@ -510,20 +510,6 @@
             });
           });
         });
-      } else {
-        const seen = new Set();
-        Object.values(projects).forEach(p => {
-          [p.frontend, p.backend].filter(Boolean).forEach(c => {
-            if (!c.remoteUrl || c.requestAccessOnly) return;
-            try {
-              const origin = new URL(c.remoteUrl).origin;
-              if (seen.has(origin)) return;
-              seen.add(origin);
-              const path = c.healthPath ? c.healthPath + '?_=' + Date.now() : '/?_=' + Date.now();
-              fetch(origin + path, { method: 'GET', mode: 'no-cors', cache: 'no-store' }).catch(() => {});
-            } catch (_) {}
-          });
-        });
       }
 
     })();

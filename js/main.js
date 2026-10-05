@@ -402,7 +402,7 @@
           title: 'Lambda · SNS/SQS',
           chips: ['AWS Lambda', 'SNS → SQS', 'Serverless 4.13'],
           liveLabel: 'API Explorer',
-          remoteUrl: 'https://d3nbn0s3ea4m39.cloudfront.net/api-explorer.html',
+          requestAccessOnly: true,
           githubUrl: GH + '/react-typescript-serverless',
         },
         frontend: {
@@ -410,7 +410,7 @@
           title: 'React 19.2 · Vite 5.4',
           chips: ['React 19.2', 'TypeScript 5.8', 'Vite 5.4', 'API Gateway', 'Job polling UI'],
           liveLabel: 'Open App',
-          remoteUrl: 'https://d3nbn0s3ea4m39.cloudfront.net',
+          requestAccessOnly: true,
           localUrl: 'http://localhost:3010',
           githubUrl: GH + '/react-typescript-serverless',
         },

@@ -773,7 +773,7 @@
       modal.classList.add('hidden');
       modal.classList.remove('flex');
       document.body.style.overflow = '';
-      if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+      if (location.hash) history.replaceState(null, '', location.pathname);
     }
 
     function closeModalOnBackdrop(e) {
@@ -788,7 +788,7 @@
       const modal = document.getElementById('modal');
       const alreadyOpen = _mk === key && modal && !modal.classList.contains('hidden');
       _origOpenModal(key);
-      if (!alreadyOpen) history.pushState({modal: key}, '', '#' + key);
+      if (!alreadyOpen) history.pushState({modal: key}, '', location.pathname + '#' + key);
     };
 
     window.addEventListener('popstate', function() {
@@ -809,7 +809,7 @@
     (function() {
       const openKey = new URLSearchParams(location.search).get('open') || location.hash.slice(1);
       if (openKey && projects[openKey]) {
-        history.replaceState({modal: openKey}, '', '#' + openKey);
+        history.replaceState({modal: openKey}, '', location.pathname + '#' + openKey);
         _origOpenModal(openKey);
       }
     })();

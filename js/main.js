@@ -115,8 +115,8 @@
         githubUrl: GH + '/clickhouse-dashboard',
       },
       edgar_10k_agent: {
-        title: 'EDGAR 10-K Agent — GCP',        subtitle: 'Agent Loop · Tool Use · live EDGAR retrieval · Anthropic Claude · NVIDIA NIM · Eval',
-        description: 'Agentic loop written from scratch — no LangChain, no pre-ingested data. The model decides at runtime when and how to invoke SEC EDGAR tools; each call fetches live 10-K filings, extracts specific sections (Risk Factors, MD&A, financials), and parses structured figures. Multi-turn reasoning continues until a final answer is emitted. An eval harness benchmarks answer quality (faithfulness, completeness, citation accuracy) across providers. FastAPI streams every tool-call event and token to the React UI via SSE. Provider toggle switches between Anthropic Claude and NVIDIA NIM — same agent loop, same tools, different model.',
+        title: 'EDGAR 10-K Agent — GCP',        subtitle: 'Agent Loop · Tool Use · live EDGAR retrieval · Anthropic Claude · Eval',
+        description: 'Agentic loop written from scratch — no LangChain, no pre-ingested data. The model decides at runtime when and how to invoke SEC EDGAR tools; each call fetches live 10-K filings and extracts readable text. Multi-turn reasoning continues until a final answer is emitted. An eval harness benchmarks answer quality (faithfulness, completeness, citation accuracy). FastAPI streams every tool-call event and token to the React UI via SSE.',
         accentClass: 'text-indigo-400',
         frontend: {
           label: 'App',          color: 'indigo',
@@ -130,7 +130,7 @@
         backend: {
           label: 'API',          color: 'emerald',
           title: 'FastAPI · agent loop · EDGAR tools · Eval',
-          chips: ['FastAPI', 'Agent Loop', 'Tool Use', 'SEC EDGAR API', 'Anthropic', 'NVIDIA NIM', 'Eval harness'],
+          chips: ['FastAPI', 'Agent Loop', 'Tool Use', 'SEC EDGAR API', 'Anthropic', 'Eval harness'],
           localUrl: 'http://localhost:5173/api-explorer.html',
           liveLabel: 'API Explorer',
           remoteUrl: 'https://edgar-frontend-77y7e2wykq-uc.a.run.app/api-explorer',

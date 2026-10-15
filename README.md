@@ -145,7 +145,7 @@ The portfolio is a single-page grid of 15 project cards. **8 cards are immediate
 - **GitHub:** `bganguly/react-springboot-fargate`
 
 #### 15. Angular 19 + Spring Boot (4M rows) — Azure
-[Open App](https://salmon-wave-01f721c0f.6.azurestaticapps.net) · [Open API Explorer](https://dash-angular-frontend-77y7e2wykq-uc.a.run.app/api-explorer?returnTo=angular_dashboard)
+[Open App](https://salmon-wave-01f721c0f.6.azurestaticapps.net) · [Open API Explorer](https://dash-angular-frontend-77y7e2wykq-uc.a.run.app/api-explorer)
 - **Language:** Java (backend), TypeScript (frontend)
 - **Backend:** Spring Boot 4.1, Java 21, GCP Cloud Run — same 4M-order dataset as the React frontend
 - **Frontend:** Angular 19, Bootstrap 5.3, Chart.js 4.4 (ng2-charts); multi-stage Docker build (Angular → Nginx); Nginx proxies `/api/*` to Cloud Run backend

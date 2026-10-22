@@ -741,15 +741,15 @@
             </div>
             <div>
               <div class="flex items-center gap-2">
-                <h2 class="font-semibold text-zinc-100">Angular 19 + Spring Boot (4M rows) — Azure</h2>
+                <h2 class="font-semibold text-zinc-100">Angular 19 + FastAPI (4M rows) — Azure</h2>
                 <span class="chip bg-blue-500/15 text-blue-300 border border-blue-500/25 text-[10px]">TypeScript</span>
               </div>
               <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
                 <span class="flex items-center gap-1 text-[11px] font-medium text-blue-400"><span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>Angular 19 · Bootstrap 5.3 · Chart.js</span>
                 <span class="text-zinc-700 text-[10px]">·</span>
-                <span class="flex items-center gap-1 text-[11px] font-medium text-emerald-400"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Spring Boot 4.1 · Cloud SQL</span>
+                <span class="flex items-center gap-1 text-[11px] font-medium text-emerald-400"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>FastAPI · Python 3.12 · PostgreSQL</span>
                 <span class="text-zinc-700 text-[10px]">·</span>
-                <span class="flex items-center gap-1 text-[11px] font-medium text-sky-400"><span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>Azure Container Apps · Terraform</span>
+                <span class="flex items-center gap-1 text-[11px] font-medium text-sky-400"><span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>Azure SWA · Container Apps</span>
               </div>
             </div>
           </div>
@@ -759,15 +759,15 @@
           </svg>
         </div>
         <p class="text-sm text-zinc-400 leading-relaxed mb-5 card-desc">
-          Production-grade Angular 19 SPA backed by the GCP Spring Boot REST API — same 4M+ orders dataset as the React frontend, different stack. Built as a multi-stage Docker image (Angular → Nginx), deployed to Azure Container Apps via Terraform IaC. Nginx serves the compiled SPA and proxies /api/* to the Cloud Run backend. Features stacked bar chart (Chart.js via ng2-charts), full-text orders search, cursor-based customer pagination, and dark-mode toggle.
+          Production-grade Angular 19 SPA backed by a Python FastAPI backend — same 4M+ orders dataset, different stack. Angular frontend deployed to Azure Static Web Apps (free CDN tier); FastAPI backend deployed to Azure Container Apps (scales to zero). Features stacked bar chart (Chart.js via ng2-charts), full-text orders search via ILIKE on a GIN-indexed search_text column, cursor-based customer pagination, and dark-mode toggle.
         </p>
         <div class="flex flex-wrap gap-2">
           <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">Angular 19</span>
           <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">Bootstrap 5.3</span>
           <span class="chip bg-blue-500/10 text-blue-400 border border-blue-500/20">Chart.js 4.4</span>
-          <span class="chip bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Spring Boot 4.1 · Java 21</span>
+          <span class="chip bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">FastAPI · Python 3.12</span>
+          <span class="chip bg-sky-500/10 text-sky-400 border border-sky-500/20">Azure SWA</span>
           <span class="chip bg-sky-500/10 text-sky-400 border border-sky-500/20">Azure Container Apps</span>
-          <span class="chip bg-sky-500/10 text-sky-400 border border-sky-500/20">Terraform</span>
           <span class="chip bg-slate-500/10 text-slate-400 border border-slate-500/20">TypeScript 5.6</span>
           <span class="chip bg-violet-500/10 text-violet-400 border border-violet-500/20">NX · Storybook</span>
         </div>

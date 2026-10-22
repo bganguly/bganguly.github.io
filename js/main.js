@@ -469,7 +469,7 @@
           liveLabel: 'Open App',
           localUrl: 'http://localhost:4200',
           remoteUrl: 'https://salmon-wave-01f721c0f.6.azurestaticapps.net',
-          githubUrl: GH + '/angular-dashboard',
+          githubUrl: GH + '/fastapi-angular-dashboard-frontend',
         },
         backend: {
           label: 'API',          color: 'emerald',
@@ -478,9 +478,9 @@
           liveLabel: 'API Explorer',
           localUrl: 'http://localhost:4200/api-explorer',
           remoteUrl: 'https://salmon-wave-01f721c0f.6.azurestaticapps.net/api-explorer',
-          githubUrl: GH + '/angular-fastapi-dashboard-backend',
+          githubUrl: GH + '/fastapi-dashboard-backend',
         },
-        githubUrl: GH + '/angular-dashboard',
+        githubUrl: GH + '/fastapi-angular-dashboard-frontend',
       },
     };
 

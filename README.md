@@ -151,4 +151,4 @@ The portfolio is a single-page grid of 15 project cards. **8 cards are immediate
 - **Frontend:** Angular 19, Bootstrap 5.3, Chart.js 4.4 (ng2-charts); multi-stage Docker build (Angular → Nginx); Nginx proxies `/api/*` to Cloud Run backend
 - **Features:** stacked bar chart, full-text orders search, cursor-based customer pagination, dark-mode toggle
 - **Infra:** Azure Static Web Apps + Terraform IaC
-- **GitHub:** `bganguly/angular-dashboard`
+- **GitHub:** `bganguly/fastapi-angular-dashboard-frontend`

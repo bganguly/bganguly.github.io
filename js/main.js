@@ -477,7 +477,7 @@
           chips: ['Spring Boot 4.1', 'Java 21', 'Flyway 12.4', 'Cloud Run', 'Cloud SQL'],
           liveLabel: 'API Explorer',
           localUrl: 'http://localhost:3006/api-explorer',
-          remoteUrl: 'https://dash-angular-frontend-77y7e2wykq-uc.a.run.app/api-explorer',
+          remoteUrl: 'https://salmon-wave-01f721c0f.6.azurestaticapps.net/api-explorer',
           githubUrl: GH + '/springboot-dashboard-backend',
         },
         githubUrl: GH + '/angular-dashboard',

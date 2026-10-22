@@ -478,7 +478,7 @@
           liveLabel: 'API Explorer',
           localUrl: 'http://localhost:4200/api-explorer',
           remoteUrl: 'https://salmon-wave-01f721c0f.6.azurestaticapps.net/api-explorer',
-          githubUrl: GH + '/angular-dashboard-backend',
+          githubUrl: GH + '/angular-fastapi-dashboard-backend',
         },
         githubUrl: GH + '/angular-dashboard',
       },

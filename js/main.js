@@ -58,8 +58,8 @@
 
     const projects = {
       rag_pgvector: {
-        title: 'RAG + pgvector Demo — GCP',        subtitle: 'LangChain · pgvector · Vercel AI SDK · NVIDIA NIM',
-        description: 'Ingest any unstructured text → chunk via LangChain RecursiveCharacterTextSplitter → embed via OpenAI → store in pgvector. Questions trigger cosine-similarity retrieval; answers stream token-by-token via Vercel AI SDK streamText. Provider toggle in the UI switches between Anthropic, OpenAI, and NVIDIA NIM (Nemotron) — same interface, just a base_url swap. FastAPI handles all vector operations; Next.js API routes handle LLM streaming.',
+        title: 'RAG + pgvector Demo (Wikipedia) — GCP',        subtitle: 'Wikipedia · LangChain · pgvector · Vercel AI SDK · NVIDIA NIM',
+        description: 'Load Wikipedia articles by topic, then ask questions against what you\'ve loaded. Each article is chunked via LangChain RecursiveCharacterTextSplitter → embedded via OpenAI → stored in pgvector. Questions trigger cosine-similarity retrieval; answers stream token-by-token via Vercel AI SDK streamText. Provider toggle switches between Anthropic, OpenAI, and NVIDIA NIM (Nemotron) — same interface, just a base_url swap. Also supports custom .txt / .md documents alongside the Wikipedia corpus.',
         accentClass: 'text-blue-400',
         frontend: {
           label: 'App',          color: 'blue',

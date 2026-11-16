@@ -69,7 +69,7 @@
           liveLabel: 'Open App',
           remoteUrl: 'https://frontend-sigma-ten-30.vercel.app',
           healthPath: '/api/health',
-          githubUrl: GH + '/rag-pgvector-demo',
+          githubUrl: GH + '/wikipedia-rag-pgvector-demo',
         },
         backend: {
           label: 'API',          color: 'emerald',
@@ -78,9 +78,9 @@
           localUrl: 'http://localhost:8001/docs',
           liveLabel: 'API Explorer',
           remoteUrl: 'https://frontend-sigma-ten-30.vercel.app/api-explorer.html',
-          githubUrl: GH + '/rag-pgvector-demo',
+          githubUrl: GH + '/wikipedia-rag-pgvector-demo',
         },
-        githubUrl: GH + '/rag-pgvector-demo',
+        githubUrl: GH + '/wikipedia-rag-pgvector-demo',
       },
       clickhouse: {
         title: 'ClickHouse Dashboard (50M rows) — AWS',        subtitle: 'Next.js 16 · ClickHouse Cloud · Materialized Views · SSE · App Runner',

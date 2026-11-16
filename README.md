@@ -26,7 +26,7 @@ The portfolio is a single-page grid of 15 project cards. **8 cards are immediate
 - **Frontend:** Next.js 15, Vercel AI SDK (`streamText`), SSE, Tailwind CSS
 - **LLM providers (runtime toggle):** Anthropic Claude, OpenAI, NVIDIA NIM (Nemotron) — same interface, base\_url swap
 - **Infra:** GCP Cloud Run
-- **GitHub:** `bganguly/rag-pgvector-demo`
+- **GitHub:** `bganguly/wikipedia-rag-pgvector-demo`
 
 #### 2. ClickHouse Dashboard (50M rows) — AWS
 [Open App](https://d1n8zhx1j8oymk.cloudfront.net) · [Open API Explorer](https://d1n8zhx1j8oymk.cloudfront.net/api-explorer)

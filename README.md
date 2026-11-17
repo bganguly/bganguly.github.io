@@ -2,6 +2,8 @@
 
 **[Live demo →](https://bganguly.github.io/)**
 
+https://github.com/bganguly/bganguly.github.io/raw/main/demo.mp4
+
 Run `scripts/deploy.sh` for local dev (serves on `:9090`, seeds EmailJS credentials). Remote publish is automatic — GitHub Actions deploys to Pages on every push to main.
 
 ## Tracking dashboards

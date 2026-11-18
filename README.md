@@ -1,6 +1,6 @@
 # bganguly.github.io — Portfolio
 
-**[Live demo →](https://bganguly.github.io/)**
+**[See Live App](https://bganguly.github.io/)**
 
 
 https://github.com/user-attachments/assets/fb263e97-e164-49ca-a91c-bf76a050f79e

@@ -17,7 +17,7 @@ Run `scripts/deploy.sh` for local dev (serves on `:9090`, seeds EmailJS credenti
 
 ## Project cards — tech stack reference
 
-The portfolio is a single-page grid of 15 project cards. **8 cards are immediately available** (live URLs below); **7 cards are available on demand** (require an access request). Order matches the UI grid layout.
+The portfolio is a single-page grid of 15 project cards. **9 cards are immediately available** (live URLs below); **6 cards are available on demand** (require an access request). Order matches the UI grid layout.
 
 ---
 

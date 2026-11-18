@@ -1,7 +1,8 @@
 # bganguly.github.io — Portfolio
 
-**[See Live App](https://bganguly.github.io/)**
+**[See Live Portfolio](https://bganguly.github.io/)**
 
+A sample walkthrough of one of the live apps is below.
 
 https://github.com/user-attachments/assets/fb263e97-e164-49ca-a91c-bf76a050f79e
 

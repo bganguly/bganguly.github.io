@@ -24,8 +24,7 @@ The portfolio is a single-page grid of 15 project cards. **9 cards are immediate
 
 ### Immediately Available · Featured · AI/LLM + Full Stack
 
-#### 1. RAG + pgvector Demo — GCP
-[Open App](https://frontend-sigma-ten-30.vercel.app) · [Open API Explorer](https://frontend-sigma-ten-30.vercel.app/api-explorer.html)
+#### 1. RAG + pgvector Demo — GCP · [Open App](https://frontend-sigma-ten-30.vercel.app) · [Open API Explorer](https://frontend-sigma-ten-30.vercel.app/api-explorer.html)
 - **Language:** Python (backend), TypeScript (frontend)
 - **Backend:** FastAPI, asyncio, LangChain (RecursiveCharacterTextSplitter), pgvector (cosine similarity), OpenAI `text-embedding-3-small`, Redis
 - **Frontend:** Next.js 15, Vercel AI SDK (`streamText`), SSE, Tailwind CSS
@@ -33,8 +32,7 @@ The portfolio is a single-page grid of 15 project cards. **9 cards are immediate
 - **Infra:** GCP Cloud Run
 - **GitHub:** `bganguly/wikipedia-rag-pgvector-demo`
 
-#### 2. ClickHouse Dashboard (50M rows) — AWS
-[Open App](https://d1n8zhx1j8oymk.cloudfront.net) · [Open API Explorer](https://d1n8zhx1j8oymk.cloudfront.net/api-explorer)
+#### 2. ClickHouse Dashboard (50M rows) — AWS · [Open App](https://d1n8zhx1j8oymk.cloudfront.net) · [Open API Explorer](https://d1n8zhx1j8oymk.cloudfront.net/api-explorer)
 - **Language:** TypeScript
 - **Stack:** Next.js 16.2, React 19, TypeScript 5.9, Tailwind CSS v4, Recharts
 - **Database:** ClickHouse Cloud — four Materialized Views into SummingMergeTree for zero-worker aggregation; full-text search via `positionCaseInsensitive` on a denormalized column; keyset cursor pagination
@@ -42,8 +40,7 @@ The portfolio is a single-page grid of 15 project cards. **9 cards are immediate
 - **Infra:** AWS App Runner (scale-to-zero) + CloudFront, Terraform, GitHub Actions; ClickHouse Cloud service lifecycle via CH Cloud API
 - **GitHub:** `bganguly/clickhouse-dashboard`
 
-#### 3. EDGAR 10-K Agent — GCP
-[Open App](https://edgar-frontend-77y7e2wykq-uc.a.run.app) · [Open API Explorer](https://edgar-frontend-77y7e2wykq-uc.a.run.app/api-explorer)
+#### 3. EDGAR 10-K Agent — GCP · [Open App](https://edgar-frontend-77y7e2wykq-uc.a.run.app) · [Open API Explorer](https://edgar-frontend-77y7e2wykq-uc.a.run.app/api-explorer)
 - **Language:** Python (backend), TypeScript (frontend)
 - **Backend:** FastAPI, custom agentic loop (no LangChain), tool use, SEC EDGAR API (live 10-K/10-Q retrieval), eval harness (faithfulness, completeness, citation accuracy)
 - **Frontend:** React, Vite, TypeScript, SSE (streams every tool-call event and token)
@@ -51,8 +48,7 @@ The portfolio is a single-page grid of 15 project cards. **9 cards are immediate
 - **Infra:** GCP Cloud Run
 - **GitHub:** `bganguly/edgar-agent`
 
-#### 4. Multi-Agent Orchestration — GCP
-[Open App](https://agent-frontend-77y7e2wykq-uc.a.run.app)
+#### 4. Multi-Agent Orchestration — GCP · [Open App](https://agent-frontend-77y7e2wykq-uc.a.run.app)
 - **Language:** Python (backend), TypeScript (frontend)
 - **Backend:** FastAPI, LangGraph (17-node pipeline), MCP server (stdio) for Claude Desktop, Wikipedia + DuckDuckGo tools, Anthropic tool use
 - **Pipeline:** classify → 10 parallel specialist researchers → collect barrier → 4 domain synthesizers → fact-check → report writer; simple queries short-circuit to 4 nodes
@@ -60,24 +56,21 @@ The portfolio is a single-page grid of 15 project cards. **9 cards are immediate
 - **Infra:** GCP Cloud Run (primary) + GKE (available)
 - **GitHub:** `bganguly/agent-orchestration-demo`
 
-#### 5. React + Go (4M rows) — AWS
-[Open App](https://rk2yd5fmyd.us-east-1.awsapprunner.com) · [Open API Explorer](https://rk2yd5fmyd.us-east-1.awsapprunner.com/api-explorer)
+#### 5. React + Go (4M rows) — AWS · [Open App](https://rk2yd5fmyd.us-east-1.awsapprunner.com) · [Open API Explorer](https://rk2yd5fmyd.us-east-1.awsapprunner.com/api-explorer)
 - **Language:** Go (backend), TypeScript (frontend)
 - **Backend:** Go 1.23, Gin, pgx — same 4M-order analytics problem as the Spring Boot card
 - **Frontend:** React 19.2, Vite 6
 - **Infra:** AWS App Runner (two services) via CodeBuild → ECR; no IaC framework
 - **GitHub:** `bganguly/react-go-dashboard`
 
-#### 6. React + Rust (4M rows) — AWS
-[Open App](https://9vicazj2md.us-east-1.awsapprunner.com) · [Open API Explorer](https://9vicazj2md.us-east-1.awsapprunner.com/api-explorer)
+#### 6. React + Rust (4M rows) — AWS · [Open App](https://9vicazj2md.us-east-1.awsapprunner.com) · [Open API Explorer](https://9vicazj2md.us-east-1.awsapprunner.com/api-explorer)
 - **Language:** Rust (backend), TypeScript (frontend)
 - **Backend:** Actix-web 4, sqlx, tokio — same problem as Go card; identical API surface, Neon Postgres read models, in-process `Arc<RwLock>` aggregates cache
 - **Frontend:** React 19.2, Vite 6
 - **Infra:** AWS App Runner (two services) via CodeBuild → ECR
 - **GitHub:** `bganguly/react-rust-dashboard`
 
-#### 7. Angular 19 + Spring Boot (4M rows) — Azure
-[Open App](https://salmon-wave-01f721c0f.6.azurestaticapps.net) · [Open API Explorer](https://dash-angular-frontend-77y7e2wykq-uc.a.run.app/api-explorer)
+#### 7. Angular 19 + Spring Boot (4M rows) — Azure · [Open App](https://salmon-wave-01f721c0f.6.azurestaticapps.net) · [Open API Explorer](https://dash-angular-frontend-77y7e2wykq-uc.a.run.app/api-explorer)
 - **Language:** Java (backend), TypeScript (frontend)
 - **Backend:** Spring Boot 4.1, Java 21, GCP Cloud Run — same 4M-order dataset as the React frontend
 - **Frontend:** Angular 19, Bootstrap 5.3, Chart.js 4.4 (ng2-charts); multi-stage Docker build (Angular → Nginx); Nginx proxies `/api/*` to Cloud Run backend
@@ -85,16 +78,14 @@ The portfolio is a single-page grid of 15 project cards. **9 cards are immediate
 - **Infra:** Azure Static Web Apps + Terraform IaC
 - **GitHub:** `bganguly/fastapi-angular-dashboard-frontend`
 
-#### 8. Next.js + Spring Boot (4M rows) — GCP
-[Open App](https://dash-nextjs-full-frontend-77y7e2wykq-uc.a.run.app/) · [Open API Explorer](https://dash-nextjs-full-frontend-77y7e2wykq-uc.a.run.app/api-explorer)
+#### 8. Next.js + Spring Boot (4M rows) — GCP · [Open App](https://dash-nextjs-full-frontend-77y7e2wykq-uc.a.run.app/) · [Open API Explorer](https://dash-nextjs-full-frontend-77y7e2wykq-uc.a.run.app/api-explorer)
 - **Language:** Java (backend), TypeScript (frontend)
 - **Backend:** Spring Boot 4.1, Java 21, Neon PostgreSQL
 - **Frontend:** Next.js 16.3, App Router, React Server Components
 - **Infra:** GCP Cloud Run
 - **GitHub:** `bganguly/springboot-dashboard-backend` + `bganguly/dashboard-frontend`
 
-#### 9. React + Spring Boot (4M rows) — GCP
-[Open App](https://dash-react-frontend-77y7e2wykq-uc.a.run.app) · [Open API Explorer](https://dash-react-frontend-77y7e2wykq-uc.a.run.app/api-explorer)
+#### 9. React + Spring Boot (4M rows) — GCP · [Open App](https://dash-react-frontend-77y7e2wykq-uc.a.run.app) · [Open API Explorer](https://dash-react-frontend-77y7e2wykq-uc.a.run.app/api-explorer)
 - **Language:** Java (backend), TypeScript (frontend)
 - **Backend:** Spring Boot 4.1, Java 21, Flyway 12.4, PostgreSQL 16 (GCE VM); GIN trigram index for sub-second full-text search; pre-aggregated tables for chart queries
 - **Frontend:** React 19.2, TypeScript 5.9, Vite 6.4, Recharts 3.9; Nginx BFF proxies `/api/*` to Spring Boot
@@ -122,8 +113,7 @@ The portfolio is a single-page grid of 15 project cards. **9 cards are immediate
 - **Infra:** AWS App Runner (scale-to-zero), Terraform, GitHub Actions
 - **GitHub:** `bganguly/nextjs-dashboard`
 
-#### 12. NL-to-SQL — Vercel
-[Open App](https://natural-language-to-llm-query-comparison.vercel.app/nl-to-sql/) _(live — no access request needed)_
+#### 12. NL-to-SQL — Vercel · [Open App](https://natural-language-to-llm-query-comparison.vercel.app/nl-to-sql/) _(live — no access request needed)_
 - **Language:** TypeScript
 - **Stack:** React 19, Vite — entirely client-side, no backend
 - **Query engine:** DuckDB-WASM (in-browser); schema auto-detected from Parquet metadata

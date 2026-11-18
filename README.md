@@ -2,8 +2,8 @@
 
 **[Live demo →](https://bganguly.github.io/)**
 
-https://github.com/user-attachments/assets/fb0bcc05-85fc-494e-81d4-3ea48795c983
 
+https://github.com/user-attachments/assets/fb263e97-e164-49ca-a91c-bf76a050f79e
 
 
 Run `scripts/deploy.sh` for local dev (serves on `:9090`, seeds EmailJS credentials). Remote publish is automatic — GitHub Actions deploys to Pages on every push to main.

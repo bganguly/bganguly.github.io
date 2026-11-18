@@ -75,7 +75,16 @@ The portfolio is a single-page grid of 15 project cards. **9 cards are immediate
 - **Infra:** AWS App Runner (two services) via CodeBuild → ECR
 - **GitHub:** `bganguly/react-rust-dashboard`
 
-#### 7. Next.js + Spring Boot (4M rows) — GCP
+#### 7. Angular 19 + Spring Boot (4M rows) — Azure
+[Open App](https://salmon-wave-01f721c0f.6.azurestaticapps.net) · [Open API Explorer](https://dash-angular-frontend-77y7e2wykq-uc.a.run.app/api-explorer)
+- **Language:** Java (backend), TypeScript (frontend)
+- **Backend:** Spring Boot 4.1, Java 21, GCP Cloud Run — same 4M-order dataset as the React frontend
+- **Frontend:** Angular 19, Bootstrap 5.3, Chart.js 4.4 (ng2-charts); multi-stage Docker build (Angular → Nginx); Nginx proxies `/api/*` to Cloud Run backend
+- **Features:** stacked bar chart, full-text orders search, cursor-based customer pagination, dark-mode toggle
+- **Infra:** Azure Static Web Apps + Terraform IaC
+- **GitHub:** `bganguly/fastapi-angular-dashboard-frontend`
+
+#### 8. Next.js + Spring Boot (4M rows) — GCP
 [Open App](https://dash-nextjs-full-frontend-77y7e2wykq-uc.a.run.app/) · [Open API Explorer](https://dash-nextjs-full-frontend-77y7e2wykq-uc.a.run.app/api-explorer)
 - **Language:** Java (backend), TypeScript (frontend)
 - **Backend:** Spring Boot 4.1, Java 21, Neon PostgreSQL
@@ -83,7 +92,7 @@ The portfolio is a single-page grid of 15 project cards. **9 cards are immediate
 - **Infra:** GCP Cloud Run
 - **GitHub:** `bganguly/springboot-dashboard-backend` + `bganguly/dashboard-frontend`
 
-#### 8. React + Spring Boot (4M rows) — GCP
+#### 9. React + Spring Boot (4M rows) — GCP
 [Open App](https://dash-react-frontend-77y7e2wykq-uc.a.run.app) · [Open API Explorer](https://dash-react-frontend-77y7e2wykq-uc.a.run.app/api-explorer)
 - **Language:** Java (backend), TypeScript (frontend)
 - **Backend:** Spring Boot 4.1, Java 21, Flyway 12.4, PostgreSQL 16 (GCE VM); GIN trigram index for sub-second full-text search; pre-aggregated tables for chart queries
@@ -95,7 +104,7 @@ The portfolio is a single-page grid of 15 project cards. **9 cards are immediate
 
 ### Available on Demand
 
-#### 9. SEC EDGAR RAG — AWS
+#### 10. SEC EDGAR RAG — AWS
 - **Language:** Python (backend), TypeScript (frontend)
 - **Backend:** FastAPI 0.115, LangChain, pgvector (Neon), OpenAI `text-embedding-3-small`, Mangum (Lambda-compatible — same image runs on Cloud Run or AWS Lambda)
 - **Frontend:** Next.js 15, React 19, Vercel AI SDK (`streamText`), TypeScript 5.7, Tailwind CSS
@@ -104,7 +113,7 @@ The portfolio is a single-page grid of 15 project cards. **9 cards are immediate
 - **Infra:** AWS Lambda + Neon pgvector + Vercel, Terraform, GitHub Actions
 - **GitHub:** `bganguly/edgar-rag-demo`
 
-#### 10. Next.js + PostgreSQL 16 Dashboard (4M rows) — AWS
+#### 11. Next.js + PostgreSQL 16 Dashboard (4M rows) — AWS
 - **Language:** TypeScript
 - **Stack:** Next.js 16.2, TypeScript 5.9, Tailwind CSS 4.3, React Server Components, SSE
 - **Database:** PostgreSQL 16 (AWS RDS), Prisma ORM
@@ -112,8 +121,8 @@ The portfolio is a single-page grid of 15 project cards. **9 cards are immediate
 - **Infra:** AWS App Runner (scale-to-zero), Terraform, GitHub Actions
 - **GitHub:** `bganguly/nextjs-dashboard`
 
-#### 11. NL-to-SQL — Vercel
-[Open App](https://natural-language-to-llm-query-comparison.vercel.app/nl-to-sql/)
+#### 12. NL-to-SQL — Vercel
+[Open App](https://natural-language-to-llm-query-comparison.vercel.app/nl-to-sql/) _(live — no access request needed)_
 - **Language:** TypeScript
 - **Stack:** React 19, Vite — entirely client-side, no backend
 - **Query engine:** DuckDB-WASM (in-browser); schema auto-detected from Parquet metadata
@@ -122,7 +131,7 @@ The portfolio is a single-page grid of 15 project cards. **9 cards are immediate
 - **Infra:** Vercel static deploy
 - **GitHub:** `bganguly/natural-language-to-llm-query-comparison`
 
-#### 12. PHI De-identification — AWS
+#### 13. PHI De-identification — AWS
 - **Language:** Python
 - **Pipeline (two-tier):**
   - Tier 1: spaCy `en_core_sci_md` biomedical NER (~90% of records)
@@ -133,26 +142,17 @@ The portfolio is a single-page grid of 15 project cards. **9 cards are immediate
 - **Observability:** structured JSON logs, Prometheus metrics, OpenTelemetry traces → Jaeger
 - **GitHub:** `bganguly/phi-deidentification-pipeline`
 
-#### 13. Event Pipeline — AWS
+#### 14. Event Pipeline — AWS
 - **Language:** TypeScript (frontend + Lambda)
 - **Backend:** AWS Lambda, API Gateway, SNS fan-out → SQS consumption, DynamoDB state tracking (submitted → processing → complete → failed), Serverless Framework 4.13
 - **Frontend:** React 19.2, TypeScript 5.8, Vite 5.4 — polls job status endpoint
 - **Infra:** AWS Serverless (Lambda + API Gateway + SNS + SQS + DynamoDB)
 - **GitHub:** `bganguly/react-typescript-serverless`
 
-#### 14. Job Runner — AWS
+#### 15. Job Runner — AWS
 - **Language:** Java (backend), TypeScript (frontend)
 - **Backend:** Spring Boot 4.1, Java 21, ECS Fargate, DynamoDB persistence, SQS async job queue
 - **Frontend:** React 19.2, TypeScript 5.8 — served via CloudFront + S3
 - **CI/CD:** GitHub Actions builds and pushes container images to ECR on every commit
 - **Infra:** AWS ECS Fargate (no EC2 cluster management), CloudFront CDN, ECR
 - **GitHub:** `bganguly/react-springboot-fargate`
-
-#### 15. Angular 19 + Spring Boot (4M rows) — Azure
-[Open App](https://salmon-wave-01f721c0f.6.azurestaticapps.net) · [Open API Explorer](https://dash-angular-frontend-77y7e2wykq-uc.a.run.app/api-explorer)
-- **Language:** Java (backend), TypeScript (frontend)
-- **Backend:** Spring Boot 4.1, Java 21, GCP Cloud Run — same 4M-order dataset as the React frontend
-- **Frontend:** Angular 19, Bootstrap 5.3, Chart.js 4.4 (ng2-charts); multi-stage Docker build (Angular → Nginx); Nginx proxies `/api/*` to Cloud Run backend
-- **Features:** stacked bar chart, full-text orders search, cursor-based customer pagination, dark-mode toggle
-- **Infra:** Azure Static Web Apps + Terraform IaC
-- **GitHub:** `bganguly/fastapi-angular-dashboard-frontend`
